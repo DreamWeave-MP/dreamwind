@@ -35,6 +35,21 @@ export type LockEntry = {
   providerCount: number,
 }
 
+export type LockData = { schemaVersion: number, entries: { LockEntry } }
+
+export type Contribution = {
+  sourceIndex: number,
+  source: Source,
+  winningFiles: number,
+  overridingFiles: number,
+  overriddenFiles: number,
+  uniqueFiles: number,
+  duplicateFiles: number,
+  looseFiles: number,
+  archiveFiles: number,
+}
+export type ContributionReport = { sources: { Contribution } }
+
 export type VfsLock = {
   schemaVersion: (self: VfsLock) -> number,
   entries: (self: VfsLock) -> { LockEntry },
@@ -74,7 +89,7 @@ export type LayerIndex = {
   providerOriginalPath: (self: LayerIndex, sourceIndex: number, path: string) -> string?,
   providerChain: (self: LayerIndex, path: string) -> { LayerProvider },
   duplicateKeys: (self: LayerIndex) -> views.View<string>,
-  sourceContributions: (self: LayerIndex) -> { sources: { { [string]: unknown } } },
+  sourceContributions: (self: LayerIndex) -> ContributionReport,
   provenance: (self: LayerIndex, vfs: unknown, path: string, withHashes: boolean) -> Provenance?,
   lockManifest: (self: LayerIndex, vfs: unknown) -> VfsLock,
   diffAgainstLock: (
@@ -372,7 +387,7 @@ local DriftKinds = table.freeze {
 local function drift(
   layer: Layer,
   state: State,
-  expected: { schemaVersion: number, entries: { LockEntry } }
+  expected: LockData
 ): { entries: { { key: string, kind: string } }, counts: { [string]: number } }
   if expected.schemaVersion ~= SchemaVersion then
     check.vfs(
@@ -523,8 +538,8 @@ function Methods.duplicateKeys(self: LayerIndex): views.View<string>
 end
 
 --- `source_contributions`: what each source provides, wins, overrides, and loses.
-local function contributions(layer: Layer): { sources: { { [string]: unknown } } }
-  local rows = {}
+local function contributions(layer: Layer): ContributionReport
+  local rows: { Contribution } = {}
   for index, source in layer.sources do
     rows[index] = {
       sourceIndex = index,
@@ -581,7 +596,7 @@ local function contributions(layer: Layer): { sources: { { [string]: unknown } }
   return { sources = rows }
 end
 
-function Methods.sourceContributions(self: LayerIndex): { sources: { { [string]: unknown } } }
+function Methods.sourceContributions(self: LayerIndex): ContributionReport
   return contributions(layerOf(self, 'sourceContributions'))
 end
 

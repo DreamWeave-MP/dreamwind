@@ -97,10 +97,10 @@ local function fromLayerData(data: layer.Layer): Index
 
     if #unique > 1 then
       for _, sourceIndex in unique do
-        local bySource = data.originals[key]
-        local spellings = if bySource then bySource[sourceIndex] else nil
-        local original = if spellings then spellings[1] else nil
-        if original and original ~= key then index.originals[sourceIndex][key] = original end
+      local bySource = data.originals[key]
+      local spellings = if bySource then bySource[sourceIndex] else nil
+      local original = if spellings then spellings[1] else nil
+      if original and original ~= key then index.originals[sourceIndex][key] = original end
       end
     end
 

@@ -30,8 +30,6 @@ local function loaded(options: Options): (Load?, number)
   return cli.load(options)
 end
 
--- find-file and validate's fast path: loose files only, found without building a VFS --------------
-
 --- A file's or directory's name as a VFS key spells it: ASCII lowercase, `\` read as `/`.
 local function component(name: string): string return paths.normalizeHost(name) end
 
@@ -141,14 +139,7 @@ function commands.find(options: FindOptions): number
   if not config then return code end
 
   local vfs = cli.build(config)
-  -- vfs:findByRegex raises for a pattern that doesn't compile.
-  local ok, tree = pcall(vfs.findByRegex, vfs, options.path, options.relative == true)
-  if not ok then
-    cli.err((string.gsub(tostring(tree), '^dream%.vfs: ', '')))
-    return Exit.badRegex
-  end
-
-  return finished(cli.writeTree(options, tree))
+  return finished(cli.writeTree(options, vfs:findByRegex(options.path, options.relative == true)))
 end
 
 --- Whether `path` is one of the config's data directories, spelled any way; else the binary's
@@ -201,15 +192,12 @@ function commands.collapse(options: CollapseOptions): number
     extractArchives = options.extractArchives == true,
     useSymlinks = options.symbolic == true,
   }
+
   if options.dryRun then
     return finished(cli.write(options, cli.Shapes.plan(vfs:materializationPlan(options.into, chosen))))
   end
 
-  -- vfs:collapseInto raises for what it can't write.
-  local ok, skipped = pcall(vfs.collapseInto, vfs, options.into, chosen)
-  if not ok then return finished((string.gsub(tostring(skipped), '^dream%.vfs: ', ''))) end
-
-  for _, skip in skipped :: { { kind: string, key: string, archive: string? } } do
+  for _, skip in vfs:collapseInto(options.into, chosen) do
     if skip.kind == 'archiveEntry' then
       cli.err(`vfstool: skipping {cli.lossy(skip.key)}, loaded from archive: {cli.lossy(skip.archive or '')}`)
     elseif skip.kind == 'archiveFile' then
@@ -231,9 +219,7 @@ function commands.extract(options: ExtractOptions): number
   if not config then return code end
 
   local vfs = cli.build(config)
-  -- vfs:extractFile raises for what it can't write.
-  local ok, destination = pcall(vfs.extractFile, vfs, options.source, options.target)
-  if not ok then return finished((string.gsub(tostring(destination), '^dream%.vfs: ', ''))) end
+  local destination = vfs:extractFile(options.source, options.target)
 
   if not destination then
     cli.err(
@@ -273,14 +259,7 @@ function commands.duplicates(options: DuplicatesOptions): number
   if not config then return code end
 
   local vfs = cli.build(config)
-  -- vfs:duplicates raises for a pattern that doesn't compile.
-  local ok, report = pcall(vfs.duplicates, vfs, options.pattern)
-  if not ok then
-    cli.err((string.gsub(tostring(report), '^dream%.vfs: ', '')))
-    return Exit.badRegex
-  end
-
-  return finished(cli.write(options, cli.Shapes.duplicates(report)))
+  return finished(cli.write(options, cli.Shapes.duplicates(vfs:duplicates(options.pattern))))
 end
 
 --- The loaded archives and how many of their entries win.
@@ -299,7 +278,7 @@ end
 
 export type ArchiveListOptions = Options & { archive: string?, sourceIndex: number? }
 
-local function choices(rows: { { sourceIndex: number, path: string } }): string
+local function choices(rows: { vfstool.ArchiveInfo }): string
   if #rows == 0 then return '<none>' end
 
   local listed = table.create(#rows)
@@ -509,9 +488,7 @@ function commands.lock(options: Options): number
   if not config then return code end
 
   local vfs, index = layered(config)
-  -- layer:lockManifest raises for a winner it can't read.
-  local ok, lock = pcall(index.lockManifest, index, vfs)
-  if not ok then return finished((string.gsub(tostring(lock), '^dream%.vfs: ', ''))) end
+  local lock = index:lockManifest(vfs)
 
   return finished(cli.write(options, cli.Shapes.lock((lock :: vfstool.VfsLock):toTable())))
 end
@@ -526,12 +503,12 @@ function commands.drift(options: DriftOptions): number
   local config, code = loaded(options)
   if not config then return code end
 
-  local vfs, index = layered(config)
+  local vfs = cli.build(config)
   local internal = require '../../vfs/internal/vfs'
-  -- The drift reads every winner, and raises for one it can't read.
-  local ok, report = pcall(layer.drift, internal.layerOf(internal.stateOf(vfs)), internal.stateOf(vfs), expected)
-  local _ = index
-  if not ok then return finished((string.gsub(tostring(report), '^dream%.vfs: ', ''))) end
+  local state = internal.stateOf(vfs)
+  if not state then return finished('could not access VFS state') end
+
+  local report = layer.drift(internal.layerOf(state), state, expected)
 
   local written = cli.write(options, cli.Shapes.drift(report))
   if written then return finished(written) end
@@ -552,14 +529,14 @@ local function freshDirectory(path: string): (boolean?, string?)
   local stat, message = fs.lstat(path)
   if message then return nil, message end
 
-  if not stat then return true end
+  if not stat then return true, nil end
 
-  if not stat.isDir or stat.isSymlink then return false end
+  if not stat.isDir or stat.isSymlink then return false, nil end
 
   local names, listed = fs.list(path)
   if not names then return nil, listed end
 
-  return #names == 0
+  return #names == 0, nil
 end
 
 --- How a child ended, as Rust's `ExitStatus` prints it.
@@ -604,16 +581,11 @@ function commands.run(options: RunOptions): number
   end
 
   cli.err(`Dumping VFS to {merged}...`)
-  -- runSetupTracked raises for what it can't write.
-  local dumped, count, baseline = pcall(vfstool.runSetupTracked, vfs, merged, not options.copy)
-  if not dumped then
-    cleanup()
-    return finished((string.gsub(tostring(count), '^dream%.vfs: ', '')))
-  end
+  local count, baseline = vfstool.runSetupTracked(vfs, merged, not options.copy)
 
   cli.err(`Dumped {count} files.`)
   local absolute = fs.absolute(merged) or merged
-  local argv = table.create(#options.command)
+  local argv = (table.create(#options.command) :: unknown) :: { string }
   for index, argument in options.command do
     argv[index] = if argument == '{}' then absolute else argument
   end
@@ -634,14 +606,9 @@ function commands.run(options: RunOptions): number
     return exitCode
   end
 
-  -- runFinalizeTracked raises for what it can't copy.
-  local captured, copied = pcall(vfstool.runFinalizeTracked, merged, destination, baseline)
-  if not captured then
-    cleanup()
-    return finished((string.gsub(tostring(copied), '^dream%.vfs: ', '')))
-  end
+  local copied = vfstool.runFinalizeTracked(merged, destination, baseline)
 
-  local rows = copied :: { { relativePath: string, destinationPath: string } }
+  local rows = copied
   if #rows == 0 then
     cli.err 'No files changed.'
   else

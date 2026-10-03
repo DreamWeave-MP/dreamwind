@@ -11,6 +11,7 @@ local encode = require '@self/internal/encode'
 local glob = require '@self/internal/glob'
 local host = require '@self/internal/host'
 local layer = require '@self/internal/layer'
+local materialize = require '@self/internal/materialize'
 local paths = require '@self/internal/paths'
 local registry = require '@self/internal/registry'
 local run = require '@self/internal/run'
@@ -20,9 +21,15 @@ local vfs = require '@self/internal/vfs'
 
 export type VfsFile = typeof(vfs.VfsFile.from '')
 export type VFS = vfs.VFS
+export type Tree = vfs.Tree
+export type DuplicateReport = vfs.DuplicateReport
+export type ArchiveInfo = vfs.ArchiveInfo
+export type ArchiveEntry = vfs.ArchiveEntry
+export type ContributionReport = vfs.ContributionReport
+export type MaterializationPlan = vfs.MaterializationPlan
 export type LayerIndex = layer.LayerIndex
-export type ConflictIndex = conflict.ConflictIndex
 export type VfsLock = layer.VfsLock
+export type ConflictIndex = conflict.ConflictIndex
 
 --- The vfstool_lib release this port follows.
 local Version = '1.0.1'

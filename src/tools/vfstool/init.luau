@@ -2,10 +2,10 @@
 --!native
 -- SPDX-License-Identifier: MIT OR Apache-2.0
 -- The vfstool CLI parser; reports and behavior stay in the command implementations.
-local cli = require './cli'
-local commands = require './commands'
+local cli = require '@self/cli'
+local commands = require '@self/commands'
 
-type Options = cli.Options & { [string]: unknown }
+type Options = { [string]: unknown }
 
 local function usage(message: string): number
   cli.err(`vfstool: {message}`)
@@ -29,7 +29,7 @@ local function run(argv: { string }): number
   end
 
   local options: Options = { relative = false, format = 'yaml' }
-  local positional = {}
+  local positional: { string } = {}
   local index = 1
 
   while index <= #argv do
@@ -56,19 +56,25 @@ local function run(argv: { string }): number
     elseif string.sub(argument, 1, 1) == '-' then
       local booleanOptions: { [string]: string } = {
         ['--allow-copying'] = 'allowCopying',
+        ['-a'] = 'allowCopying',
         ['--extract-archives'] = 'extractArchives',
+        ['-e'] = 'extractArchives',
         ['--symbolic'] = 'symbolic',
         ['--dry-run'] = 'dryRun',
         ['--only_physical'] = 'onlyPhysical',
+        ['-p'] = 'onlyPhysical',
         ['--simple'] = 'simple',
         ['--replacements-only'] = 'replacementsOnly',
         ['--list-files'] = 'listFiles',
+        ['-l'] = 'listFiles',
         ['--full'] = 'full',
         ['--fail-on-drift'] = 'failOnDrift',
         ['--keep-merged'] = 'keepMerged',
         ['--copy'] = 'copy',
       }
       local field = booleanOptions[argument]
+      if argument == '-s' then field = if action == 'collapse' then 'symbolic' else 'simple' end
+
       if field then
         options[field] = true
       elseif argument == '--source-index' or argument == '--working-dir' then
@@ -89,7 +95,7 @@ local function run(argv: { string }): number
 
   local required = function(position: number, label: string): (string?, number?)
     local found = positional[position]
-    if found then return found end
+    if found then return found, nil end
     return nil, usage(`{action} requires {label}`)
   end
 
@@ -148,20 +154,24 @@ local function run(argv: { string }): number
     if not merged then return failure :: number end
     if #positional < 2 then return usage('run requires a command after the merged directory') end
     options.merged = merged
-    options.command = table.move(positional, 2, #positional, 1, {})
+    local command: { string } = {}
+    for commandIndex = 2, #positional do
+      table.insert(command, positional[commandIndex])
+    end
+    options.command = command
     return commands.run(options :: commands.RunOptions)
   elseif action == 'conflicts' then
-    return commands.conflicts(options)
+    return commands.conflicts(options :: cli.Options)
   elseif action == 'shadowed' then
     return commands.shadowed(options :: commands.ShadowedOptions)
   elseif action == 'archives' then
-    return commands.archives(options)
+    return commands.archives(options :: cli.Options)
   elseif action == 'contributions' then
-    return commands.contributions(options)
+    return commands.contributions(options :: cli.Options)
   elseif action == 'validate' then
     return commands.validate(options :: commands.ValidateOptions)
   elseif action == 'lock' then
-    return commands.lock(options)
+    return commands.lock(options :: cli.Options)
   end
 
   return usage(`unknown command '{action}'`)

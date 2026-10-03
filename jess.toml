@@ -10,6 +10,7 @@ tests = [
     "tests/archive/tool.luau",
     "tests/vfs/run.luau",
     "tests/vfs/differential.luau",
+    "tests/vfs/vfstool.luau",
     "tests/openmw-import-morrowind/run.luau",
     "tests/starwind/run.luau",
     "tests/tes3/run.luau",
@@ -36,7 +37,7 @@ tests = [
 "@dreamwind/tools/tes3conv" = "src/tools/tes3conv/init.luau"
 "@dreamwind/tools/merge-to-master" = "src/tools/merge-to-master/init.luau"
 "@dreamwind/tools/add-vanilla-refs" = "src/tools/add-vanilla-refs/init.luau"
-"@dreamwind/vfstool" = "src/tools/vfstool.luau"
+"@dreamwind/vfstool" = "src/tools/vfstool/init.luau"
 "@dreamwind/starwind" = "src/starwind/init.luau"
 "@dreamwind/nif" = "src/nif/init.luau"
 "@dreamwind/nif/assets" = "src/nif/internal/assets.luau"

@@ -50,12 +50,51 @@ export type ArchiveInfo = {
   winningEntryCount: number,
 }
 export type ArchiveEntry = { key: string, archivePath: string, originalPath: string, wins: boolean }
+export type DuplicateEntry = { key: string, providers: { ProviderRecord }, winnerIndex: number }
+export type DuplicateReport = { entries: { DuplicateEntry } }
+export type Contribution = {
+  sourceIndex: number,
+  source: Source,
+  winningFiles: number,
+  overridingFiles: number,
+  overriddenFiles: number,
+  uniqueFiles: number,
+  duplicateFiles: number,
+  looseFiles: number,
+  archiveFiles: number,
+}
+export type ContributionReport = { sources: { Contribution } }
+export type MaterializationPlan = materialize.Plan
 export type Tree = {
   count: (self: Tree) -> number,
   toTable: (self: Tree) -> { [string]: unknown },
 }
 
-export type VFS = { [string]: unknown }
+export type VFS = {
+  getFile: (self: VFS, path: string) -> VfsFile?,
+  contains: (self: VFS, path: string) -> boolean,
+  findByRegex: (self: VFS, pattern: string, relative: boolean?) -> Tree,
+  remaining: (self: VFS, path: string, replacementsOnly: boolean, dirs: { string }, relative: boolean?) -> Tree,
+  materializationPlan: (self: VFS, dest: string, options: unknown?) -> MaterializationPlan,
+  collapseInto: (self: VFS, dest: string, options: unknown?) -> { materialize.Skip },
+  extractFile: (self: VFS, path: string, target: string) -> string?,
+  explain: (self: VFS, path: string) -> { key: string, winner: ProviderRecord, overridden: { ProviderRecord } }?,
+  duplicates: (self: VFS, pattern: string?) -> DuplicateReport,
+  archives: (self: VFS) -> { ArchiveInfo },
+  archiveEntries: (self: VFS, archive: string) -> { ArchiveEntry },
+  sourceContributions: (self: VFS) -> ContributionReport,
+  layerIndex: (self: VFS) -> layer.LayerIndex,
+  providersFor: (self: VFS, path: string) -> views.View<ProviderRow>?,
+  keys: (self: VFS) -> views.View<string>,
+  isEmpty: (self: VFS) -> boolean,
+}
+
+export type VFSClass = {
+  new: () -> VFS,
+  fromDirectories: (dirs: { string }, options: unknown?) -> VFS,
+  fromDirectoriesWithConflictIndex: (dirs: { string }, options: unknown?) -> (VFS, conflict.ConflictIndex),
+  fromDirectoriesWithLayerIndex: (dirs: { string }, options: unknown?) -> (VFS, layer.LayerIndex),
+}
 
 --- A VFS's tree stream: its rows, and the tree they came from.
 local trees = (setmetatable({}, { __mode = 'k' }) :: unknown) :: { [unknown]: tree.Tree }
@@ -389,10 +428,8 @@ local function treeStream(built: tree.Tree): Tree
   return stream
 end
 
--- Regular expressions ----------------------------------------------------------------------------------
-
 local function regex(pattern: string): Regex
-  -- jess.regex.new throws for a pattern it can't compile.
+  -- `jess.regex.new` is a Rust binding that raises for a pattern it cannot compile.
   local ok, compiled = pcall(jess.regex.new, pattern, { caseInsensitive = true } :: RegexOptions)
   if not ok then
     local message = string.gsub(tostring(compiled), '^jess%.regex%.new: ', '')
@@ -917,7 +954,7 @@ function Methods.providersFor(self: VFS, key: string): views.View<ProviderRow>?
   )
 end
 
-function Methods.duplicates(self: VFS, pattern: string?)
+function Methods.duplicates(self: VFS, pattern: string?): DuplicateReport
   local vfs = receiver(self, 'duplicates')
   local wanted = if pattern == nil then nil else check.text(method 'duplicates', pattern, 1, 2)
   local compiled = if wanted then regex(wanted) else nil
@@ -929,7 +966,7 @@ function Methods.duplicates(self: VFS, pattern: string?)
   end
 
   paths.sortPaths(keys)
-  local entries = table.create(#keys)
+  local entries = (table.create(#keys) :: unknown) :: { DuplicateEntry }
   for index, key in keys do
     local rows = records(vfs, paths.normalize(key))
     entries[index] = { key = key, providers = rows, winnerIndex = #rows }
@@ -1058,11 +1095,11 @@ local function layerOf(vfs: State): layer.Layer
   return built
 end
 
-function Methods.sourceContributions(self: VFS)
+function Methods.sourceContributions(self: VFS): ContributionReport
   return layer.contributions(layerOf(receiver(self, 'sourceContributions')))
 end
 
-function Methods.materializationPlan(self: VFS, dest: string, options: unknown?)
+function Methods.materializationPlan(self: VFS, dest: string, options: unknown?): MaterializationPlan
   local vfs = receiver(self, 'materializationPlan')
   local target = keyArgument('materializationPlan', dest)
   local chosen = collapseOptions('vfs:materializationPlan', options)
@@ -1377,12 +1414,12 @@ local function withLayerIndex(dirs: { string }, options: unknown?)
   return handle, layer.new(layerOf(vfs))
 end
 
-local Class = table.freeze {
+local Class = table.freeze({
   new = new,
   fromDirectories = fromDirectoriesFunction,
   fromDirectoriesWithConflictIndex = withConflictIndex,
   fromDirectoriesWithLayerIndex = withLayerIndex,
-}
+}) :: VFSClass
 
 local function fileFrom(path: string): VfsFile
   return file.new { path = check.str('dream.vfs.VfsFile.from', path, 1, 1), source = 0 }

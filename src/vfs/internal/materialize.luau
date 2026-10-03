@@ -23,6 +23,8 @@ export type Skip = {
   source: string?,
   error: string?,
 }
+export type PlanRow = { kind: string, key: string, source: string?, archive: string?, dest: string? }
+export type Plan = { actions: { PlanRow }, issues: { PlanRow } }
 
 --- What a failed step answers: the crate's `io::Error` text, without the `dream.vfs: ` prefix the
 --- binding adds once, when the public function raises it.
@@ -390,13 +392,13 @@ local function planRow(
   source: string?,
   archive: string?,
   dest: string?
-)
+): PlanRow
   return { kind = kind, key = key, source = source, archive = archive, dest = dest }
 end
 
 --- `materialization_plan`: what `collapse` would do with each winner, and what stops it.
-local function plan(vfs: State, dest: string, options: Options)
-  local actions, issues = {}, {}
+local function plan(vfs: State, dest: string, options: Options): Plan
+  local actions: { PlanRow }, issues: { PlanRow } = {}, {}
 
   for _, key in sortedKeys(vfs) do
     local entry = vfs.files[key]

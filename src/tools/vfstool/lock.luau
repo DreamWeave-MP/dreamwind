@@ -4,40 +4,26 @@
 -- Reads the lock formats accepted by the native vfstool CLI.
 local fs = require '@dream/fs'
 local json = require '@jess/json'
+local layer = require '../../vfs/internal/layer'
 local yaml = require '@jess/yaml'
+local Null = json.null
 
-type Entry = {
-  key: string,
-  winner_source: string,
-  winner_kind: string,
-  winner_hash_blake3: string?,
-  winner_size: number?,
-  provider_count: number,
-}
-
-type Lock = { schema_version: number, entries: { Entry } }
+type Entry = layer.LockEntry
+type Lock = layer.LockData
 
 local function decode(path: string, source: string): (unknown?, string?)
   local extension = string.lower(string.match(path, '%.([^.]+)$') or '')
   if extension == 'json' then
-    -- @jess/json.decode raises when the file is not JSON.
-    local ok, value = pcall(json.decode, source)
-    if ok then return value end
-    return nil, tostring(value)
+    return json.decode(source), nil
   end
 
   if extension == 'toml' then
-    -- jess.toml.decode raises when the file is not TOML.
-    local ok, value = pcall(jess.toml.decode, source)
-    if ok then return value end
-    return nil, tostring(value)
+    local value = jess.toml.decode(source)
+    return value, nil
   end
 
   if extension == 'yaml' or extension == 'yml' then
-    -- @jess/yaml.decode raises when the file is not YAML.
-    local ok, value = pcall(yaml.decode, source)
-    if ok then return value end
-    return nil, tostring(value)
+    return yaml.decode(source), nil
   end
 
   return nil, `unsupported lock file extension '.{extension}'`
@@ -61,22 +47,37 @@ local function read(path: string): (Lock?, string?)
   if version ~= 1 then return nil, `unsupported VFS lock schema version {version}` end
 
   local entries = rawEntries :: { unknown }
+  local parsedEntries = (table.create(#entries) :: unknown) :: { Entry }
   for index, rawEntry in entries do
     if type(rawEntry) ~= 'table' then return nil, `invalid VFS lock entry {index}` end
     local entry = rawEntry :: { [string]: unknown }
+    local winnerHash = entry.winner_hash_blake3
+    if winnerHash == Null then winnerHash = nil end
+    local winnerSize = entry.winner_size
+    if winnerSize == Null then winnerSize = nil end
+
     if
       type(entry.key) ~= 'string'
       or type(entry.winner_source) ~= 'string'
       or (entry.winner_kind ~= 'loose_dir' and entry.winner_kind ~= 'archive')
-      or (entry.winner_hash_blake3 ~= nil and type(entry.winner_hash_blake3) ~= 'string')
-      or (entry.winner_size ~= nil and type(entry.winner_size) ~= 'number')
+      or (winnerHash ~= nil and type(winnerHash) ~= 'string')
+      or (winnerSize ~= nil and typeof(winnerSize) ~= 'integer' and type(winnerSize) ~= 'number')
       or type(entry.provider_count) ~= 'number'
     then
       return nil, `invalid VFS lock entry {index}`
     end
+
+    parsedEntries[index] = {
+      key = entry.key :: string,
+      winnerSource = entry.winner_source :: string,
+      winnerKind = if entry.winner_kind == 'loose_dir' then 'looseDir' else 'archive',
+      winnerHashBlake3 = winnerHash :: string?,
+      winnerSize = winnerSize :: integer?,
+      providerCount = entry.provider_count :: number,
+    }
   end
 
-  return value :: Lock
+  return { schemaVersion = version, entries = parsedEntries }, nil
 end
 
 return table.freeze { read = read }

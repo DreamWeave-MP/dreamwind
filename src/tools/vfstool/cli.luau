@@ -37,8 +37,6 @@ local Exit = table.freeze {
   runtime = 9,
 }
 
--- Messages ----------------------------------------------------------------------------------------
-
 local Red, Green, Blue, Reset = '\27[31m', '\27[32m', '\27[34m', '\27[0m'
 
 --- Whether `stream` gets ANSI colors: a terminal, and `NO_COLOR` unset or empty.
@@ -68,8 +66,6 @@ end
 local function green(stream: 'stdout' | 'stderr', text: string): string
   return paint(stream, Green, text)
 end
-
--- The config ------------------------------------------------------------------------------------------
 
 --- The openmw.cfg in `dir`, found without regard to case, or nil with the message printed.
 local function configIn(dir: string): string?
@@ -130,14 +126,7 @@ local function load(options: Options): (Load?, number)
   local path = resolveConfig(options)
   if not path then return nil, Exit.config end
 
-  -- @dream/openmw-config raises for a config it can't read.
-  local ok, config = pcall(openmwConfig.new, path)
-  if not ok then
-    err(`Failed to load configuration file: {config}`)
-    return nil, Exit.config
-  end
-
-  local loaded = config :: dream_openmw_Config
+  local loaded = openmwConfig.new(path) :: dream_openmw_Config
   return {
     path = path,
     config = loaded,
@@ -151,8 +140,6 @@ end
 local function build(loaded: Load): vfs.VFS
   return vfs.VFS.fromDirectories(loaded.dirs, { archives = loaded.archives })
 end
-
--- Reports as the binary serialized them --------------------------------------------------------------
 
 local function lossy(text: string): string return paths.lossy(text) end
 
@@ -173,7 +160,7 @@ end
 
 local Kinds: { [string]: string } = { looseDir = 'loose_dir', archive = 'archive' }
 
-type Source = { path: string, kind: string }
+type Source = { path: string, kind: 'looseDir' | 'archive' }
 type Record = {
   sourceIndex: number,
   source: Source,
@@ -182,7 +169,8 @@ type Record = {
   resolvedPath: string,
 }
 type Explain = { key: string, winner: Record, overridden: { Record } }
-type Duplicates = { entries: { { key: string, providers: { Record }, winnerIndex: number } } }
+type DuplicateEntry = { key: string, providers: { Record }, winnerIndex: number }
+type Duplicates = { entries: { DuplicateEntry } }
 type ArchiveInfo = { sourceIndex: number, path: string, entryCount: number, winningEntryCount: number }
 type ArchiveEntry = { key: string, archivePath: string, originalPath: string, wins: boolean }
 type Contribution = {
@@ -211,15 +199,15 @@ type Diff = {
 type LockEntry = {
   key: string,
   winnerSource: string,
-  winnerKind: string,
+  winnerKind: 'looseDir' | 'archive',
   winnerHashBlake3: string?,
-  winnerSize: number?,
+  winnerSize: integer?,
   providerCount: number,
 }
 type Lock = { schemaVersion: number, entries: { LockEntry } }
 type Drift = { entries: { { key: string, kind: string } }, counts: { [string]: number } }
 
-local function sourceMeta(source: { path: string, kind: string }): Value
+local function sourceMeta(source: Source): Value
   return serialize.struct { { 'path', lossy(source.path) }, { 'kind', Kinds[source.kind] } }
 end
 
@@ -261,7 +249,7 @@ local Shapes = table.freeze {
     return serialize.struct {
       {
         'entries',
-        list(report.entries, function(entry): Value
+        list(report.entries, function(entry: DuplicateEntry): Value
           return serialize.struct {
             { 'key', lossy(entry.key) },
             { 'providers', list(entry.providers, providerRecord) },
@@ -294,7 +282,7 @@ local Shapes = table.freeze {
     return serialize.struct {
       {
         'sources',
-        list(report.sources, function(row): Value
+        list(report.sources, function(row: Contribution): Value
           return serialize.struct {
             { 'source_index', row.sourceIndex - 1 },
             { 'source', sourceMeta(row.source) },
@@ -365,9 +353,9 @@ local Shapes = table.freeze {
       { 'source_a', lossy(report.sourceA) },
       { 'source_b', lossy(report.sourceB) },
       { 'higher_priority', lossy(report.higherPriority) },
-      { 'shared', serialize.array(report.shared) },
-      { 'only_in_a', serialize.array(report.onlyInA) },
-      { 'only_in_b', serialize.array(report.onlyInB) },
+      { 'shared', serialize.array((report.shared :: unknown) :: { unknown }) },
+      { 'only_in_a', serialize.array((report.onlyInA :: unknown) :: { unknown }) },
+      { 'only_in_b', serialize.array((report.onlyInB :: unknown) :: { unknown }) },
     }
   end,
 
@@ -380,7 +368,7 @@ local Shapes = table.freeze {
           return serialize.struct {
             { 'key', lossy(entry.key) },
             { 'winner_source', lossy(entry.winnerSource) },
-            { 'winner_kind', Kinds[entry.winnerKind] },
+            { 'winner_kind', if entry.winnerKind == 'looseDir' then 'loose_dir' else 'archive' },
             { 'winner_hash_blake3', optional(entry.winnerHashBlake3) },
             { 'winner_size', optional(entry.winnerSize) },
             { 'provider_count', entry.providerCount },
@@ -411,8 +399,6 @@ local Shapes = table.freeze {
     }
   end,
 }
-
--- Output ---------------------------------------------------------------------------------------------
 
 --- `write_serialized`: `text` to standard output with a newline, or to `path` as it is, its
 --- folder made first. Nil, or the binary's message for what failed.
