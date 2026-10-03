@@ -16,6 +16,7 @@ local function new(): State
   return {
     files = {},
     count = 0,
+    revision = 1,
     providers = {},
     winners = {},
     stacks = {},
@@ -31,6 +32,7 @@ end
 
 --- Drops what a mutation makes stale: the sorted key list and the layer index.
 local function touched(state: State)
+  state.revision += 1
   state.keys = nil
   state.layer = nil
 end

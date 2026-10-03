@@ -29,6 +29,7 @@ export type Entry = {
 export type State = {
   files: { [string]: Entry },
   count: number,
+  revision: number,
   providers: { [string]: { Entry } },
   --- `files` and `providers` again, by key token (`keys.luau`), for lookups by any spelling.
   winners: { [number]: Entry },

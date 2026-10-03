@@ -465,16 +465,46 @@ end
 
 function Methods.len(self: VFS): number return receiver(self, 'len').count end
 
+function Methods.revision(self: VFS): number return receiver(self, 'revision').revision end
+
 function Methods.isEmpty(self: VFS): boolean return receiver(self, 'isEmpty').count == 0 end
 
-function Methods.keys(self: VFS): views.View<string>
+function Methods.keys(self: VFS, limit: number?, descending: boolean?): views.View<string>
   local vfs = receiver(self, 'keys')
-  return views.array(table.clone(sortedKeys(vfs)))
+  local keys = sortedKeys(vfs)
+  if limit == nil then return views.array(table.clone(keys)) end
+  local take = math.max(0, math.min(#keys, math.floor(limit)))
+  local selected = (table.create(take) :: unknown) :: { string }
+  if descending == true then
+    for index = 1, take do selected[index] = keys[#keys - index + 1] end
+  else
+    for index = 1, take do selected[index] = keys[index] end
+  end
+  return views.array(selected)
 end
 
-function Methods.entries(self: VFS): views.View<EntryRow>
+function Methods.entries(self: VFS, limit: number?, descending: boolean?): views.View<EntryRow>
   local vfs = receiver(self, 'entries')
   local keys = sortedKeys(vfs)
+  if limit ~= nil then
+    local take = math.max(0, math.min(#keys, math.floor(limit)))
+    local selectedKeys = (table.create(take) :: unknown) :: { string }
+    local entries = (table.create(take) :: unknown) :: { Entry }
+    if descending == true then
+      for index = 1, take do
+        local key = keys[#keys - index + 1]
+        selectedKeys[index] = key
+        entries[index] = vfs.files[key]
+      end
+    else
+      for index = 1, take do
+        local key = keys[index]
+        selectedKeys[index] = key
+        entries[index] = vfs.files[key]
+      end
+    end
+    return entriesView(selectedKeys, entries)
+  end
   local entries = (table.create(#keys) :: unknown) :: { Entry }
   for index, key in keys do
     entries[index] = vfs.files[key]
@@ -555,13 +585,117 @@ function Methods.pathsMatching(self: VFS, substring: string): views.View<EntryRo
   )
 end
 
-function Methods.pathsWith(self: VFS, prefix: string): views.View<EntryRow>
+local function lowerBound(items: { string }, needle: string): number
+  local low, high = 1, #items + 1
+  while low < high do
+    local mid = math.floor((low + high) / 2)
+    if items[mid] < needle then low = mid + 1 else high = mid end
+  end
+  return low
+end
+
+local function prefixSuccessor(prefix: string): string?
+  for index = #prefix, 1, -1 do
+    local byte = string.byte(prefix, index)
+    if byte < 255 then return string.sub(prefix, 1, index - 1) .. string.char(byte + 1) end
+  end
+  return nil
+end
+
+--- Winners whose normalized key starts with the normalized byte prefix. Unlike `pathsWith`, this
+--- is not component-aware: `foo` also matches `foobar`. The optional page arguments let callers
+--- consume a tiny ordered slice without materializing the whole range.
+function Methods.pathsStartingWith(
+  self: VFS,
+  prefix: string,
+  limit: number?,
+  descending: boolean?
+): views.View<EntryRow>
+  local vfs = receiver(self, 'pathsStartingWith')
+  local normalized = paths.normalize(keyArgument('pathsStartingWith', prefix))
+  local sorted = sortedKeys(vfs)
+  local first = lowerBound(sorted, normalized)
+  local successor = prefixSuccessor(normalized)
+  local last = if successor then lowerBound(sorted, successor) - 1 else #sorted
+  local take = if limit ~= nil then math.max(0, math.floor(limit)) else nil
+  local keys: { string } = if take ~= nil then table.create(take) else {}
+  local entries: { Entry } = if take ~= nil then table.create(take) else {}
+
+  if descending == true then
+    for index = last, first, -1 do
+      local key = sorted[index]
+      if key and string.sub(key, 1, #normalized) == normalized then
+        keys[#keys + 1] = key
+        entries[#entries + 1] = vfs.files[key]
+        if take ~= nil and #keys >= take then break end
+      end
+    end
+  else
+    for index = first, last do
+      local key = sorted[index]
+      if key and string.sub(key, 1, #normalized) == normalized then
+        keys[#keys + 1] = key
+        entries[#entries + 1] = vfs.files[key]
+        if take ~= nil and #keys >= take then break end
+      end
+    end
+  end
+
+  return entriesView(keys, entries)
+end
+
+function Methods.keysStartingWith(
+  self: VFS,
+  prefix: string,
+  limit: number?,
+  descending: boolean?
+): views.View<string>
+  local vfs = receiver(self, 'keysStartingWith')
+  local normalized = paths.normalize(keyArgument('keysStartingWith', prefix))
+  local sorted = sortedKeys(vfs)
+  local first = lowerBound(sorted, normalized)
+  local successor = prefixSuccessor(normalized)
+  local last = if successor then lowerBound(sorted, successor) - 1 else #sorted
+  local count = math.max(0, last - first + 1)
+  if limit ~= nil then count = math.min(count, math.max(0, math.floor(limit))) end
+  if descending == true then
+    return views.lazy(count, function(index: number): string return sorted[last - index + 1] end)
+  end
+  return views.lazy(count, function(index: number): string return sorted[first + index - 1] end)
+end
+
+function Methods.pathsWith(self: VFS, prefix: string, limit: number?, descending: boolean?): views.View<EntryRow>
   local vfs = receiver(self, 'pathsWith')
   local normalized = paths.normalize(keyArgument('pathsWith', prefix))
-  return entriesWhere(
-    vfs,
-    function(key: string): boolean return paths.atOrUnder(key, normalized) end
-  )
+  while string.byte(normalized, -1) == 47 do normalized = string.sub(normalized, 1, -2) end
+  if normalized == '' then return entriesView({}, {}) end
+
+  local sorted = sortedKeys(vfs)
+  local first = lowerBound(sorted, normalized)
+  local last = lowerBound(sorted, normalized .. '0') - 1
+  local keys: { string } = if limit ~= nil then table.create(math.max(0, math.floor(limit))) else {}
+  local entries: { Entry } = if limit ~= nil then table.create(math.max(0, math.floor(limit))) else {}
+  local take = if limit ~= nil then math.max(0, math.floor(limit)) else nil
+  if descending == true then
+    for index = last, first, -1 do
+      local key = sorted[index]
+      if key and paths.atOrUnder(key, normalized) then
+        keys[#keys + 1] = key
+        entries[#entries + 1] = vfs.files[key]
+        if take ~= nil and #keys >= take then break end
+      end
+    end
+  else
+    for index = first, last do
+      local key = sorted[index]
+      if key and paths.atOrUnder(key, normalized) then
+        keys[#keys + 1] = key
+        entries[#entries + 1] = vfs.files[key]
+        if take ~= nil and #keys >= take then break end
+      end
+    end
+  end
+  return entriesView(keys, entries)
 end
 
 -- Mutation ---------------------------------------------------------------------------------------------
