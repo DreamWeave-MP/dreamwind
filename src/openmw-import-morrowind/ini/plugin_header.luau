@@ -2,10 +2,18 @@
 --!native
 -- SPDX-License-Identifier: MIT OR Apache-2.0
 local parser = require './parser'
-local host = require('@dream/vfs').host
+local fs = require '@dream/fs'
+local storage = require './storage'
+
+local function readAt(path: string, offset: number, size: number): buffer
+  local data, message = fs.readAt(path, offset, size)
+  if not data then error(storage.ioMessage(path, message :: string), 0) end
+
+  return data
+end
 
 local function read(path: string, encoding: string?): { name: string, masters: { string } }
-  local header = host.readAt(path, 0, 16)
+  local header = readAt(path, 0, 16)
 
   local function check(condition: boolean, message: string)
     assert(condition, `dream.ini: invalid plugin header in {path}: {message}`)
@@ -14,9 +22,12 @@ local function read(path: string, encoding: string?): { name: string, masters: {
   check(buffer.len(header) == 16, 'unexpected end of file')
   check(buffer.readstring(header, 0, 4) == 'TES3', 'missing TES3 record')
   local size = buffer.readu32(header, 4)
-  local metadata = assert(host.stat(path))
+  local metadata, metadataError = fs.stat(path)
+  if not metadata then
+    error(storage.ioMessage(path, metadataError or 'plugin disappeared while reading its header'), 0)
+  end
   check(metadata.size >= 16 + size, 'TES3 record extends past end of file')
-  local record = host.readAt(path, 16, size)
+  local record = readAt(path, 16, size)
   check(buffer.len(record) == size, 'TES3 record extends past end of file')
   local offset = 0
   local masters: { string } = {}

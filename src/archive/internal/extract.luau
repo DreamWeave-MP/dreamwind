@@ -4,7 +4,7 @@
 -- Writing members to the host: archive paths made into safe output paths below a folder, and each
 -- file written beside its target and renamed over it, so a failed write leaves the old file whole.
 local util = require './util'
-local host = require('@dream/vfs').host
+local fs = require '@dream/fs'
 
 local fail, Messages = util.fail, util.Messages
 
@@ -72,17 +72,15 @@ end
 local function createDir(path: string)
   if path == '' then return end
 
-  -- host.mkdir throws when a folder can't be made, as `create_dir_all` fails.
-  local ok, result = pcall(host.mkdir, path, { recursive = true } :: { recursive: boolean? })
-  if not ok then fail(util.hostMessage(result)) end
+  local created, message = fs.mkdir(path, { recursive = true })
+  util.hostResult(created, message, path)
 end
 
 local Salt = math.random(0, 0x7fffffff)
 local counter = 0
 
 local function removeQuietly(path: string)
-  -- host.remove throws for a file that isn't there; the temporary file may not have been made.
-  pcall(host.remove, path, nil)
+  fs.remove(path)
 end
 
 --- Writes what `produce` makes to `path` through a temporary file in the same folder, renamed
@@ -98,17 +96,16 @@ local function writeAtomically(path: string, produce: () -> buffer): number
   local data = produce()
   counter += 1
   local temporary = join(folder or '', `.{name}.dream-archive-tmp-{Salt}-{counter}`)
-  -- host.writeFile and host.rename throw with the operating system's reason.
-  local written, writeError = pcall(host.writeFile, temporary, data, nil)
+  local written, writeError = fs.writeFile(temporary, data)
   if not written then
     removeQuietly(temporary)
-    fail(util.hostMessage(writeError))
+    fail(util.hostMessage(writeError, temporary))
   end
 
-  local renamed, renameError = pcall(host.rename, temporary, path)
+  local renamed, renameError = fs.rename(temporary, path)
   if not renamed then
     removeQuietly(temporary)
-    fail(util.hostMessage(renameError))
+    fail(util.hostMessage(renameError, temporary))
   end
 
   return buffer.len(data)

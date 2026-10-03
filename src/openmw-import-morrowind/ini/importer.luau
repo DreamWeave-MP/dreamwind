@@ -5,7 +5,8 @@ local types, parser, config = require './types', require './parser', require './
 local content, fallbackKeys = require './content_files', require './fallback_keys'
 local log = require('@jess/log').new 'morrowind.ini'
 local options = require './options'
-local host = require('@dream/vfs').host
+local fs = require '@dream/fs'
+local storage = require './storage'
 type MultiMap = types.MultiMap
 type Result = types.Result
 type Request = types.Request
@@ -238,13 +239,10 @@ local function importPaths(given: types.PathsOptions): Result
   local dataDirBase = if #import.dataDirs > 0 then cfgDir or import.cfgDir else nil
   local cfg = if cfgPath then config.load(cfgPath) else {}
   local encoding = cfgEncoding(cfg, import.encoding)
-  -- `readFileString` throws for an INI that can't be read, with the operating system's reason, as
-  -- dream-ini reports it.
-  local ok, text = pcall(host.readFileString, iniPath)
+  local text, message = fs.readFileString(iniPath)
 
-  if not ok then
-    local reason = tostring(text)
-    error(`dream.ini: {iniPath}: {string.match(reason, '^dream%.vfs: (.*)$') or reason}`, 0)
+  if not text then
+    error(storage.ioMessage(iniPath, message :: string), 0)
   end
 
   local parsed = parser.parseIni(text, { encoding = encoding })

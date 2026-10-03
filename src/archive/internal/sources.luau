@@ -7,7 +7,7 @@
 -- it, with the index written over its placeholder at the end.
 local types = require './types'
 local util = require './util'
-local host = require('@dream/vfs').host
+local fs = require '@dream/fs'
 
 type Source = types.Source
 type Backend = types.Backend
@@ -57,32 +57,33 @@ local function load(source: Source): buffer | string
 end
 
 --- Every file below `root` and the archive path it gets: its path relative to `root`, with `/`.
-local function collect(root: string): { { archivePath: string, path: string, size: number } }
-  -- host.stat throws for a path it can't ask about.
-  local ok, result = pcall(host.stat, root)
-  if not ok then fail(util.hostMessage(result)) end
+type CollectedFile = { archivePath: string, path: string, size: number }
 
-  local info = result :: { isDir: boolean }?
+local function collect(root: string): { CollectedFile }
+  local info, message = fs.stat(root)
+  if message then fail(util.hostMessage(message, root)) end
   if not info then fail 'No such file or directory (os error 2)' end
 
   if not (info :: { isDir: boolean }).isDir then fail 'Not a directory (os error 20)' end
 
-  -- host.list throws when a folder below `root` can't be read.
-  local listed, rows = pcall(host.list, root, { recursive = true } :: { recursive: boolean? })
-  if not listed then fail(util.hostMessage(rows)) end
+  local found, problem = fs.walk(root, { followLinks = true, metadata = true })
+  if problem then fail(util.walkMessage(problem)) end
 
-  local prefix = if string.byte(root, -1) == 47 then root else `{root}/`
+  local rows = assert(found)
   local files = {}
-  for _, row in rows :: { { path: string, isDir: boolean, size: number } } do
-    if row.isDir then continue end
+  for index, relative in rows.paths do
+    if rows.kinds[index] == 'dir' then continue end
 
-    local path = row.path
-    local relative = if string.sub(path, 1, #prefix) == prefix
-      then string.sub(path, #prefix + 1)
-      else path
-    table.insert(files, { archivePath = relative, path = path, size = row.size })
+    table.insert(files, {
+      archivePath = relative,
+      path = jess.fs.join(root, relative),
+      size = (rows.sizes :: { number })[index],
+    })
   end
 
+  table.sort(files, function(first: CollectedFile, second: CollectedFile): boolean
+    return first.path < second.path
+  end)
   return files
 end
 
@@ -90,13 +91,8 @@ export type Sink = {
   out: buffer?,
   pieces: { buffer },
   length: number,
-  writer: Writer?,
-}
-
-type Writer = {
-  write: (self: Writer, data: buffer | string) -> number,
-  writeAt: (self: Writer, position: number, data: buffer) -> number,
-  close: (self: Writer) -> unknown,
+  writer: dream_fs_Writer?,
+  path: string?,
 }
 
 --- A sink collecting the archive in memory: straight into one buffer when its size is known.
@@ -106,19 +102,15 @@ end
 
 --- A sink writing to `path`, created now, as `File::create` does before anything is written.
 local function fileSink(path: string): Sink
-  -- host.openWrite throws for a path it can't create.
-  local ok, result = pcall(host.openWrite, path, nil)
-  if not ok then fail(util.hostMessage(result)) end
-
-  return { pieces = {}, length = 0, writer = result :: Writer }
+  local result, message = fs.openWrite(path)
+  return { pieces = {}, length = 0, writer = util.hostResult(result, message, path), path = path }
 end
 
 local function add(sink: Sink, data: buffer | string)
   local writer, out = sink.writer, sink.out
   if writer then
-    -- Writer.write throws with the operating system's reason.
-    local ok, result = pcall(writer.write, writer, data)
-    if not ok then fail(util.hostMessage(result)) end
+    local count, message = writer:write(data)
+    util.hostResult(count, message, sink.path :: string)
   elseif out then
     if type(data) == 'string' then
       buffer.writestring(out, sink.length, data)
@@ -140,14 +132,13 @@ end
 local function finish(sink: Sink, head: buffer?): buffer?
   local writer = sink.writer
   if writer then
-    -- Writer.writeAt and Writer.close throw with the operating system's reason.
     if head then
-      local ok, result = pcall(writer.writeAt, writer, 0, head)
-      if not ok then fail(util.hostMessage(result)) end
+      local count, message = writer:writeAt(0, head)
+      util.hostResult(count, message, sink.path :: string)
     end
 
-    local ok, result = pcall(writer.close, writer)
-    if not ok then fail(util.hostMessage(result)) end
+    local closed, message = writer:close()
+    util.hostResult(closed, message, sink.path :: string)
 
     return nil
   end

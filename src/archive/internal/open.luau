@@ -9,7 +9,7 @@ local tes3 = require './tes3'
 local tes4 = require './tes4'
 local types = require './types'
 local util = require './util'
-local host = require('@dream/vfs').host
+local fs = require '@dream/fs'
 
 type Archive = types.Archive
 type Format = types.Format
@@ -33,9 +33,8 @@ end
 
 local function storeAt(what: string, path: unknown): (Store, string)
   local file = util.checkHostPath(what, path, 1)
-  -- host.stat throws for a path it can't ask about.
-  local ok, info = pcall(host.stat, file)
-  if ok and info and (info :: { isDir: boolean }).isDir then fail 'Is a directory (os error 21)' end
+  local info = fs.stat(file)
+  if info and info.isDir then fail 'Is a directory (os error 21)' end
 
   return Store.fromPath(file), file
 end
@@ -71,11 +70,8 @@ end
 
 local function detectPath(path: string): Format?
   local file = util.checkHostPath('dream.archive.detectPath', path, 1)
-  -- host.readAt throws for a missing or unreadable file.
-  local ok, result = pcall(host.readAt, file, 0, 4)
-  if not ok then fail(util.hostMessage(result)) end
-
-  local magic = result :: buffer
+  local result, message = fs.readAt(file, 0, 4)
+  local magic = util.hostResult(result, message, file)
   if buffer.len(magic) < 4 then return nil end
 
   return guess(buffer.readstring(magic, 0, 4))

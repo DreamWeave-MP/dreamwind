@@ -2,11 +2,11 @@
 --!native
 -- SPDX-License-Identifier: MIT OR Apache-2.0
 -- Where an archive's bytes come from. An archive opened from bytes keeps them in one buffer; one
--- opened from a path keeps a `@dream/vfs` reader over the host's map of the file, reads its index
+-- opened from a path keeps a `@dream/fs` reader over the host's map of the file, reads its index
 -- once, and reads each payload when it is asked for, straight into the buffer that wants it.
 local types = require './types'
 local util = require './util'
-local host = require('@dream/vfs').host
+local fs = require '@dream/fs'
 
 type Store = types.Store
 type Reader = types.Reader
@@ -28,11 +28,8 @@ local function fromBytes(data: buffer | string): Store
 end
 
 local function fromPath(path: string): Store
-  -- host.open throws for a missing or unreadable file.
-  local ok, result = pcall(host.open, path)
-  if not ok then return fail(util.hostMessage(result)) end
-
-  local reader = result :: Reader
+  local result, message = fs.open(path)
+  local reader = util.hostResult(result, message, path)
   return { size = reader:size(), reader = reader, path = path, headLength = 0, position = 0 }
 end
 
@@ -60,7 +57,10 @@ local function copyInto(
 
   local reader = store.reader :: Reader
   seek(store, reader, offset)
-  if reader:readInto(target, targetOffset, length) ~= length then fail(util.Messages.endOfFile) end
+  local count, message = reader:readInto(target, targetOffset, length)
+  if util.hostResult(count, message, store.path :: string) ~= length then
+    fail(util.Messages.endOfFile)
+  end
 
   store.position = offset + length
 end
@@ -76,7 +76,8 @@ local function read(store: Store, offset: number, length: number): buffer
 
   local reader = store.reader :: Reader
   seek(store, reader, offset)
-  local out = reader:read(length)
+  local data, message = reader:read(length)
+  local out = util.hostResult(data, message, store.path :: string)
   if buffer.len(out) ~= length then fail(util.Messages.endOfFile) end
 
   store.position = offset + length
@@ -85,7 +86,7 @@ end
 
 --- Where string reads of a file land before they become strings: one buffer reused, so a read
 --- makes one string and no buffer. Larger reads get a buffer of their own.
-local Scratch = buffer.create(65536)
+local scratch = buffer.create(65536)
 local ScratchLimit = 1048576
 
 --- The `length` bytes at `offset` as a string; the range is in bounds.
@@ -95,12 +96,12 @@ local function readString(store: Store, offset: number, length: number): string
 
   if length > ScratchLimit then return buffer.tostring(read(store, offset, length)) end
 
-  if length > buffer.len(Scratch) then
-    Scratch = buffer.create(math.max(length, 2 * buffer.len(Scratch)))
+  if length > buffer.len(scratch) then
+    scratch = buffer.create(math.max(length, 2 * buffer.len(scratch)))
   end
 
-  copyInto(store, Scratch, 0, offset, length)
-  return buffer.readstring(Scratch, 0, length)
+  copyInto(store, scratch, 0, offset, length)
+  return buffer.readstring(scratch, 0, length)
 end
 
 --- The little-endian u32 at `offset`; the four bytes are in bounds.

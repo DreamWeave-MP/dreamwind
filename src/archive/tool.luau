@@ -14,7 +14,7 @@ local tes3 = require './bsa/tes3'
 local tes4 = require './bsa/tes4'
 local types = require './internal/types'
 local util = require './internal/util'
-local host = require('@dream/vfs').host
+local fs = require '@dream/fs'
 
 type Archive = types.Archive
 type Backend = types.Backend
@@ -338,7 +338,7 @@ local function booleanField(reader: Reader, key: string, default: boolean): bool
   return value :: boolean
 end
 
---- The `fsync` option. `@dream/vfs` can't flush a file or a folder to disk, so asking for it is
+--- The `fsync` option. `@dream/fs` doesn't expose directory syncing, so asking for it is
 --- refused rather than ignored.
 local function fsyncField(reader: Reader)
   if booleanField(reader, 'fsync', false) then
@@ -507,13 +507,13 @@ local function hex(path: string): string
   )
 end
 
-local function decodeHex(text: string): string
+local function decodeHex(text: string, context: string): string
   if #text % 2 ~= 0 then
-    archiveError 'archive path hex must contain an even number of hexadecimal digits'
+    fail(`{context}: invalid pathBytesHex: archive error: archive path hex must contain an even number of hexadecimal digits`)
   end
 
   if string.find(text, '[^%x]') then
-    archiveError 'archive path hex contains a non-hexadecimal digit'
+    fail(`{context}: invalid pathBytesHex: archive error: archive path hex contains a non-hexadecimal digit`)
   end
 
   return (
@@ -607,12 +607,12 @@ local function components(path: string): { string }
 end
 
 local function pathLess(left: string, right: string): boolean
-  local a, b = components(left), components(right)
-  for index = 1, math.min(#a, #b) do
-    if a[index] ~= b[index] then return a[index] < b[index] end
+  local leftParts, rightParts = components(left), components(right)
+  for index = 1, math.min(#leftParts, #rightParts) do
+    if leftParts[index] ~= rightParts[index] then return leftParts[index] < rightParts[index] end
   end
 
-  return #a < #b
+  return #leftParts < #rightParts
 end
 
 local function samePath(left: string, right: string): boolean
@@ -640,20 +640,16 @@ local function targetPath(root: string, key: string, preservePaths: boolean): st
 end
 
 local function exists(path: string): boolean
-  -- host.exists throws when it can't tell, as `Path::exists` answers false.
-  local ok, result = pcall(host.exists, path)
-  return ok and result == true
+  return fs.exists(path) == true
 end
 
 local function createFolder(path: string)
-  -- host.mkdir throws with the operating system's reason a folder can't be made.
-  local ok, result = pcall(host.mkdir, path, { recursive = true } :: { recursive: boolean? })
-  if not ok then ioError(result) end
+  local created, message = fs.mkdir(path, { recursive = true })
+  if not created then ioError(util.hostMessage(message, path)) end
 end
 
 local function removeQuietly(path: string)
-  -- host.remove throws for a file that isn't there; a temporary file may not have been made.
-  pcall(host.remove, path, nil)
+  fs.remove(path)
 end
 
 local Salt = math.random(0, 0x7fffffff)
@@ -666,12 +662,11 @@ local function temporaryBeside(folder: string, target: string): string
 end
 
 local function rename(from: string, to: string)
-  -- host.rename throws with the operating system's reason.
-  local ok, result = pcall(host.rename, from, to)
+  local ok, message = fs.rename(from, to)
   if ok then return end
 
   removeQuietly(from)
-  ioError(result)
+  ioError(util.hostMessage(message, from))
 end
 
 type Listed = {
@@ -1077,20 +1072,14 @@ local function hexList(value: unknown, context: string): { string }
       fail(`{path}: expected a UTF-8 pathBytesHex string, got {type(item)}`)
     end
 
-    local ok, decoded = pcall(decodeHex, item :: string)
-    if not ok then fail(`{path}: invalid pathBytesHex: {decoded}`) end
-
-    table.insert(paths, decoded :: string)
+    table.insert(paths, decodeHex(item :: string, path))
   end
 
   return paths
 end
 
 local function hexEntry(value: string, context: string): string
-  local ok, decoded = pcall(decodeHex, value)
-  if not ok then fail(`{context}: invalid pathBytesHex: {decoded}`) end
-
-  return decoded :: string
+  return decodeHex(value, context)
 end
 
 local function rejectDuplicateTargets(targets: { Target })
@@ -1170,14 +1159,13 @@ local function writeTarget(
 
   local data = readMember(archive, target.key)
   local temporary = temporaryBeside(folder, target.path)
-  -- host.writeFile throws with the operating system's reason a file can't be written.
-  local written, problem = pcall(host.writeFile, temporary, data, nil)
+  local written, problem = fs.writeFile(temporary, data)
   if not written then
     removeQuietly(temporary)
-    ioError(problem)
+    ioError(util.hostMessage(problem, temporary))
   end
 
-  -- `@dream/vfs` has no rename that refuses an existing target, so the check is made again just
+  -- `@dream/fs` has no rename that refuses an existing target, so the check is made again just
   -- before the rename instead.
   if overwrite ~= 'overwrite' and exists(target.path) then
     removeQuietly(temporary)
@@ -1338,9 +1326,8 @@ end
 type Inputs = { [string]: string }
 
 local function canonical(path: string): string?
-  -- host.canonicalize throws for a path that doesn't resolve.
-  local ok, result = pcall(host.canonicalize, path)
-  return if ok then result :: string else nil
+  local result = fs.canonicalize(path)
+  return result
 end
 
 --- Whether `path`, in the folder whose canonical path is `folder`, is a symbolic link: it
@@ -1383,9 +1370,8 @@ end
 type Stat = { isDir: boolean, isFile: boolean, size: number }
 
 local function stat(path: string): Stat
-  -- host.stat throws for a path it can't ask about.
-  local ok, result = pcall(host.stat, path)
-  if not ok then ioError(result) end
+  local result, message = fs.stat(path)
+  if message then ioError(util.hostMessage(message, path)) end
 
   if not result then ioError 'No such file or directory (os error 2)' end
 
@@ -1397,16 +1383,27 @@ type Folder = { path: string, relative: string, real: string? }
 --- Every file below `folder`, depth first in name order, as walking it finds them: a folder's
 --- files and folders are taken in turn, each folder's contents before the next name.
 local function walk(inputs: Inputs, folder: Folder, ancestors: { Folder }, followSymlinks: boolean)
-  -- host.list throws when a folder can't be read.
-  local ok, rows = pcall(host.list, folder.path, nil)
-  if not ok then archiveError(util.hostMessage(rows)) end
+  local names, message = fs.list(folder.path)
+  if not names then archiveError(util.hostMessage(message, folder.path)) end
 
-  for _, row in rows :: { { path: string, isDir: boolean } } do
-    local name = fileName(row.path) :: string
+  -- Gather child metadata before processing inputs, preserving traversal error precedence.
+  local found, problem = fs.walk(folder.path, { followLinks = true, metadata = true, maxDepth = 1 })
+  if problem then archiveError(util.walkMessage(problem)) end
+
+  local rows = assert(found)
+  local ordered: { number } = {}
+  for index in rows.paths do table.insert(ordered, index) end
+
+  table.sort(ordered, function(first: number, second: number): boolean
+    return rows.paths[first] < rows.paths[second]
+  end)
+
+  for _, index in ordered do
+    local name = rows.paths[index]
     local path = join(folder.path, name)
     rejectLink(path, folder.real, followSymlinks)
     local relative = if folder.relative == '' then name else `{folder.relative}/{name}`
-    if not row.isDir then
+    if rows.kinds[index] ~= 'dir' then
       insertInput(inputs, archiveKey(relative), path)
       continue
     end
@@ -1516,6 +1513,7 @@ local function writeArchive(output: string, build: () -> Builder)
   if not stat(folder).isDir then ioError 'Not a directory (os error 20)' end
 
   local temporary = temporaryBeside(folder, output)
+  -- build and Builder.writePath throw; remove the partial temporary, then rethrow every failure.
   local ok, problem = pcall(function()
     local builder = build()
     building(function() builder:writePath(temporary) end)
@@ -1603,16 +1601,16 @@ end
 --- A path as the crate compares two: canonical when it exists, else its canonical folder joined
 --- with its name.
 local function comparable(path: string): string
-  -- host.canonicalize throws with the operating system's reason a path doesn't resolve.
   if exists(path) then
-    local ok, result = pcall(host.canonicalize, path)
-    if not ok then ioError(result) end
+    local result, message = fs.canonicalize(path)
+    if not result then ioError(util.hostMessage(message, path)) end
 
     return result :: string
   end
 
-  local ok, folder = pcall(host.canonicalize, parentDirectory(path))
-  if not ok then ioError(folder) end
+  local parent = parentDirectory(path)
+  local folder, message = fs.canonicalize(parent)
+  if not folder then ioError(util.hostMessage(message, parent)) end
 
   local name = fileName(path)
   return if name then join(folder :: string, name :: string) else folder :: string

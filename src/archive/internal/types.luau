@@ -5,13 +5,7 @@
 
 export type Format = 'ba2' | 'bsaTes3' | 'bsaTes4'
 
---- A `@dream/vfs` reader over a host file: a position over the map it keeps.
-export type Reader = {
-  seek: (self: Reader, position: number) -> (),
-  readInto: (self: Reader, target: buffer, targetOffset: number?, length: number?) -> number,
-  read: (self: Reader, length: number) -> buffer,
-  size: (self: Reader) -> number,
-}
+export type Reader = dream_fs_Reader
 
 --- Where an archive's bytes are: the whole archive in a buffer, or a host file read on demand.
 --- `head` caches the leading bytes a file-backed archive's index was parsed from.

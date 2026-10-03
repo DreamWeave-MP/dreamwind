@@ -3,9 +3,9 @@
 -- SPDX-License-Identifier: MIT OR Apache-2.0
 -- What every format shares: the crate's error messages, argument checks, lookup normalization,
 -- 64-bit hashes as Luau integers, the codecs with the crate's size and trailing-data rules, and
--- host file access without the `dream.vfs: ` prefix the crate never had.
+-- host file access with the operating system's messages the crate reported.
 local bytes = require '@dream/bytes'
-local host = require('@dream/vfs').host
+local fs = require '@dream/fs'
 
 local function fail(message: string): never return error(message, 0) end
 
@@ -282,12 +282,31 @@ local function parentFolder(path: string): string
   return string.sub(path, 1, at - 1)
 end
 
---- Strips the `dream.vfs: ` the host functions put before an operating system's message.
-local function hostMessage(message: unknown): string
+--- Archive errors retain the OS reason, without the native operation and host path prefix.
+local function hostMessage(message: unknown, path: string?): string
   local text = tostring(message)
-  if string.sub(text, 1, 11) == 'dream.vfs: ' then return string.sub(text, 12) end
+  if path then
+    local prefix = string.match(text, '^dream%.fs%.[^:]+: ')
+    local context = if prefix then prefix .. lossy(path) .. ': ' else nil
+    if context and string.sub(text, 1, #context) == context then
+      return string.sub(text, #context + 1)
+    end
+  end
 
   return text
+end
+
+local function hostResult<Value>(value: Value?, message: string?, path: string): Value
+  if message then fail(hostMessage(message, path)) end
+
+  return assert(value)
+end
+
+--- Traversal errors identify the failing descendant, not necessarily the walk's root.
+local function walkMessage(message: string): string
+  return string.match(message, '(IO error for operation on .*)$')
+    or string.match(message, '(File system loop found: .*)$')
+    or message
 end
 
 --- A zlib stream that inflates to exactly `expected` bytes and ends where the input does, with
@@ -481,20 +500,14 @@ end
 
 --- A host file's bytes, with the host's message as the crate's.
 local function readHostFile(path: string): buffer
-  -- host.readFile throws for a missing or unreadable file.
-  local ok, result = pcall(host.readFile, path)
-  if not ok then return fail(hostMessage(result)) end
-
-  return result :: buffer
+  local data, message = fs.readFile(path)
+  return hostResult(data, message, path)
 end
 
 --- A host file's size in bytes, following links, as `fs::metadata` reads it.
 local function hostFileSize(path: string): number
-  -- host.stat throws for a path it can't ask about.
-  local ok, result = pcall(host.stat, path)
-  if not ok then return fail(hostMessage(result)) end
-
-  local info = result :: { size: number, isFile: boolean, isDir: boolean }?
+  local info, message = fs.stat(path)
+  if message then fail(hostMessage(message, path)) end
   if not info then return fail 'No such file or directory (os error 2)' end
 
   return info.size
@@ -502,9 +515,8 @@ end
 
 --- Writes `data` to `path` directly, as `File::create` and a write do.
 local function writeHostFile(path: string, data: buffer)
-  -- host.writeFile throws for a path it can't create or write.
-  local ok, result = pcall(host.writeFile, path, data, nil)
-  if not ok then fail(hostMessage(result)) end
+  local count, message = fs.writeFile(path, data)
+  hostResult(count, message, path)
 end
 
 return table.freeze {
@@ -537,6 +549,8 @@ return table.freeze {
   lastComponent = lastComponent,
   parentFolder = parentFolder,
   hostMessage = hostMessage,
+  hostResult = hostResult,
+  walkMessage = walkMessage,
   inflateExact = inflateExact,
   lz4BlockExact = lz4BlockExact,
   lz4FrameExact = lz4FrameExact,
