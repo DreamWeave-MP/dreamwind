@@ -1423,6 +1423,7 @@ return table.freeze {
   build = build,
   fromDirectories = fromDirectories,
   layerOf = layerOf,
+  stateOf = registry.stateOf,
   trees = trees,
   wrap = wrap,
 }
