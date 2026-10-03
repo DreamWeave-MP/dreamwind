@@ -36,6 +36,7 @@ tests = [
 "@dreamwind/tools/tes3conv" = "src/tools/tes3conv/init.luau"
 "@dreamwind/tools/merge-to-master" = "src/tools/merge-to-master/init.luau"
 "@dreamwind/tools/add-vanilla-refs" = "src/tools/add-vanilla-refs/init.luau"
+"@dreamwind/vfstool" = "src/tools/vfstool.luau"
 "@dreamwind/starwind" = "src/starwind/init.luau"
 "@dreamwind/nif" = "src/nif/init.luau"
 "@dreamwind/nif/assets" = "src/nif/internal/assets.luau"
@@ -93,7 +94,7 @@ exports = [
 [[layer]]
 id = "dream.vfs"
 requires = ["dream.bethesda-archives"]
-exports = ["@dreamwind/vfs"]
+exports = ["@dreamwind/vfs", "@dreamwind/vfstool"]
 
 [[layer]]
 id = "dream.starwind"
