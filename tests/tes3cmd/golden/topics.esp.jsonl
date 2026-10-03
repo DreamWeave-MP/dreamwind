@@ -1,0 +1,161 @@
+{"op":"lint","value":[{"check":"missingVersion","message":"TES3 description has no Version line","severity":"info"}]}
+{"op":"lint recommended","value":[{"check":"missingVersion","message":"TES3 description has no Version line","severity":"info"}]}
+{"op":"clean","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"clean evil gmsts","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"stats","value":[2,{"DIAL":1,"TES3":1},{"DIAL.NAME":1,"TES3.HEDR":1},[]]}
+{"op":"display 0","value":{"author":"test","description":"synthetic","fileType":"Esp","numObjects":1,"record":0,"type":"Header","version":1.2999999523162842}}
+{"op":"display 1","value":{"dialogueType":"Topic","id":"to rescue me","record":1,"type":"Dialogue"}}
+{"op":"validate raw","value":{"checks":["structure"],"diagnostics":[]}}
+{"op":"validate tes3","value":{"checks":["structure","morrowindFormat"],"diagnostics":[]}}
+{"op":"validate omwaddon","value":{"checks":["structure","openmwRecordTypes","dialogueOrder","recordContents"],"diagnostics":[]}}
+{"op":"ids 1","value":["to rescue me"]}
+{"op":"dump 1","value":[{"author":"test","description":"synthetic","fileType":"Esp","numObjects":1,"record":0,"type":"Header","version":1.2999999523162842},{"dialogueType":"Topic","id":"to rescue me","record":1,"type":"Dialogue"}]}
+{"op":"layout 1","value":[{"flags":0,"index":0,"range":{"end":324,"start":0},"size":308,"subrecords":[{"index":0,"range":{"end":324,"start":16},"size":300,"type":"HEDR"}],"type":"TES3"},{"flags":0,"id":"to rescue me","index":1,"range":{"end":360,"start":324},"size":20,"subrecords":[{"field":"id","index":0,"range":{"end":360,"start":340},"size":12,"type":"NAME","value":"to rescue me"}],"type":"DIAL"}]}
+{"op":"extract 1","value":"9dca4996947e4c49521b771d05cb4740"}
+{"op":"delete 1","value":[1,0,0,"69375cc52fbc44bef2c609b23f9dcb22"]}
+{"op":"replace 1 1","value":[1,1,"c12914ab101d56451f3457ecc061396e"]}
+{"op":"replace 1 2","value":[1,1,"a1b5591228ab3b03e3bb5d1b9705d867"]}
+{"op":"replace 1 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 1 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"ids 2","value":[]}
+{"op":"dump 2","value":[]}
+{"op":"layout 2","value":[]}
+{"op":"extract 2","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 2","value":[0,0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 2 1","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 2 2","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 2 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 2 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"ids 3","value":[]}
+{"op":"dump 3","value":[]}
+{"op":"layout 3","value":[]}
+{"op":"extract 3","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 3","value":[0,0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 3 1","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 3 2","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 3 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 3 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"ids 4","value":[]}
+{"op":"dump 4","value":[]}
+{"op":"layout 4","value":[]}
+{"op":"extract 4","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 4","value":[0,0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 4 1","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 4 2","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 4 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 4 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"ids 5","value":[]}
+{"op":"dump 5","value":[]}
+{"op":"layout 5","value":[]}
+{"op":"extract 5","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 5","value":[0,0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 5 1","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 5 2","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 5 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 5 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"ids 6","value":[]}
+{"op":"dump 6","value":[]}
+{"op":"layout 6","value":[]}
+{"op":"extract 6","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 6","value":[0,0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 6 1","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 6 2","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 6 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 6 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"ids 7","value":[]}
+{"op":"dump 7","value":[]}
+{"op":"layout 7","value":[]}
+{"op":"extract 7","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 7","value":[0,0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 7 1","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 7 2","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 7 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 7 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"ids 8","value":[]}
+{"op":"dump 8","value":[]}
+{"op":"layout 8","value":[]}
+{"op":"extract 8","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 8","value":[0,0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 8 1","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 8 2","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 8 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 8 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"ids 9","value":[]}
+{"op":"dump 9","value":[]}
+{"op":"layout 9","value":[]}
+{"op":"extract 9","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 9","value":[0,0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 9 1","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 9 2","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 9 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 9 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"ids 10","value":["to rescue me"]}
+{"op":"dump 10","value":[{"dialogueType":"Topic","id":"to rescue me","record":1,"type":"Dialogue"}]}
+{"op":"layout 10","value":[{"flags":0,"id":"to rescue me","index":1,"range":{"end":360,"start":324},"size":20,"subrecords":[{"field":"id","index":0,"range":{"end":360,"start":340},"size":12,"type":"NAME","value":"to rescue me"}],"type":"DIAL"}]}
+{"op":"extract 10","value":"9dca4996947e4c49521b771d05cb4740"}
+{"op":"delete 10","value":[0,1,0,"7e2c8bfbdb7febb9c1ecc2557fb9696e"]}
+{"op":"replace 10 1","value":[1,1,"c12914ab101d56451f3457ecc061396e"]}
+{"op":"replace 10 2","value":[1,1,"a1b5591228ab3b03e3bb5d1b9705d867"]}
+{"op":"replace 10 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 10 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"ids 11","value":["to rescue me"]}
+{"op":"dump 11","value":[{"author":"test","description":"synthetic","fileType":"Esp","numObjects":1,"record":0,"type":"Header","version":1.2999999523162842},{"dialogueType":"Topic","id":"to rescue me","record":1,"type":"Dialogue"}]}
+{"op":"layout 11","value":[{"flags":0,"index":0,"range":{"end":324,"start":0},"size":308,"subrecords":[{"index":0,"range":{"end":324,"start":16},"size":300,"type":"HEDR"}],"type":"TES3"},{"flags":0,"id":"to rescue me","index":1,"range":{"end":360,"start":324},"size":20,"subrecords":[{"field":"id","index":0,"range":{"end":360,"start":340},"size":12,"type":"NAME","value":"to rescue me"}],"type":"DIAL"}]}
+{"op":"extract 11","value":"9dca4996947e4c49521b771d05cb4740"}
+{"op":"delete 11","value":[0,2,0,"d34a340677b79507db565982329d5416"]}
+{"op":"replace 11 1","value":[1,1,"c12914ab101d56451f3457ecc061396e"]}
+{"op":"replace 11 2","value":[1,1,"a1b5591228ab3b03e3bb5d1b9705d867"]}
+{"op":"replace 11 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 11 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"ids 12","value":[]}
+{"op":"dump 12","value":[]}
+{"op":"layout 12","value":[]}
+{"op":"extract 12","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 12","value":[0,0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 12 1","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 12 2","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 12 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 12 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"ids 13","value":[]}
+{"op":"dump 13","value":[]}
+{"op":"layout 13","value":[]}
+{"op":"extract 13","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 13","value":[0,0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"error":"instance filters can't select fields to modify","op":"replace 13 1"}
+{"error":"instance filters can't select fields to modify","op":"replace 13 2"}
+{"error":"instance filters can't select fields to modify","op":"replace 13 3"}
+{"error":"instance filters can't select fields to modify","op":"replace 13 4"}
+{"op":"ids 14","value":[]}
+{"op":"dump 14","value":[]}
+{"op":"layout 14","value":[]}
+{"op":"extract 14","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 14","value":[0,0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"error":"instance filters can't select fields to modify","op":"replace 14 1"}
+{"error":"instance filters can't select fields to modify","op":"replace 14 2"}
+{"error":"instance filters can't select fields to modify","op":"replace 14 3"}
+{"error":"instance filters can't select fields to modify","op":"replace 14 4"}
+{"op":"ids 15","value":[]}
+{"op":"dump 15","value":[]}
+{"op":"layout 15","value":[]}
+{"op":"extract 15","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 15","value":[0,0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 15 1","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 15 2","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 15 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 15 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"ids 16","value":[]}
+{"op":"dump 16","value":[]}
+{"op":"layout 16","value":[]}
+{"op":"extract 16","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 16","value":[0,0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 16 1","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 16 2","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 16 3","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"replace 16 4","value":[0,0,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"header","value":[true,"1b65ecc6a8ab9ad1ad1caac9c9debccf"]}
+{"op":"record count","value":[false,"9dca4996947e4c49521b771d05cb4740"]}
+{"op":"common","value":[{"id":"to rescue me","type":"DIAL"}]}
+{"op":"diff","value":{"changed":[],"leftOnly":[{"id":"to rescue me","type":"DIAL"}],"rightOnly":[{"id":"t0 rescue me","type":"DIAL"}]}}
+{"op":"diff equal","value":{"changed":[],"equal":[],"leftOnly":[{"id":"to rescue me","type":"DIAL"}],"rightOnly":[{"id":"t0 rescue me","type":"DIAL"}]}}
+{"op":"overrides","value":[{"id":"to rescue me","identical":[{"plugin":3,"sameAs":1}],"overridden":[],"plugins":[1,3],"type":"DIAL"}]}
+{"op":"overrides ignore","value":[{"id":"to rescue me","identical":[{"plugin":3,"sameAs":1}],"overridden":[],"plugins":[1,3],"type":"DIAL"}]}

@@ -1,0 +1,201 @@
+{"header":{"byteSoup":{"count":400,"seed":2441361426},"generatedInis":{"count":120,"seed":24301},"cfgLines":{"count":200,"seed":77}}}
+{"input":"f5f1834f7289e34e","result":"content=Base.esm\ncontent=Base.esm\ndata=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"6d69b1beb4c7f428","result":"data=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"ff80074ca2901d6b","result":"data=\"quoted path\"\nencoding=win1250\n"}
+{"input":"a1450c5b332f7680","result":"content=Base.esm\ncontent=Base.esm\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"bef8926688423232","result":"content=Base.esm\ndata=\"quoted path\"\ndata=Configured\nencoding=win1250\nencoding=win1250\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"8273ab4202069965","result":"encoding=win1250\nkey=value # kept\n"}
+{"input":"59d3e45e851aa2fc","result":"content=Base.esm\n"}
+{"input":"8828317489c12b71","result":"data=Configured\ndata=\"quoted path\"\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"154e6ca5bb96914c","result":"encoding=win1250\n"}
+{"input":"3e3a204da882819b","result":"content=Base.esm\ndata=Configured\ndata=\"quoted path\"\n"}
+{"input":"1cc151dc9ed0e37a","result":"key=value # kept\n"}
+{"input":"84dd2a8c87c63e4b","result":"content=Base.esm\ndata=Configured\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"36d15cd1ad75b368","result":"data=Configured\nkey=value # kept\n"}
+{"input":"20dc561af90c979b","result":"data=\"quoted path\"\ndata=\"quoted path\"\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"dc6a38d5125b891d","result":"encoding=win1250\nencoding=win1250\nencoding=win1250\nkey=value # kept\nkey=value # kept\nkey=value # kept\n"}
+{"input":"63436f29c9a63eb2","result":"data=\"quoted path\"\ndata=Configured\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"495ff8b4207ae72d","result":"content=Base.esm\ndata=\"quoted path\"\ndata=Configured\ndata=\"quoted path\"\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"f448e7afec944956","result":"content=Base.esm\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"37d260cae413026f","result":"data=Configured\ndata=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"dc594237114028b0","result":"encoding=win1250\nencoding=win1250\n"}
+{"input":"67150115cb1b2e88","result":"data=\"quoted path\"\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"2598d6bc643fe320","result":"content=Base.esm\ncontent=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"3e3a204da882819b","result":"content=Base.esm\ndata=Configured\ndata=\"quoted path\"\n"}
+{"input":"77c15e7c12a28d0e","result":"content=Base.esm\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"59d3e45e851aa2fc","result":"content=Base.esm\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"d2657e8f0d1a2dc0","result":"data=Configured\ndata=\"quoted path\"\ndata=\"quoted path\"\nkey=value # kept\n"}
+{"input":"138d419f84bd38a0","result":"data=Configured\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"a05f478e447df4fc","result":"data=\"quoted path\"\n"}
+{"input":"bae3bf58db21b81f","result":"fallback=Weather_Sunrise_Time,6\n"}
+{"input":"bae3bf58db21b81f","result":"fallback=Weather_Sunrise_Time,6\n"}
+{"input":"4b4d9f23259b187a","result":"encoding=win1250\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"45255df9209b441d","result":"content=Base.esm\ndata=Configured\nencoding=win1250\nencoding=win1250\n"}
+{"input":"923839e93d4a6a7f","result":"content=Base.esm\ndata=Configured\nkey=value # kept\nkey=value # kept\n"}
+{"input":"54f28211ce863af0","result":"content=Base.esm\ncontent=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\nencoding=win1250\nencoding=win1250\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"003578357b22c707","result":"content=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\ndata=\"quoted path\"\ndata=Configured\ndata=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"0d2e7c83de200411","result":"content=Base.esm\ndata=Configured\ndata=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"22530201d26899bb","result":"content=Base.esm\ndata=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"ae1cee96e5c67e32","result":"data=Configured\ndata=Configured\nkey=value # kept\n"}
+{"input":"8273ab4202069965","result":"encoding=win1250\nkey=value # kept\n"}
+{"input":"559cf80fba1ea60f","result":"data=Configured\n"}
+{"input":"4f15ab493a05966a","result":"content=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\nencoding=win1250\nencoding=win1250\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"b12bd741e3ec301f","result":"content=Base.esm\ndata=\"quoted path\"\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"ff14732923d268c9","result":"data=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"4ff3562484dfd19d","result":"content=Base.esm\ndata=Configured\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"09cb2ccfd8290ae6","result":"content=Base.esm\nencoding=win1250\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"56c4beaf72e2e65d","result":"data=\"quoted path\"\ndata=\"quoted path\"\n"}
+{"input":"6c4434b9056471aa","result":"data=\"quoted path\"\ndata=\"quoted path\"\ndata=Configured\nencoding=win1250\nencoding=win1250\n"}
+{"input":"f478220dae7f7b94","result":"data=Configured\ndata=\"quoted path\"\ndata=Configured\ndata=Configured\nencoding=win1250\nkey=value # kept\n"}
+{"input":"d579fdd3414b2c68","result":"content=Base.esm\nencoding=win1250\nkey=value # kept\n"}
+{"input":"195da62054f6ac8a","result":"data=Configured\ndata=Configured\ndata=Configured\ndata=\"quoted path\"\ndata=\"quoted path\"\nencoding=win1250\n"}
+{"input":"f6f27af40c63d688","result":"content=Base.esm\ndata=Configured\ndata=Configured\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"a1f7e051584429a4","result":"content=Base.esm\ndata=\"quoted path\"\ndata=\"quoted path\"\ndata=\"quoted path\"\ndata=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"3e16524fb374e1ef","result":"content=Base.esm\ndata=\"quoted path\"\nencoding=win1250\nkey=value # kept\nkey=value # kept\n"}
+{"input":"b36e33d828ca60cb","result":"content=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\ndata=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"5b9f798102211e61","result":"content=Base.esm\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"6bed527697f9caa0","result":"content=Base.esm\ncontent=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\nencoding=win1250\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"f6e16630e9ae2c9f","result":"encoding=win1250\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"117915198caba84b","result":"content=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\ndata=Configured\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"a05f478e447df4fc","result":"data=\"quoted path\"\n"}
+{"input":"aa78c8ac54dd4368","result":"content=Base.esm\ndata=\"quoted path\"\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"154e6ca5bb96914c","result":"encoding=win1250\n"}
+{"input":"f448e7afec944956","result":"content=Base.esm\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"559cf80fba1ea60f","result":"data=Configured\n"}
+{"input":"401a0864789058ad","result":"data=Configured\nencoding=win1250\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"f3ff5d102f369565","result":"content=Base.esm\ndata=Configured\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"01ad72faf0b1916b","result":"data=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"f448e7afec944956","result":"content=Base.esm\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"6985115b8ac9148d","result":"content=Base.esm\nkey=value # kept\n"}
+{"input":"a05f478e447df4fc","result":"data=\"quoted path\"\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"f180d2b661aa8e46","result":"data=Configured\ndata=Configured\nkey=value # kept\nkey=value # kept\n"}
+{"input":"b508216ad21456cd","result":"data=Configured\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"a05f478e447df4fc","result":"data=\"quoted path\"\n"}
+{"input":"98b0ef0f10906896","result":"content=Base.esm\ndata=Configured\n"}
+{"input":"29fbac0960bf20aa","result":"content=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"139b88dae84d5d47","result":"data=Configured\ndata=\"quoted path\"\ndata=\"quoted path\"\ndata=\"quoted path\"\nkey=value # kept\n"}
+{"input":"59b35ec918fdefe7","result":"content=Base.esm\ncontent=Base.esm\ndata=Configured\nencoding=win1250\n"}
+{"input":"d7a2a6980b8be00c","result":"fallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"559cf80fba1ea60f","result":"data=Configured\n"}
+{"input":"f448e7afec944956","result":"content=Base.esm\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"d3ba75c33ebdefe1","result":"data=Configured\nencoding=win1250\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"18e3e1e0dad49b02","result":"data=Configured\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"266fd3f3fa260489","result":"content=Base.esm\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"b835e6df40ecfa1b","result":"content=Base.esm\ndata=\"quoted path\"\nencoding=win1250\nkey=value # kept\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"a440a04fbab4c9e9","result":"content=Base.esm\ndata=Configured\nencoding=win1250\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"7384109dd2dc5ede","result":"content=Base.esm\ncontent=Base.esm\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"3c2a21c3e91df9ea","result":"data=Configured\ndata=\"quoted path\"\n"}
+{"input":"6e77b56e0f4644b5","result":"data=Configured\ndata=Configured\ndata=Configured\ndata=\"quoted path\"\nkey=value # kept\nkey=value # kept\n"}
+{"input":"36ccb1c70e967b72","result":"data=\"quoted path\"\ndata=Configured\ndata=\"quoted path\"\ndata=Configured\nencoding=win1250\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"d61e61a9e6c11e12","result":"encoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"5bcce3725996974d","result":"data=\"quoted path\"\nencoding=win1250\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"2f12678ce8caea22","result":"content=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\nkey=value # kept\n"}
+{"input":"a0c785919b965861","result":"content=Base.esm\ndata=Configured\ndata=Configured\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"f3f95444bfb79ea3","result":"data=\"quoted path\"\nencoding=win1250\nencoding=win1250\nencoding=win1250\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"8fbefc9f90df1058","result":"encoding=win1250\nencoding=win1250\nencoding=win1250\nencoding=win1250\n"}
+{"input":"a05f478e447df4fc","result":"data=\"quoted path\"\n"}
+{"input":"e47d58e0be305270","result":"data=\"quoted path\"\ndata=Configured\ndata=Configured\nencoding=win1250\nencoding=win1250\nencoding=win1250\nkey=value # kept\nkey=value # kept\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"16f6ca09e80fba81","result":"content=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"2a5a73a7b8a3e805","result":"data=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"d01d34f535de5362","result":"content=Base.esm\ncontent=Base.esm\ndata=Configured\ndata=Configured\nencoding=win1250\nkey=value # kept\n"}
+{"input":"11b55aa931e78aa7","result":"content=Base.esm\ndata=Configured\ndata=\"quoted path\"\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"6985115b8ac9148d","result":"content=Base.esm\nkey=value # kept\n"}
+{"input":"bae3bf58db21b81f","result":"fallback=Weather_Sunrise_Time,6\n"}
+{"input":"f638193b6400fa8c","result":"data=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"63436f29c9a63eb2","result":"data=\"quoted path\"\ndata=Configured\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"559cf80fba1ea60f","result":"data=Configured\n"}
+{"input":"436d0c9bf2345521","result":"content=Base.esm\nencoding=win1250\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"e74d11d1d0871a03","result":"content=Base.esm\ndata=\"quoted path\"\ndata=Configured\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"a70bd5283566c28a","result":"content=Base.esm\ncontent=Base.esm\ndata=Configured\ndata=Configured\ndata=\"quoted path\"\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"4685eb69ae4329f2","result":"content=Base.esm\ncontent=Base.esm\ndata=Configured\nencoding=win1250\nkey=value # kept\n"}
+{"input":"154e6ca5bb96914c","result":"encoding=win1250\n"}
+{"input":"0178d0b853afc855","result":"content=Base.esm\ncontent=Base.esm\ndata=Configured\nkey=value # kept\nkey=value # kept\nkey=value # kept\n"}
+{"input":"bfef3aed1de451ce","result":"content=Base.esm\ncontent=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"bc82e566a2610c38","result":"data=Configured\ndata=Configured\ndata=\"quoted path\"\nencoding=win1250\nencoding=win1250\nkey=value # kept\n"}
+{"input":"b639963baf4db9b7","result":"data=\"quoted path\"\ndata=Configured\ndata=Configured\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\nkey=value # kept\n"}
+{"input":"313aed936e628114","result":"content=Base.esm\ndata=\"quoted path\"\ndata=Configured\nencoding=win1250\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"3e3a204da882819b","result":"content=Base.esm\ndata=Configured\ndata=\"quoted path\"\n"}
+{"input":"6aafaace870f0613","result":"content=Base.esm\ndata=Configured\nencoding=win1250\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"77b2edaf7f0626bb","result":"content=Base.esm\ndata=Configured\ndata=Configured\nencoding=win1250\n"}
+{"input":"3e3a204da882819b","result":"content=Base.esm\ndata=Configured\ndata=\"quoted path\"\n"}
+{"input":"cf2308e654f8859d","result":"content=Base.esm\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"1e7f1aa82b64a810","result":"content=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"ff80074ca2901d6b","result":"data=\"quoted path\"\nencoding=win1250\n"}
+{"input":"6985115b8ac9148d","result":"content=Base.esm\nkey=value # kept\n"}
+{"input":"1cc151dc9ed0e37a","result":"key=value # kept\n"}
+{"input":"0652f811ed089ab9","result":"content=Base.esm\ndata=Configured\ndata=Configured\ndata=Configured\ndata=Configured\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"bae3bf58db21b81f","result":"fallback=Weather_Sunrise_Time,6\n"}
+{"input":"e2f0837a291e8f28","result":"data=\"quoted path\"\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"b9e0db8416b755f8","result":"content=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\ndata=\"quoted path\"\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"d59c6b1071bee37a","result":"content=Base.esm\ncontent=Base.esm\ndata=Configured\n"}
+{"input":"f17a3ddc27e5bb14","result":"content=Base.esm\ndata=Configured\ndata=\"quoted path\"\nencoding=win1250\nencoding=win1250\n"}
+{"input":"12949ded461661c7","result":"content=Base.esm\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"13e34239d29b780d","result":"encoding=win1250\nencoding=win1250\nkey=value # kept\n"}
+{"input":"272edb59cbf5ed1f","result":"content=Base.esm\ncontent=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"c36468be9c797d16","result":"data=Configured\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"26515f085a60b2de","result":"data=\"quoted path\"\ndata=\"quoted path\"\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"9773b0932fda4803","result":"content=Base.esm\ndata=Configured\ndata=Configured\ndata=\"quoted path\"\ndata=Configured\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"7d1a1c8383651b0f","result":"data=Configured\nencoding=win1250\nkey=value # kept\nkey=value # kept\nkey=value # kept\n"}
+{"input":"cad6c5557eef4fdd","result":"data=Configured\ndata=\"quoted path\"\ndata=Configured\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"73e1b7e454b7191c","result":"data=\"quoted path\"\ndata=\"quoted path\"\ndata=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"bae3bf58db21b81f","result":"fallback=Weather_Sunrise_Time,6\n"}
+{"input":"647aeae4174b5e05","result":"content=Base.esm\ncontent=Base.esm\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"ff7077f1ff140240","result":"data=Configured\ndata=\"quoted path\"\ndata=\"quoted path\"\nencoding=win1250\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"3b8a1cb743190405","result":"data=Configured\ndata=\"quoted path\"\nkey=value # kept\nkey=value # kept\n"}
+{"input":"8310acee6f94d50e","result":"content=Base.esm\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"8b73d83e4c5dba8d","result":"data=\"quoted path\"\nkey=value # kept\n"}
+{"input":"b00cf47d3228a7f0","result":"content=Base.esm\ncontent=Base.esm\ndata=Configured\ndata=Configured\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"b9e56d452a2dfd0f","result":"content=Base.esm\ncontent=Base.esm\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"aa5c32cd69b0e5fc","result":"content=Base.esm\ncontent=Base.esm\ncontent=Base.esm\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"670414f0a3160ef4","result":"content=Base.esm\ndata=Configured\ndata=Configured\ndata=\"quoted path\"\nkey=value # kept\nkey=value # kept\nkey=value # kept\nkey=value # kept\n"}
+{"input":"2d32689fdd2c57cb","result":"data=\"quoted path\"\ndata=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"13e34239d29b780d","result":"encoding=win1250\nencoding=win1250\nkey=value # kept\n"}
+{"input":"559cf80fba1ea60f","result":"data=Configured\n"}
+{"input":"ec5c8d48b5c9bbd4","result":"content=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\nencoding=win1250\n"}
+{"input":"5373cfdf744fe2b7","result":"fallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"3f19eda57a9e5549","result":"content=Base.esm\ncontent=Base.esm\ncontent=Base.esm\ncontent=Base.esm\ndata=Configured\ndata=Configured\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"59d3e45e851aa2fc","result":"content=Base.esm\n"}
+{"input":"5373cfdf744fe2b7","result":"fallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"0fefaddb838ae02e","result":"data=\"quoted path\"\ndata=\"quoted path\"\ndata=Configured\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"3451daabc1dcdfb3","result":"content=Base.esm\ndata=Configured\ndata=\"quoted path\"\ndata=Configured\ndata=Configured\nencoding=win1250\nkey=value # kept\n"}
+{"input":"f3f81d12e44813aa","result":"content=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\ndata=Configured\ndata=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"59d3e45e851aa2fc","result":"content=Base.esm\n"}
+{"input":"98b0ef0f10906896","result":"content=Base.esm\ndata=Configured\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"f8e8d4f3257e1099","result":"content=Base.esm\ncontent=Base.esm\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"4b4d9f23259b187a","result":"encoding=win1250\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"4506efebc970c624","result":"content=Base.esm\ncontent=Base.esm\ndata=Configured\ndata=\"quoted path\"\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\n"}
+{"input":"0f4705cf63384d30","result":"fallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"08f44b07b5901a25","result":""}
+{"input":"1ec5e3e64bfab81a","result":"content=Base.esm\ndata=Configured\nencoding=win1250\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\nkey=value # kept\n"}
+{"input":"a05f478e447df4fc","result":"data=\"quoted path\"\n"}
+{"input":"d25987cb1cb9e934","result":"content=Base.esm\nencoding=win1250\nencoding=win1250\nkey=value # kept\n"}
+{"input":"1a735ce55c1dc722","result":"content=Base.esm\ndata=\"quoted path\"\nencoding=win1250\nencoding=win1250\n"}
+{"input":"2fc8736a73a1892d","result":"content=Base.esm\ndata=\"quoted path\"\ndata=\"quoted path\"\nfallback=Weather_Sunrise_Time,6\nfallback=Weather_Sunrise_Time,6\nkey=value # kept\n"}
+{"input":"3c2a21c3e91df9ea","result":"data=Configured\ndata=\"quoted path\"\n"}

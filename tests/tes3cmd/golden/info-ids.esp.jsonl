@@ -1,0 +1,162 @@
+{"op":"lint","value":[{"check":"missingVersion","message":"TES3 description has no Version line","severity":"info"},{"check":"modifiedInfoId","message":"INFO 222 at record 2 duplicates text from 111","severity":"warning"}]}
+{"op":"lint recommended","value":[{"check":"missingVersion","message":"TES3 description has no Version line","severity":"info"},{"check":"modifiedInfoId","message":"INFO 222 at record 2 duplicates text from 111","severity":"warning"}]}
+{"op":"clean","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"clean evil gmsts","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"stats","value":[3,{"INFO":2,"TES3":1},{"INFO.INAM":2,"INFO.NAME":2,"TES3.HEDR":1},[]]}
+{"op":"display 0","value":{"author":"test","description":"synthetic","fileType":"Esp","numObjects":2,"record":0,"type":"Header","version":1.2999999523162842}}
+{"op":"display 1","value":{"data":{"dialogueType":"Topic","disposition":0,"playerRank":0,"speakerRank":0,"speakerSex":"Any"},"id":"111","record":1,"text":"Same\nmulti-line response","type":"DialogueInfo"}}
+{"op":"display 2","value":{"data":{"dialogueType":"Topic","disposition":0,"playerRank":0,"speakerRank":0,"speakerSex":"Any"},"id":"222","record":2,"text":"Same\nmulti-line response","type":"DialogueInfo"}}
+{"op":"validate raw","value":{"checks":["structure"],"diagnostics":[]}}
+{"op":"validate tes3","value":{"checks":["structure","morrowindFormat"],"diagnostics":[]}}
+{"op":"validate omwaddon","value":{"checks":["structure","openmwRecordTypes","dialogueOrder","recordContents"],"diagnostics":[{"message":"INFO has no DIAL before it; OpenMW skips it (\"info record without dialog\")","offset":324},{"message":"INFO has no DIAL before it; OpenMW skips it (\"info record without dialog\")","offset":383}]}}
+{"op":"ids 1","value":["111","222"]}
+{"op":"dump 1","value":[{"author":"test","description":"synthetic","fileType":"Esp","numObjects":2,"record":0,"type":"Header","version":1.2999999523162842},{"data":{"dialogueType":"Topic","disposition":0,"playerRank":0,"speakerRank":0,"speakerSex":"Any"},"id":"111","record":1,"text":"Same\nmulti-line response","type":"DialogueInfo"},{"data":{"dialogueType":"Topic","disposition":0,"playerRank":0,"speakerRank":0,"speakerSex":"Any"},"id":"222","record":2,"text":"Same\nmulti-line response","type":"DialogueInfo"}]}
+{"op":"layout 1","value":[{"flags":0,"index":0,"range":{"end":324,"start":0},"size":308,"subrecords":[{"index":0,"range":{"end":324,"start":16},"size":300,"type":"HEDR"}],"type":"TES3"},{"flags":0,"id":"111","index":1,"range":{"end":383,"start":324},"size":43,"subrecords":[{"field":"info-id","index":0,"range":{"end":351,"start":340},"size":3,"type":"INAM","value":"111"},{"field":"text","index":1,"range":{"end":383,"start":351},"size":24,"type":"NAME","value":"Same\nmulti-line response"}],"type":"INFO"},{"flags":0,"id":"222","index":2,"range":{"end":442,"start":383},"size":43,"subrecords":[{"field":"info-id","index":0,"range":{"end":410,"start":399},"size":3,"type":"INAM","value":"222"},{"field":"text","index":1,"range":{"end":442,"start":410},"size":24,"type":"NAME","value":"Same\nmulti-line response"}],"type":"INFO"}]}
+{"op":"extract 1","value":"3509731b9e136327edd9e019f3ff8551"}
+{"op":"delete 1","value":[2,0,0,"69375cc52fbc44bef2c609b23f9dcb22"]}
+{"op":"replace 1 1","value":[2,4,"d0e9cad4e94b2d71736c200d17b8a71c"]}
+{"op":"replace 1 2","value":[2,2,"db2b9bb51b3f0355fa0668ab5b234d8b"]}
+{"op":"replace 1 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 1 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"ids 2","value":[]}
+{"op":"dump 2","value":[]}
+{"op":"layout 2","value":[]}
+{"op":"extract 2","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 2","value":[0,0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 2 1","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 2 2","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 2 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 2 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"ids 3","value":[]}
+{"op":"dump 3","value":[]}
+{"op":"layout 3","value":[]}
+{"op":"extract 3","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 3","value":[0,0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 3 1","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 3 2","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 3 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 3 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"ids 4","value":[]}
+{"op":"dump 4","value":[]}
+{"op":"layout 4","value":[]}
+{"op":"extract 4","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 4","value":[0,0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 4 1","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 4 2","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 4 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 4 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"ids 5","value":[]}
+{"op":"dump 5","value":[]}
+{"op":"layout 5","value":[]}
+{"op":"extract 5","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 5","value":[0,0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 5 1","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 5 2","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 5 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 5 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"ids 6","value":["222"]}
+{"op":"dump 6","value":[{"data":{"dialogueType":"Topic","disposition":0,"playerRank":0,"speakerRank":0,"speakerSex":"Any"},"id":"222","record":2,"text":"Same\nmulti-line response","type":"DialogueInfo"}]}
+{"op":"layout 6","value":[{"flags":0,"id":"222","index":2,"range":{"end":442,"start":383},"size":43,"subrecords":[{"field":"info-id","index":0,"range":{"end":410,"start":399},"size":3,"type":"INAM","value":"222"},{"field":"text","index":1,"range":{"end":442,"start":410},"size":24,"type":"NAME","value":"Same\nmulti-line response"}],"type":"INFO"}]}
+{"op":"extract 6","value":"5c22074d8bb8fb32bc64a5344c412ecb"}
+{"op":"delete 6","value":[1,0,0,"64a47a3161565c04a75c5aa9f6d53d93"]}
+{"op":"replace 6 1","value":[1,2,"e1c83e5dda31ea9e13786bdd98b19b57"]}
+{"op":"replace 6 2","value":[1,1,"20ab9915a8a5d8d0c6a64b1750c8d297"]}
+{"op":"replace 6 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 6 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"ids 7","value":[]}
+{"op":"dump 7","value":[]}
+{"op":"layout 7","value":[]}
+{"op":"extract 7","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 7","value":[0,0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 7 1","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 7 2","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 7 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 7 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"ids 8","value":[]}
+{"op":"dump 8","value":[]}
+{"op":"layout 8","value":[]}
+{"op":"extract 8","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 8","value":[0,0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 8 1","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 8 2","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 8 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 8 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"ids 9","value":[]}
+{"op":"dump 9","value":[]}
+{"op":"layout 9","value":[]}
+{"op":"extract 9","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 9","value":[0,0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 9 1","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 9 2","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 9 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 9 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"ids 10","value":["111","222"]}
+{"op":"dump 10","value":[{"data":{"dialogueType":"Topic","disposition":0,"playerRank":0,"speakerRank":0,"speakerSex":"Any"},"id":"111","record":1,"text":"Same\nmulti-line response","type":"DialogueInfo"},{"data":{"dialogueType":"Topic","disposition":0,"playerRank":0,"speakerRank":0,"speakerSex":"Any"},"id":"222","record":2,"text":"Same\nmulti-line response","type":"DialogueInfo"}]}
+{"op":"layout 10","value":[{"flags":0,"id":"111","index":1,"range":{"end":383,"start":324},"size":43,"subrecords":[{"field":"info-id","index":0,"range":{"end":351,"start":340},"size":3,"type":"INAM","value":"111"}],"type":"INFO"},{"flags":0,"id":"222","index":2,"range":{"end":442,"start":383},"size":43,"subrecords":[{"field":"info-id","index":0,"range":{"end":410,"start":399},"size":3,"type":"INAM","value":"222"}],"type":"INFO"}]}
+{"op":"extract 10","value":"3509731b9e136327edd9e019f3ff8551"}
+{"op":"delete 10","value":[0,2,0,"375275d3f30a4d31f6b1cc04b3116944"]}
+{"op":"replace 10 1","value":[2,2,"54f0d5b90eea58094bc878ca684786fc"]}
+{"op":"replace 10 2","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 10 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 10 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"ids 11","value":["111","222"]}
+{"op":"dump 11","value":[{"author":"test","description":"synthetic","fileType":"Esp","numObjects":2,"record":0,"type":"Header","version":1.2999999523162842},{"data":{"dialogueType":"Topic","disposition":0,"playerRank":0,"speakerRank":0,"speakerSex":"Any"},"id":"111","record":1,"text":"Same\nmulti-line response","type":"DialogueInfo"},{"data":{"dialogueType":"Topic","disposition":0,"playerRank":0,"speakerRank":0,"speakerSex":"Any"},"id":"222","record":2,"text":"Same\nmulti-line response","type":"DialogueInfo"}]}
+{"op":"layout 11","value":[{"flags":0,"index":0,"range":{"end":324,"start":0},"size":308,"subrecords":[{"index":0,"range":{"end":324,"start":16},"size":300,"type":"HEDR"}],"type":"TES3"},{"flags":0,"id":"111","index":1,"range":{"end":383,"start":324},"size":43,"subrecords":[{"field":"info-id","index":0,"range":{"end":351,"start":340},"size":3,"type":"INAM","value":"111"},{"field":"text","index":1,"range":{"end":383,"start":351},"size":24,"type":"NAME","value":"Same\nmulti-line response"}],"type":"INFO"},{"flags":0,"id":"222","index":2,"range":{"end":442,"start":383},"size":43,"subrecords":[{"field":"info-id","index":0,"range":{"end":410,"start":399},"size":3,"type":"INAM","value":"222"},{"field":"text","index":1,"range":{"end":442,"start":410},"size":24,"type":"NAME","value":"Same\nmulti-line response"}],"type":"INFO"}]}
+{"op":"extract 11","value":"3509731b9e136327edd9e019f3ff8551"}
+{"op":"delete 11","value":[0,5,0,"e7b21d810076cec7d4d65e80c7405be3"]}
+{"op":"replace 11 1","value":[2,4,"d0e9cad4e94b2d71736c200d17b8a71c"]}
+{"op":"replace 11 2","value":[2,2,"db2b9bb51b3f0355fa0668ab5b234d8b"]}
+{"op":"replace 11 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 11 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"ids 12","value":[]}
+{"op":"dump 12","value":[]}
+{"op":"layout 12","value":[]}
+{"op":"extract 12","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 12","value":[0,0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 12 1","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 12 2","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 12 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 12 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"ids 13","value":[]}
+{"op":"dump 13","value":[]}
+{"op":"layout 13","value":[]}
+{"op":"extract 13","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 13","value":[0,0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"error":"instance filters can't select fields to modify","op":"replace 13 1"}
+{"error":"instance filters can't select fields to modify","op":"replace 13 2"}
+{"error":"instance filters can't select fields to modify","op":"replace 13 3"}
+{"error":"instance filters can't select fields to modify","op":"replace 13 4"}
+{"op":"ids 14","value":[]}
+{"op":"dump 14","value":[]}
+{"op":"layout 14","value":[]}
+{"op":"extract 14","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 14","value":[0,0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"error":"instance filters can't select fields to modify","op":"replace 14 1"}
+{"error":"instance filters can't select fields to modify","op":"replace 14 2"}
+{"error":"instance filters can't select fields to modify","op":"replace 14 3"}
+{"error":"instance filters can't select fields to modify","op":"replace 14 4"}
+{"op":"ids 15","value":[]}
+{"op":"dump 15","value":[]}
+{"op":"layout 15","value":[]}
+{"op":"extract 15","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 15","value":[0,0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 15 1","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 15 2","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 15 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 15 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"ids 16","value":[]}
+{"op":"dump 16","value":[]}
+{"op":"layout 16","value":[]}
+{"op":"extract 16","value":"69375cc52fbc44bef2c609b23f9dcb22"}
+{"op":"delete 16","value":[0,0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 16 1","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 16 2","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 16 3","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"replace 16 4","value":[0,0,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"header","value":[true,"e0fcdb51b23b40c1204a4af194cf7034"]}
+{"op":"record count","value":[false,"3509731b9e136327edd9e019f3ff8551"]}
+{"op":"common","value":[{"id":"111","type":"INFO"},{"id":"222","type":"INFO"}]}
+{"op":"diff","value":{"changed":[{"fields":[{"field":"text[1]","left":"Same\nmulti-line response","right":"Same\nmulti-line resp0nse"}],"id":"111","rawChanged":true,"type":"INFO"},{"fields":[{"field":"text[1]","left":"Same\nmulti-line response","right":"Same\nmulti-line resp0nse"}],"id":"222","rawChanged":true,"type":"INFO"}],"leftOnly":[],"rightOnly":[]}}
+{"op":"diff equal","value":{"changed":[{"fields":[{"field":"text[1]","left":"Same\nmulti-line response","right":"Same\nmulti-line resp0nse"}],"id":"111","rawChanged":true,"type":"INFO"},{"fields":[{"field":"text[1]","left":"Same\nmulti-line response","right":"Same\nmulti-line resp0nse"}],"id":"222","rawChanged":true,"type":"INFO"}],"equal":[],"leftOnly":[],"rightOnly":[]}}
+{"op":"overrides","value":[{"id":"111","identical":[{"plugin":3,"sameAs":1}],"overridden":[2],"plugins":[1,2,3],"type":"INFO"},{"id":"222","identical":[{"plugin":3,"sameAs":1}],"overridden":[2],"plugins":[1,2,3],"type":"INFO"}]}
+{"op":"overrides ignore","value":[{"id":"111","identical":[{"plugin":3,"sameAs":1}],"overridden":[2],"plugins":[1,2,3],"type":"INFO"},{"id":"222","identical":[{"plugin":3,"sameAs":1}],"overridden":[2],"plugins":[1,2,3],"type":"INFO"}]}

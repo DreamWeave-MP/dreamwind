@@ -1,0 +1,106 @@
+manifest_version = 1
+
+[package]
+id = "org.dreamweave.dreamwind"
+version = "0.1.0"
+jess_api = "1"
+include = ["src"]
+tests = [
+    "tests/archive/run.luau",
+    "tests/archive/tool.luau",
+    "tests/openmw-import-morrowind/run.luau",
+    "tests/starwind/run.luau",
+    "tests/tes3/run.luau",
+    "tests/tes3cmd/run.luau",
+    "tests/saves/run.luau",
+]
+
+[modules]
+"@dreamwind/archive" = "src/archive/init.luau"
+"@dreamwind/archive/ba2" = "src/archive/ba2.luau"
+"@dreamwind/archive/bsa" = "src/archive/bsa/init.luau"
+"@dreamwind/archive/bsa/tes3" = "src/archive/bsa/tes3.luau"
+"@dreamwind/archive/bsa/tes4" = "src/archive/bsa/tes4.luau"
+"@dreamwind/archive/tool" = "src/archive/tool.luau"
+"@dreamwind/openmw-import-morrowind" = "src/openmw-import-morrowind/init.luau"
+"@dreamwind/tools/doctor" = "src/tools/doctor/init.luau"
+"@dreamwind/saves" = "src/saves/init.luau"
+"@dreamwind/tes3" = "src/tes3/init.luau"
+"@dreamwind/tes3cmd" = "src/tes3cmd/init.luau"
+"@dreamwind/tools/merged-lands" = "src/tools/merged-lands/init.luau"
+"@dreamwind/tools/s3lightfixes" = "src/tools/s3lightfixes/init.luau"
+"@dreamwind/tools/tes3merge" = "src/tools/tes3merge/init.luau"
+"@dreamwind/tools/tes3conv" = "src/tools/tes3conv/init.luau"
+"@dreamwind/tools/merge-to-master" = "src/tools/merge-to-master/init.luau"
+"@dreamwind/tools/add-vanilla-refs" = "src/tools/add-vanilla-refs/init.luau"
+"@dreamwind/starwind" = "src/starwind/init.luau"
+"@dreamwind/nif" = "src/nif/init.luau"
+"@dreamwind/nif/assets" = "src/nif/internal/assets.luau"
+"@dreamwind/nif/check" = "src/nif/internal/check.luau"
+"@dreamwind/nif/fix" = "src/nif/internal/fix.luau"
+"@dreamwind/nif/gamebryo" = "src/nif/internal/gamebryo/reader.luau"
+"@dreamwind/nif/header" = "src/nif/internal/header.luau"
+"@dreamwind/nif/info" = "src/nif/internal/info.luau"
+"@dreamwind/nif/scene" = "src/nif/internal/scene.luau"
+
+# Every module here is inert API: it does nothing until something requires it, and runs with the
+# authority of whatever calls it. No layer has entrypoints yet, so none requires a capability.
+
+[[layer]]
+id = "dream.openmw-import"
+exports = ["@dreamwind/openmw-import-morrowind"]
+
+[[layer]]
+id = "dream.tes3"
+exports = ["@dreamwind/tes3"]
+
+[[layer]]
+id = "dream.tes3cmd"
+requires = ["dream.tes3"]
+exports = ["@dreamwind/tes3cmd"]
+
+[[layer]]
+id = "dream.saves"
+requires = ["dream.tes3"]
+exports = ["@dreamwind/saves"]
+
+[[layer]]
+id = "dream.morrowind-tools"
+exports = [
+    "@dreamwind/tools/doctor",
+    "@dreamwind/tools/merged-lands",
+    "@dreamwind/tools/s3lightfixes",
+    "@dreamwind/tools/tes3merge",
+    "@dreamwind/tools/tes3conv",
+    "@dreamwind/tools/merge-to-master",
+    "@dreamwind/tools/add-vanilla-refs",
+]
+
+[[layer]]
+id = "dream.bethesda-archives"
+exports = [
+    "@dreamwind/archive",
+    "@dreamwind/archive/ba2",
+    "@dreamwind/archive/bsa",
+    "@dreamwind/archive/bsa/tes3",
+    "@dreamwind/archive/bsa/tes4",
+    "@dreamwind/archive/tool",
+]
+
+[[layer]]
+id = "dream.starwind"
+requires = ["dream.morrowind-tools"]
+exports = ["@dreamwind/starwind"]
+
+[[layer]]
+id = "dream.nif"
+exports = [
+    "@dreamwind/nif",
+    "@dreamwind/nif/assets",
+    "@dreamwind/nif/check",
+    "@dreamwind/nif/fix",
+    "@dreamwind/nif/gamebryo",
+    "@dreamwind/nif/header",
+    "@dreamwind/nif/info",
+    "@dreamwind/nif/scene",
+]
