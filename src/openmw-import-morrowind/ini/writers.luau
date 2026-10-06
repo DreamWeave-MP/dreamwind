@@ -6,6 +6,7 @@
 -- and a rename, so a failure leaves whatever was there whole.
 local types, options, config, document =
   require './types', require './options', require './config', require './document'
+local configuration = require '@dreamwind/openmw-config'
 type MultiMap = types.MultiMap
 type Update = types.Update
 type Document = document.Document
@@ -18,14 +19,14 @@ local function directoryOf(path: string): string return jess.fs.parent(path) or 
 --- ending in openmw-config's serializer stamp (`save_cfg_output_to_path`).
 local function saveCfg(cfg: MultiMap, path: string)
   cfg = options.multimap('ini.saveCfg', cfg)
-  document.replaceFile(path, config.document(cfg, directoryOf(path), true):toString())
+  document.replaceFile(path, config.renderMap(cfg, directoryOf(path), true))
 end
 
 --- `cfg` written to `path` with its folders resolved against the file's folder, the way dream-ini
 --- writes an import whose output lives elsewhere (`save_resolved_cfg_to_path`).
-local function saveResolvedCfg(cfg: MultiMap, path: string)
+local function saveResolvedCfg(cfg: MultiMap, path: string, tokens: configuration.Tokens?)
   cfg = options.multimap('ini.saveResolvedCfg', cfg)
-  document.replaceFile(path, config.resolvedText(config.document(cfg, directoryOf(path))))
+  document.replaceFile(path, config.renderMap(cfg, directoryOf(path), false, tokens))
 end
 
 local UpdateSpec: options.Spec = {

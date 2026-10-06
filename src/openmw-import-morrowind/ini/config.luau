@@ -1,101 +1,63 @@
 --!strict
 --!native
 -- SPDX-License-Identifier: MIT OR Apache-2.0
--- Multimaps as openmw-config documents, for the normalization every import runs and for the
--- writers: `save_cfg_output_to_path` and `save_resolved_cfg_to_path` build one from the imported
--- map and write it through a temporary file, `save_resolved_configuration_to_path` writes a
--- loaded document the same way.
+-- Multimap output is deliberately normalized, unlike a preserved document. Only explicit data
+-- entries belong to the map; resources/vfs and data-local are composed by the Context, not here.
 local types, parser = require './types', require './parser'
-local openmw = require '@dream/openmw-config'
+local openmw = require '@dreamwind/openmw-config'
+local paths = require '../../openmw-config/paths'
+local text = require '../../openmw-config/text'
 type MultiMap = types.MultiMap
-type Config = typeof(openmw.loadOptional '')
 
-local function removeComposed(cfg: MultiMap): MultiMap
-  local data = cfg.data
+local Stamp = '# OpenMW-Config Serializer Version: 3.0.0\n'
 
-  if not data then return cfg end
+local function normalize(cfg: MultiMap, directory: string?, tokens: openmw.Tokens?): MultiMap
+  if not directory then return cfg end
 
-  for _, key in { 'data-local', 'resources' } do
-    local values = cfg[key]
-
-    if not values or #values == 0 then continue end
-
-    local composed = if key == 'resources'
-      then jess.fs.join(values[#values], 'vfs')
-      else values[#values]
-    local kept: { string } = {}
-
-    for _, directory in data do
-      if directory ~= composed then table.insert(kept, directory) end
-    end
-
-    data = kept
-    cfg.data = data
-  end
-
-  return cfg
-end
-
---- An openmw-config error as dream-ini reports it (`ImportError::OpenMwConfig`).
-local function configError(problem: unknown): string
-  local message = tostring(problem)
-  return `dream.ini: OpenMW config error: {string.match(message, '^dream%.openmw: (.*)$') or message}`
-end
-
---- `cfg` as an empty document of `directory` (the working directory when it's empty) filled key
---- by key in key order. Resolved, the folder singletons take their last value; preserving, they
---- stay generic lines, every value kept as written.
-local function document(cfg: MultiMap, directory: string, preserving: boolean?): Config
-  local result = openmw.newEmpty(if directory == '' then jess.fs.cwd() else directory)
-
+  local source = jess.fs.join(paths.absolute(if directory == '' then jess.fs.cwd() else directory), 'openmw.cfg')
+  local result: MultiMap = {}
   for _, key in parser.keys(cfg) do
-    local values = cfg[key]
+    if key == 'config' or string.lower(key) == 'replace' then continue end
 
-    if key == 'data' then
-      result:setDataDirectories(values)
-    elseif key == 'content' then
-      result:setContentFiles(values)
-    elseif key == 'fallback-archive' then
-      result:setFallbackArchives(values)
-    elseif key == 'fallback' then
-      -- `setGameSettings` throws for a value without a comma.
-      local ok, problem = pcall(result.setGameSettings, result, values)
-      if not ok then error(configError(problem), 0) end
-    elseif preserving or (key ~= 'data-local' and key ~= 'resources' and key ~= 'user-data') then
-      result:setGenericSettings(key, values)
-    elseif #values > 0 then
-      if key == 'data-local' then
-        result:setDataLocal(values[#values])
-      elseif key == 'resources' then
-        result:setResources(values[#values])
-      else
-        result:setUserData(values[#values])
+    local values: { string } = {}
+    local input = cfg[key]
+    local first = if text.SingletonKeys[key] then #input else 1
+    for index = math.max(first, 1), #input do
+      local value = input[index]
+      text.validate(key, value, source, index)
+      if text.DirectoryKeys[key] then
+        value = text.encodeDirectory(paths.resolve(value, source, tokens or {}))
       end
+
+      table.insert(values, value)
     end
+
+    if #values > 0 then result[key] = values end
   end
 
   return result
 end
 
---- A loaded document's resolved text as dream-ini serializes it: openmw-config's resolved form,
---- reparsed, without the `data=` folders composed from `data-local=` and `resources=`, in key
---- order (`serialize_resolved_configuration`).
-local function resolvedText(config: Config): string
-  return parser.serializeCfg(removeComposed(parser.parseCfg(config:toResolvedString())))
+local function renderMap(cfg: MultiMap, directory: string, preserving: boolean?, tokens: openmw.Tokens?): string
+  if not preserving then return parser.serializeCfg(normalize(cfg, directory, tokens)) end
+
+  for _, key in parser.keys(cfg) do
+    for index, value in cfg[key] do text.validate(key, value, directory, index) end
+  end
+
+  return parser.serializeCfg(cfg) .. Stamp
 end
 
-local function normalize(cfg: MultiMap, directory: string?): MultiMap
-  if not directory then return cfg end
-
-  return removeComposed(parser.parseCfg(document(cfg, directory):toResolvedString()))
+local function resolvedText(config: openmw.Config): string
+  return parser.serializeCfg(parser.parseCfg(config:render(true)))
 end
 
-local function load(path: string): MultiMap
-  return removeComposed(parser.parseCfg(openmw.loadOptional(path):toResolvedString()))
+local function load(path: string, options: openmw.Options?): MultiMap
+  return parser.parseCfg(openmw.loadOptional(path, options):render(true))
 end
 
 return table.freeze {
-  document = document,
+  renderMap = renderMap,
   resolvedText = resolvedText,
   normalize = normalize,
   load = load,

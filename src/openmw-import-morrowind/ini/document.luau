@@ -5,10 +5,11 @@
 -- `apply_preserved_cfg_update`, `serialize_preserved_cfg_document`, and
 -- `save_preserved_cfg_document_to_path` update and write one: comments, blank lines, and the
 -- order of untouched lines survive; a replaced list gives up its old lines' places and goes at the
--- end; a replaced singleton keeps its place. The openmw-config document is loaded beside the
--- lines and receives the same edits, so a resolved save of it agrees with the lines.
+-- end; imported singleton overrides also move to the end. The configuration chain is loaded
+-- beside the lines and receives the same edits for resolved output.
 local types, parser, storage = require './types', require './parser', require './storage'
-local openmw = require '@dream/openmw-config'
+local fs = require '@dream/fs'
+local openmw = require '@dreamwind/openmw-config'
 type MultiMap = types.MultiMap
 type Update = types.Update
 
@@ -18,36 +19,13 @@ export type Entry = { comment: string, key: string?, value: string? }
 
 export type Document = {
   --- The openmw-config document of the same file, edited in step with the lines.
-  config: typeof(openmw.loadOptional ''),
+  config: openmw.Config,
   --- The file the lines came from, or would have come from.
   path: string,
   entries: { Entry },
 }
 
---- The keys openmw-config types on load; every other key is a generic setting, and only a
---- generic setting answers to `set_generic_settings` for its key.
-local Typed: { [string]: boolean } = {
-  content = true,
-  groundcover = true,
-  ['fallback-archive'] = true,
-  fallback = true,
-  encoding = true,
-  config = true,
-  data = true,
-  resources = true,
-  ['user-data'] = true,
-  ['data-local'] = true,
-  replace = true,
-}
-table.freeze(Typed)
-
 local Stamp = '# OpenMW-Config Serializer Version:'
-
---- An openmw-config error as dream-ini reports it (`ImportError::OpenMwConfig`).
-local function configError(problem: unknown): string
-  local message = tostring(problem)
-  return `dream.ini: OpenMW config error: {string.match(message, '^dream%.openmw: (.*)$') or message}`
-end
 
 --- The lines of `text` as openmw-config's loader reads them (`str::lines`): split at `\n`, with a
 --- `\r` before the `\n` dropped and a final line without a `\n` kept whole.
@@ -129,14 +107,13 @@ end
 
 --- The openmw.cfg at `path` (a file, or a folder holding one) as a document: its openmw-config
 --- chain and its own lines. A missing file is an empty document at that path.
-local function load(path: string): Document
-  -- `loadOptional` throws for a malformed cfg: a line without `=`, a bad `encoding=` or
-  -- `fallback=` value, a `config=` chain that can't be read.
-  local ok, config = pcall(openmw.loadOptional, path)
-  if not ok then error(configError(config), 0) end
+local function load(path: string, options: openmw.Options?): Document
+  local config = openmw.loadOptional(path, options)
+  local file = config:rootFile()
+  local source, problem, kind = fs.readFileString(file)
+  if not source and kind ~= 'notFound' then error(problem, 0) end
 
-  local file = if jess.fs.isDir(path) then jess.fs.join(path, 'openmw.cfg') else path
-  return { config = config, path = file, entries = parse(jess.fs.read(file) or '') }
+  return { config = config, path = file, entries = parse(source or '') }
 end
 
 local function remove(document: Document, matches: (Entry) -> boolean)
@@ -161,29 +138,6 @@ local function replaceList(document: Document, key: string, values: { string }?)
   append(document, key, values)
 end
 
---- Every generic line of `key` goes (`set_generic_settings`): a typed key's lines aren't generic.
-local function replaceGeneric(document: Document, key: string, values: { string }?)
-  document.config:setGenericSettings(key, values)
-  if Typed[key] then return end
-
-  replaceList(document, key, values)
-end
-
---- The document's `key=` lines, whatever file they came from, cleared the way
---- `clear_preserved_key` clears them: the singleton is removed until none is left.
-local function clearSingleton(
-  document: Document,
-  key: string,
-  present: () -> boolean,
-  clear: () -> ()
-)
-  while present() do
-    clear()
-  end
-
-  remove(document, function(entry) return entry.key == key end)
-end
-
 --- `result`'s changed keys applied to `document`, as `apply_preserved_cfg_update` applies them:
 --- the encoding, `no-sound`, and the `fallback=` list when they changed; each imported `data=`
 --- folder the chain doesn't have; the content and archive lists when they changed and `update`
@@ -201,81 +155,58 @@ local function apply(
   end
 
   local encoding = cfg.encoding
-
   if changed.encoding and encoding and #encoding > 0 then
     local value = encoding[#encoding]
-    clearSingleton(
-      document,
-      'encoding',
-      function() return config:encoding() ~= nil end,
-      function() config:setEncoding(nil) end
-    )
-    -- `setEncoding` throws for a label that isn't win1250, win1251, or win1252.
-    local ok, problem = pcall(config.setEncoding, config, value)
-    if not ok then error(configError(problem), 0) end
-
-    append(document, 'encoding', { value })
+    config:set('encoding', value)
+    replaceList(document, 'encoding', { value })
   end
 
-  if changed['no-sound'] then replaceGeneric(document, 'no-sound', cfg['no-sound']) end
+  for _, key in { 'no-sound', 'fallback' } do
+    if not changed[key] then continue end
 
-  if changed.fallback then
-    -- `setGameSettings` throws for a value without a comma; the list is cleared first, as
-    -- openmw-config clears it, and nothing is written after an error.
-    local ok, problem = pcall(config.setGameSettings, config, cfg.fallback)
-    if not ok then error(configError(problem), 0) end
-
-    replaceList(document, 'fallback', cfg.fallback)
+    config:replace(key, cfg[key])
+    replaceList(document, key, cfg[key])
   end
 
   if changed.data then
-    for _, directory in cfg.data or {} do
-      if config:hasDataDir(directory) then continue end
+    -- Compare only explicit data entries, not Context-composed resource or local directories.
+    -- The imported spelling is compared to resolved paths, as the importer has always done.
+    local directories: { [string]: boolean } = {}
+    for _, entry in config:entries() do
+      if entry.key == 'data' and entry.resolved then directories[entry.resolved] = true end
+    end
 
-      config:addDataDirectory(directory)
+    for _, directory in cfg.data or {} do
+      if directories[directory] then continue end
+
+      config:append('data', directory)
       append(document, 'data', { directory })
+      local entries = config:entries()
+      directories[entries[#entries].resolved :: string] = true
     end
   end
 
   if update.gameFiles and changed.content then
-    config:setContentFiles(cfg.content)
+    config:replace('content', cfg.content)
     replaceList(document, 'content', cfg.content)
   end
 
   if update.archives ~= false and changed['fallback-archive'] then
-    config:setFallbackArchives(cfg['fallback-archive'])
+    config:replace('fallback-archive', cfg['fallback-archive'])
     replaceList(document, 'fallback-archive', cfg['fallback-archive'])
   end
 
-  type Override = { key: string, path: string?, present: () -> boolean, set: (string?) -> () }
-  local dataLocal: Override = {
-    key = 'data-local',
-    path = update.dataLocal,
-    present = function() return config:dataLocal() ~= nil end,
-    set = function(path) config:setDataLocal(path) end,
+  local overrides: { { key: string, path: string? } } = {
+    { key = 'data-local', path = update.dataLocal },
+    { key = 'resources', path = update.resources },
+    { key = 'user-data', path = update.userData },
   }
+  for _, override in overrides do
+    if not override.path then continue end
 
-  local resources: Override = {
-    key = 'resources',
-    path = update.resources,
-    present = function() return config:resources() ~= nil end,
-    set = function(path) config:setResources(path) end,
-  }
-
-  local userData: Override = {
-    key = 'user-data',
-    path = update.userData,
-    present = function() return config:userData() ~= nil end,
-    set = function(path) config:setUserData(path) end,
-  }
-
-  for _, override in { dataLocal, resources, userData } do
-    local path = override.path
-    if not path then continue end
-
-    clearSingleton(document, override.key, override.present, function() override.set(nil) end)
-    override.set(path)
-    append(document, override.key, { path })
+    -- One set replaces the effective singleton; clearing repeatedly cannot erase a parent file.
+    config:set(override.key, override.path)
+    replaceList(document, override.key, { override.path })
   end
 end
 

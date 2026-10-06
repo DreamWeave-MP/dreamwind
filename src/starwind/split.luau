@@ -7,6 +7,7 @@ local dependencies = require './dependencies'
 local report = require './report'
 local tes3 = require '../lib/tes3'
 local tes3conv = require '@dreamwind/tools/tes3conv'
+local core = require '@dreamwind/tes3'
 
 type Table = tes3.Table
 type Record = tes3.Record
@@ -404,7 +405,7 @@ local ForbiddenInData = set {
 -- A written plugin's header, and its records after it, decoded, with each one's bytes.
 export type Written = { header: Record, records: Records, bytes: { string } }
 
-local function readBack(plugin: Plugin): (Records, { string })
+local function readBack(plugin: core.Plugin): (Records, { string })
   local records, bytes = tes3conv.recordsWithBytes(plugin)
   table.remove(records, 1)
   table.remove(bytes, 1)
@@ -417,19 +418,19 @@ local function sortedNames(names: { string }): { Json }
   return report.array(copy :: { Json })
 end
 
-export type Result = { report: { [string]: Json }, data: Plugin, content: Plugin }
+export type Result = { report: { [string]: Json }, data: core.Plugin, content: core.Plugin }
 
 -- `validate_partition` over the plugins as written and read back. Records compare by their
 -- bytes, which is what tes3conv's JSON signatures stood for.
 -- A written half of the pair, read back. A record whose bytes the monolith holds decodes to what
 -- the monolith's copy decoded to, so it takes that; any other is decoded from its own bytes.
-local function readBackLike(plugin: Plugin, known: { [string]: Record }): (Records, { string })
+local function readBackLike(plugin: core.Plugin, known: { [string]: Record }): (Records, { string })
   local records: Records, bytes: { string } = {}, {}
 
-  for record in plugin:records() do
-    if jess.meta(record).tag == 'TES3' then continue end
+  for index = 0, plugin:count() - 1 do
+    if plugin:tag(index) == 'TES3' then continue end
 
-    local raw = buffer.tostring(record:bytes())
+    local raw = buffer.tostring(plugin:bytes(index))
     local decoded = known[raw]
 
     if not decoded then return readBack(plugin) end
@@ -442,7 +443,7 @@ local function readBackLike(plugin: Plugin, known: { [string]: Record }): (Recor
   return records, bytes
 end
 
-local function validate(source: Written, data: Plugin, content: Plugin): { [string]: Json }
+local function validate(source: Written, data: core.Plugin, content: core.Plugin): { [string]: Json }
   local sourceRecords, sourceBytes = source.records, source.bytes
   local known: { [string]: Record } = {}
 
@@ -609,8 +610,8 @@ local function validate(source: Written, data: Plugin, content: Plugin): { [stri
     table.insert(forbiddenList, kind)
   end
 
-  local dataHeader = (data:record(0) :: Record):decode() :: Table
-  local contentHeader = (content:record(0) :: Record):decode() :: Table
+  local dataHeader = (data:decode(0) :: unknown) :: Table
+  local contentHeader = (content:decode(0) :: unknown) :: Table
 
   local result = report.object {
     'source_records',
@@ -671,10 +672,10 @@ local function validate(source: Written, data: Plugin, content: Plugin): { [stri
 end
 
 -- The records after a written plugin's header, decoded as tes3conv reads them, and their bytes.
-function split.readBack(plugin: Plugin): Written
+function split.readBack(plugin: core.Plugin): Written
   local records, bytes = readBack(plugin)
   return {
-    header = (plugin:record(0) :: Record):decode() :: tes3.Record,
+    header = (plugin:decode(0) :: unknown) :: tes3.Record,
     records = records,
     bytes = bytes,
   }
@@ -699,19 +700,47 @@ function split.split(
     table.insert(if dataIndices[index - 1] then dataRecords else contentRecords, source[index])
   end
 
-  dataRecords[1] = header(source[1], #dataRecords - 1, {}, 'Esm')
-  local data = tes3conv.plugin(tes3conv.sort(dataRecords))
-  data:save(paths.data, { backup = false })
-  local dataName = jess.fs.fileName(paths.data) :: string
-  local dataSize = jess.fs.size(paths.data) :: number
-  contentRecords[1] = header(source[1], #contentRecords - 1, { { dataName, dataSize } }, 'Esp')
-  local content = tes3conv.plugin(tes3conv.sort(contentRecords))
-  content:save(paths.content, { backup = false })
-
   local writtenSource = written
-    or split.readBack(jess.plugin.open(paths.source, { openmw = false }))
-  local writtenData = jess.plugin.open(paths.data, { openmw = false })
-  local writtenContent = jess.plugin.open(paths.content, { openmw = false })
+  if not writtenSource then
+    local sourceBytes = assert(jess.fs.readBuffer(paths.source), `failed to read '{paths.source}'`)
+    writtenSource = split.readBack(core.open(sourceBytes))
+  end
+
+  assert(
+    #writtenSource.records == #source - 1 and #writtenSource.bytes == #source - 1,
+    'Starwind split: source records and written records have different counts'
+  )
+  for index = 2, #source do
+    local expected, actual = source[index], writtenSource.records[index - 1]
+    assert(
+      expected.type == actual.type and tes3.auditId(expected) == tes3.auditId(actual),
+      `Starwind split: written record {index - 1} does not match the sorted source`
+    )
+  end
+
+  -- Only the headers change. Copy the sorted monolith's original body bytes into each half,
+  -- rather than normalizing records through a decode/encode round trip.
+  dataRecords[1] = header(source[1], #dataRecords - 1, {}, 'Esm')
+  local data = tes3conv.plugin { dataRecords[1] }
+  for index = 2, #source do
+    if dataIndices[index - 1] then data:insert(data:count(), writtenSource.bytes[index - 1]) end
+  end
+
+  local dataBytes = data:save()
+  jess.fs.replace(paths.data, dataBytes)
+  local dataName = jess.fs.fileName(paths.data) :: string
+  local dataSize = buffer.len(dataBytes)
+  contentRecords[1] = header(source[1], #contentRecords - 1, { { dataName, dataSize } }, 'Esp')
+  local content = tes3conv.plugin { contentRecords[1] }
+  for index = 2, #source do
+    if not dataIndices[index - 1] then content:insert(content:count(), writtenSource.bytes[index - 1]) end
+  end
+
+  jess.fs.replace(paths.content, content:save())
+  local writtenDataBytes = assert(jess.fs.readBuffer(paths.data), `failed to read '{paths.data}'`)
+  local writtenContentBytes = assert(jess.fs.readBuffer(paths.content), `failed to read '{paths.content}'`)
+  local writtenData = core.open(writtenDataBytes)
+  local writtenContent = core.open(writtenContentBytes)
   local result = validate(writtenSource, writtenData, writtenContent)
 
   local dataTypes: { [string]: boolean } = {}

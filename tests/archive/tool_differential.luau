@@ -9,7 +9,7 @@
 -- (`tool.verify(archive)`), and its errors name the function where the module's named the method.
 local support = require './support'
 local tool = require '@dreamwind/archive/tool'
-local host = require('@dream/vfs').host
+local host = require('@dreamwind/vfs').host
 
 export type Context = {
   suite: any,

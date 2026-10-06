@@ -39,6 +39,7 @@ local split = require '@self/split'
 local surgery = require '@self/surgery'
 local tes3 = require './lib/tes3'
 local tes3conv = require '@dreamwind/tools/tes3conv'
+local core = require '@dreamwind/tes3'
 
 type Records = tes3.Records
 type Json = report.Json
@@ -201,18 +202,19 @@ local function build(options: Options): { [string]: Json }
   stage 'decouple'
 
   local final = tes3conv.plugin(decoupled.final)
-  final:save(paths.final, { backup = false })
+  jess.fs.replace(paths.final, final:save())
 
   if options.keepWork then
     ensureDir(work)
-    tes3conv.plugin(decoupled.preAddVanilla):save(paths.preAddVanilla, { backup = false })
+    jess.fs.replace(paths.preAddVanilla, tes3conv.plugin(decoupled.preAddVanilla):save())
     jess.fs.write(paths.log, table.concat(decoupled.log, '\n') .. '\n', { backup = false })
   end
 
   stage 'write'
 
   -- Every check from here reads the monolith as written.
-  local written = split.readBack(jess.plugin.open(paths.final, { openmw = false }))
+  local finalBytes = assert(jess.fs.readBuffer(paths.final), `failed to read '{paths.final}'`)
+  local written = split.readBack(core.open(finalBytes))
   local finalRecords: Records = { written.header }
   table.move(written.records, 1, #written.records, 2, finalRecords)
   stage 'read back'

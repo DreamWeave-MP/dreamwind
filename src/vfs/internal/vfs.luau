@@ -618,8 +618,8 @@ function Methods.pathsStartingWith(
   local successor = prefixSuccessor(normalized)
   local last = if successor then lowerBound(sorted, successor) - 1 else #sorted
   local take = if limit ~= nil then math.max(0, math.floor(limit)) else nil
-  local keys: { string } = if take ~= nil then table.create(take) else {}
-  local entries: { Entry } = if take ~= nil then table.create(take) else {}
+  local keys = ((if take ~= nil then table.create(take) else {}) :: unknown) :: { string }
+  local entries = ((if take ~= nil then table.create(take) else {}) :: unknown) :: { Entry }
 
   if descending == true then
     for index = last, first, -1 do
@@ -673,8 +673,8 @@ function Methods.pathsWith(self: VFS, prefix: string, limit: number?, descending
   local sorted = sortedKeys(vfs)
   local first = lowerBound(sorted, normalized)
   local last = lowerBound(sorted, normalized .. '0') - 1
-  local keys: { string } = if limit ~= nil then table.create(math.max(0, math.floor(limit))) else {}
-  local entries: { Entry } = if limit ~= nil then table.create(math.max(0, math.floor(limit))) else {}
+  local keys = ((if limit ~= nil then table.create(math.max(0, math.floor(limit))) else {}) :: unknown) :: { string }
+  local entries = ((if limit ~= nil then table.create(math.max(0, math.floor(limit))) else {}) :: unknown) :: { Entry }
   local take = if limit ~= nil then math.max(0, math.floor(limit)) else nil
   if descending == true then
     for index = last, first, -1 do

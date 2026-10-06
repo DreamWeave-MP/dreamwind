@@ -5,7 +5,7 @@
 -- reports as the vfstool binary serialized its Rust structs (snake_case fields, 0-based source
 -- indices, externally tagged enums), the output file or standard output, and the messages.
 local fs = require '@dream/fs'
-local openmwConfig = require '@dream/openmw-config'
+local openmwConfig = require '@dreamwind/openmw-config'
 local paths = require '../../vfs/internal/paths'
 local process = require '@dream/process'
 local serialize = require '../../vfs/internal/serialize'
@@ -15,10 +15,11 @@ type Value = serialize.Value
 
 export type Format = 'json' | 'yaml' | 'toml'
 
---- What every command takes: the folder holding openmw.cfg (else `OPENMW_CONFIG`, else
---- OpenMW's default), relative output paths, and for a report, its format and file.
+--- Commands require a config file or its directory, or OPENMW_CONFIG. The kernel does not
+--- currently expose the platform facts needed for trustworthy default discovery.
 export type Options = {
   config: string?,
+  tokens: openmwConfig.Tokens?,
   relative: boolean?,
   format: Format?,
   output: string?,
@@ -69,15 +70,24 @@ end
 
 --- The openmw.cfg in `dir`, found without regard to case, or nil with the message printed.
 local function configIn(dir: string): string?
-  local stat = fs.stat(dir)
-  if not stat or not stat.isDir then
-    err(
-      `{errPrefix()}The requested openmw.cfg directory '{dir}' does not exist or is not a directory.`
-    )
+  local info, statError = fs.stat(dir)
+  if statError then
+    err(`{errPrefix()}Failed to inspect OpenMW config directory '{dir}': {statError}`)
     return nil
   end
 
-  for _, name in fs.list(dir) or {} do
+  if not info or not info.isDir then
+    err(`{errPrefix()}The requested openmw.cfg directory '{dir}' does not exist or is not a directory.`)
+    return nil
+  end
+
+  local names, listError = fs.list(dir)
+  if not names then
+    err(`{errPrefix()}Failed to list OpenMW config directory '{dir}': {listError}`)
+    return nil
+  end
+
+  for _, name in names do
     if string.lower(name) == 'openmw.cfg' then return paths.join(dir, name) end
   end
 
@@ -85,38 +95,33 @@ local function configIn(dir: string): string?
   return nil
 end
 
---- `resolve_config_path`: `--config`'s folder, else `OPENMW_CONFIG`, else OpenMW's default
---- folder; nil, with the binary's messages printed, when none holds a config.
+--- Explicit paths only: --config or OPENMW_CONFIG, each a file or a directory holding it.
 local function resolveConfig(options: Options): string?
-  local dir = options.config
-  if dir then
-    local found = configIn(dir)
-    if found then return found end
-
-    err 'Failed to resolve OpenMW config: Unable to resolve openmw.cfg path.'
+  local selected = options.config or process.env 'OPENMW_CONFIG'
+  if not selected or selected == '' then
+    err(
+      `{errPrefix()}An explicit OpenMW config is required: pass --config or set OPENMW_CONFIG. Default discovery is unavailable.`
+    )
     return nil
   end
 
-  local fromEnv = process.env 'OPENMW_CONFIG'
-  if fromEnv then
-    local stat = fs.stat(fromEnv)
-    if stat and stat.isFile then return fromEnv end
-
-    err(`{errPrefix()}OPENMW_CONFIG '{fromEnv}' does not exist or is not a file.`)
-    err 'Failed to resolve OpenMW config: Unable to resolve OPENMW_CONFIG path.'
+  local info, message = fs.stat(selected)
+  if message then
+    err(`{errPrefix()}Failed to inspect OpenMW config '{selected}': {message}`)
     return nil
   end
 
-  local found = configIn(openmwConfig.defaultConfigPath())
-  if found then return found end
+  if info and info.isFile then return selected end
 
-  err 'Failed to resolve OpenMW config: Unable to resolve openmw.cfg path.'
+  if info and info.isDir then return configIn(selected) end
+
+  err(`{errPrefix()}The requested OpenMW config '{selected}' does not exist or is not a file or directory.`)
   return nil
 end
 
 export type Load = {
   path: string,
-  config: dream_openmw_Config,
+  config: openmwConfig.Config,
   dirs: { string },
   archives: { string },
 }
@@ -126,12 +131,12 @@ local function load(options: Options): (Load?, number)
   local path = resolveConfig(options)
   if not path then return nil, Exit.config end
 
-  local loaded = openmwConfig.new(path) :: dream_openmw_Config
+  local loaded = openmwConfig.new(path, { tokens = options.tokens })
   return {
     path = path,
     config = loaded,
-    dirs = loaded:dataDirectories():toTable(),
-    archives = loaded:fallbackArchives():toTable(),
+    dirs = loaded:dataDirectories(),
+    archives = loaded:values('fallback-archive'),
   },
     Exit.ok
 end

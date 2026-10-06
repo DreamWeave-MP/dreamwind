@@ -7,7 +7,7 @@ Saves in Luau: what `jess save` does, over `@dreamwind/tes3`. OpenMW and Morrowi
 describe themselves (metadata, screenshot, readable records, Lua data); OpenMW saves can be
 validated, checked against a load order, and have content files stripped from them, with every
 rule jess-save applies. A load order is a `loadOrder` value: `loadOrder.fromOpenMw(context)` for
-a `jess.openmw` context.
+an `@dreamwind/openmw` Context.
 ]]
 
 local Check = require '@self/check'

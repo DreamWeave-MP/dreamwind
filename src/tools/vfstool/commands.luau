@@ -421,11 +421,11 @@ function commands.validate(options: ValidateOptions): number
     end
   end
 
-  for _, name in config.config:contentFiles() do
+  for _, name in config.config:values('content') do
     if not has(name) then issue('MissingContentFile', { { 'name', name } }) end
   end
 
-  for _, name in config.config:groundcoverFiles() do
+  for _, name in config.config:values('groundcover') do
     if not has(name) then issue('MissingGroundcoverFile', { { 'name', name } }) end
   end
 
@@ -553,7 +553,7 @@ function commands.run(options: RunOptions): number
   local config, code = loaded(options)
   if not config then return code end
 
-  local destination = options.output or config.config:dataLocal()
+  local destination = options.output or config.config:path('data-local')
   if not destination then
     cli.err(`{cli.errPrefix()}No data-local set in openmw.cfg; use --output to specify a destination.`)
     return Exit.invalidInput

@@ -6,6 +6,7 @@ local types, options = require './types', require './options'
 type MultiMap = types.MultiMap
 type Warning = types.Warning
 local bytes = require '@dream/bytes'
+local strings = require '../../openmw-config/text'
 
 local Labels: { [string]: string } = {
   win1250 = 'win1250',
@@ -41,71 +42,6 @@ local function decode(source: string | buffer, label: string?): string
   if first == 254 and second == 255 then return bytes.decode(string.sub(text, 3), 'utf-16be') end
 
   return bytes.decode(text, Codepages[canonical])
-end
-
---- Rust's `char::is_whitespace`, for the trim dream-ini applies.
-local function whitespace(code: number): boolean
-  return code == 32
-    or (code >= 9 and code <= 13)
-    or code == 133
-    or code == 160
-    or code == 5760
-    or (code >= 8192 and code <= 8202)
-    or code == 8232
-    or code == 8233
-    or code == 8239
-    or code == 8287
-    or code == 12288
-end
-
---- Whether `code` is ASCII whitespace: space, or tab through carriage return.
-local function asciiSpace(code: number): boolean return code == 32 or (code >= 9 and code <= 13) end
-
---- `text` without leading and trailing whitespace by `char::is_whitespace`, as `str::trim` strips
---- it. ASCII is trimmed byte by byte; the codepoint walk only runs when what's left could start or
---- end with a non-ASCII space (a lead byte of U+0085..U+3000's encodings, or a continuation byte).
-local function trim(text: string): string
-  local first, last = 1, #text
-
-  while first <= last and asciiSpace(string.byte(text, first)) do
-    first += 1
-  end
-
-  while last >= first and asciiSpace(string.byte(text, last)) do
-    last -= 1
-  end
-
-  if first > last then return '' end
-
-  local lead, tail = string.byte(text, first), string.byte(text, last)
-
-  if lead ~= 194 and lead ~= 225 and lead ~= 226 and lead ~= 227 and tail < 128 then
-    return if first == 1 and last == #text then text else string.sub(text, first, last)
-  end
-
-  text = string.sub(text, first, last)
-  first, last = 1, #text
-
-  for index, code in utf8.codes(text) do
-    if not whitespace(code) then
-      first = index
-      break
-    end
-
-    first = index + #utf8.char(code)
-  end
-
-  if first > last then return '' end
-
-  while last >= first do
-    local index = utf8.offset(text, -1, last + 1) :: number
-
-    if not whitespace(utf8.codepoint(text, index)) then break end
-
-    last = index - 1
-  end
-
-  return string.sub(text, first, last)
 end
 
 local function push(map: MultiMap, key: string, value: string)
@@ -227,8 +163,8 @@ local function parseCfg(text: string): MultiMap
     if equals <= finish and equals > start and not string.match(text, '^[ \t\r]*#', start) then
       push(
         map,
-        trim(string.sub(text, start, equals - 1)),
-        trim(string.sub(text, equals + 1, finish))
+        strings.trim(string.sub(text, start, equals - 1)),
+        strings.trim(string.sub(text, equals + 1, finish))
       )
     end
 
@@ -273,6 +209,6 @@ return table.freeze {
   serializeCfg = serializeCfg,
   decode = decode,
   encodingLabel = encodingLabel,
-  trim = trim,
+  trim = strings.trim,
   keys = keys,
 }

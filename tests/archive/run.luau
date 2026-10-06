@@ -6,7 +6,7 @@
 local archive = require '@dreamwind/archive'
 local support = require './support'
 local test = require '@jess/test'
-local host = require('@dream/vfs').host
+local host = require('@dreamwind/vfs').host
 local expect = test.expect
 local suite = test.new()
 

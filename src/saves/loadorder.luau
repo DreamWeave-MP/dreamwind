@@ -5,11 +5,12 @@
 --[[
 The load order a save is checked or stripped against: the active content files (and where each is
 on disk), how a content file name resolves through the data folders, and the code page content is
-read in. `fromOpenMw` makes one from a `jess.openmw` context; scripts that hold the files some
-other way build one themselves.
+read in. `fromOpenMw` makes one from an `@dreamwind/openmw` Context; scripts that hold the files
+some other way build one themselves.
 ]]
 
 local intern = require '@dream/intern'
+local openmw = require '@dreamwind/openmw'
 local tes3 = require '@dreamwind/tes3'
 
 export type Content = { name: string, path: string? }
@@ -25,11 +26,29 @@ export type LoadOrder = {
   encoding: string?,
 }
 
---- The load order a `jess.openmw` context describes.
-local function fromOpenMw(context: OpenMwContext): LoadOrder
+--- The load order an `@dreamwind/openmw` Context describes.
+local function fromOpenMw(context: openmw.Context): LoadOrder
+  local content = context:content()
+  local names: { [string]: string } = {}
+  for _, entry in content do
+    if entry.path then names[entry.path] = entry.name end
+  end
+
   return {
-    content = context:content(),
-    resolve = function(name: string): string? return context:resolve(name) end,
+    content = content,
+    resolve = function(name: string): string?
+      local path = context:resolve(name)
+      if path then names[path] = name end
+
+      return path
+    end,
+    -- Context reads VFS-relative names; LoadOrder readers receive resolved physical paths.
+    read = function(path: string): buffer?
+      local name = names[path]
+      if name then return context:readFile(name) end
+
+      return jess.fs.readBuffer(path)
+    end,
     encoding = context.encoding,
   }
 end

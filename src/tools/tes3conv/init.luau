@@ -7,11 +7,11 @@ written into a plugin the way tes3conv writes them.
   decode(text, options?)  the records of a tes3conv JSON document, header first
   read(path, options?)    the same, from a file
   realize(record)         a record decode() left unread, read now (in place); returns it
-  prepare(record)         the record as tes3conv's encoder would write it, ready for plugin:insert
-  plugin(records)         a new jess plugin holding the records, header first
-  records(plugin)         a jess plugin's records as the tables tes3conv would have read
+  prepare(record)         the record as tes3conv's encoder would write it, ready for core.encode
+  plugin(records)         a new raw-preserving package plugin holding the records, header first
+  records(plugin)         a package plugin's records as the tables tes3conv would have read
 
-Records come out as `record:decode()` spells them: a `type` field holding the type name, and
+Records come out as `plugin:decode(index)` spells them: a `type` field holding the type name, and
 camelCase field names (`speaker_id` is `speakerId`). Values are left as tes3conv wrote them: flags
 are strings ("PERSISTENT | DELETED"), enums their names.
 
@@ -27,6 +27,7 @@ would: what `plugin` builds is byte for byte what tes3conv would compile from th
 ]]
 
 local tes3 = require '../lib/tes3'
+local core = require '@dreamwind/tes3'
 
 type Table = tes3.Table
 type Value = tes3.Value
@@ -292,8 +293,7 @@ end
 tes3conv.isPersistent = persistent
 
 -- References in the order tes3 writes them: persistent first, then the masters' by master and
--- index, then the plugin's own by index. jess writes them in this order too, and its insert
--- checks a cell's references against what it would write, position by position.
+-- index, then the plugin's own by index. The package encoder writes them in this order too.
 function tes3conv.sortReferences(references: { Table })
   table.sort(references, function(left, right)
     local a, b = persistent(left), persistent(right)
@@ -319,19 +319,14 @@ end
 
 -- A new plugin holding `records`, in their order: pass them through `sort` first for what
 -- `tes3conv plugin.json plugin.esp` would write.
-function tes3conv.plugin(records: Records): Plugin
-  local plugin = jess.plugin.new()
-  local header = plugin:record(0) :: Record
-  header:set(records[1] :: RecordValue)
+function tes3conv.plugin(records: Records): core.Plugin
+  assert(records[1] and records[1].type == 'Header', 'tes3conv.plugin: records must start with a Header')
+  local plugin = core.new()
+  plugin:replaceBytes(0, plugin:encode((records[1] :: unknown) :: core.Value))
 
   for index = 2, #records do
-    local record = records[index]
-    -- plugin:insert raises for a field the record type doesn't have, or the wrong shape of one.
-    local inserted, problem = pcall(plugin.insert, plugin, tes3conv.prepare(record) :: RecordFields)
-
-    if not inserted then
-      error(`record {index - 1} ({tes3.string(record.type)} {tes3.editorId(record)}): {problem}`)
-    end
+    local record = tes3conv.prepare(records[index])
+    plugin:insert(plugin:count(), plugin:encode((record :: unknown) :: core.Value))
   end
 
   return plugin
@@ -350,13 +345,16 @@ end
 
 -- A plugin's records as `tes3conv plugin.esp plugin.json` reads them, sorted as it sorts them,
 -- and each record's bytes in the same order.
-function tes3conv.recordsWithBytes(plugin: Plugin): (Records, { string })
+function tes3conv.recordsWithBytes(plugin: core.Plugin): (Records, { string })
   local records: Records, bytes: { string } = {}, {}
 
-  for record in plugin:records() do
-    local value = record:decode() :: Table?
+  for index = 0, plugin:count() - 1 do
+    local decoded = plugin:decode(index)
+    if not decoded then
+      error(`record {index} ({plugin:tag(index)}) has a record type tes3conv can't read`)
+    end
 
-    if not value then error(`{tostring(record)} has a record type tes3conv can't read`) end
+    local value = (decoded :: unknown) :: Table
 
     local field = ExactText[value.type :: string]
 
@@ -369,7 +367,7 @@ function tes3conv.recordsWithBytes(plugin: Plugin): (Records, { string })
     end
 
     table.insert(records, value)
-    table.insert(bytes, buffer.tostring(record:bytes()))
+    table.insert(bytes, buffer.tostring(plugin:bytes(index)))
   end
 
   local sortedRecords: Records, sortedBytes: { string } = {}, {}
@@ -382,6 +380,6 @@ function tes3conv.recordsWithBytes(plugin: Plugin): (Records, { string })
   return sortedRecords, sortedBytes
 end
 
-function tes3conv.records(plugin: Plugin): Records return (tes3conv.recordsWithBytes(plugin)) end
+function tes3conv.records(plugin: core.Plugin): Records return (tes3conv.recordsWithBytes(plugin)) end
 
 return tes3conv
