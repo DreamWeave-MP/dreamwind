@@ -10,6 +10,8 @@ tests = [
     "tests/archive/tool.luau",
     "tests/openmw-import-morrowind/run.luau",
     "tests/openmw-config/run.luau",
+    "tests/vfs/run.luau",
+    "tests/vfs/vfstool.luau",
     "tests/starwind/run.luau",
     "tests/tes3/run.luau",
     "tests/tes3cmd/run.luau",

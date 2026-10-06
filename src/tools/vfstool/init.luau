@@ -24,7 +24,7 @@ local function run(argv: { string }): number
 
   local action = table.remove(argv, 1)
   if action == 'help' or action == '--help' or action == '-h' then
-    cli.out('vfstool: use jess package test jpk/dreamwind for command and API tests')
+    cli.out('vfstool: use jess package test . for command and API tests')
     return cli.Exit.ok
   end
 

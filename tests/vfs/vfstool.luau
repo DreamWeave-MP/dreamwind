@@ -10,8 +10,7 @@ local vfstool = require '@dreamwind/vfstool'
 local expect = test.expect
 local suite = test.new()
 local globals = _G :: { [string]: unknown }
-local scratchRoot = globals.scratchRoot
-if type(scratchRoot) ~= 'string' then error('the vfstool test needs scratchRoot', 0) end
+local scratchRoot = globals.scratchRoot or support.settings.scratchRoot or `{fs.cwd()}/vfs-suite`
 
 suite.describe('vfstool CLI', function()
   suite.it('reads YAML, JSON, and TOML lock manifests through drift', function()

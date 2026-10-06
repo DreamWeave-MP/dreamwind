@@ -6,7 +6,7 @@ Turns `gamebryo_schema.luau` into the multi-version reader's codec modules under
 `nif/gamebryo/`: `structs.luau`, one module per record class in `records/`, and `load.luau`,
 which requires those on first use:
 
-  jess run jpk/dreamwind/generators/nif/gamebryo.luau jpk/dreamwind/src/nif/internal/gamebryo
+  jess run generators/nif/gamebryo.luau src/nif/internal/gamebryo
 
 A record class's `read` is one straight-line function over its bases' fields and its own, every
 field a local until one table constructor at the end; its `check` is OpenMW's post-load pass:

@@ -2,7 +2,7 @@
 --!native
 -- The Starwind port's own cases, on records small enough to read: the tool ports' semantics
 -- (addVanillaRefs's are its Rust tests, case for case), and the tes3cmd and validator corners the
--- Python build depends on. The real-data equivalence check is equivalence.luau.
+-- Python build depends on.
 local addVanillaRefs = require '@dreamwind/tools/add-vanilla-refs'
 local mergeToMaster = require '@dreamwind/tools/merge-to-master'
 local starwind = require '@dreamwind/starwind'

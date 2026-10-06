@@ -7,7 +7,7 @@ data: the record class hierarchy (`struct Name : public Base` in the headers, te
 instantiations through `using`), the record types (`RC_*` in `record.hpp`), and the record
 factory (`niffile.cpp`). Writes `nif/gamebryo/classes.luau`:
 
-  jess run jpk/dreamwind/generators/nif/openmw.luau <openmw checkout> jpk/dreamwind/src/nif/internal/gamebryo
+  jess run generators/nif/openmw.luau <openmw checkout> src/nif/internal/gamebryo
 
 Run it after updating the OpenMW checkout; the record readers themselves are `gamebryo.luau`'s
 schema, which follows the same headers by hand.

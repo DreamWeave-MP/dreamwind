@@ -1,0 +1,11 @@
+# Packed output and local test/work data.
+*.jpk
+/target/
+/vfs-suite/
+
+# Local Bethesda/OpenMW data used for manual and real-data checks.
+/Morrowind.esm
+/Oblivion.esm
+/*.omwsave
+/*.ess
+/openmw/

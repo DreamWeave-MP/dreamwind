@@ -6,7 +6,7 @@ Turns `schema.luau` into the codec modules under `nif/`: `scan.luau`, `structs.l
 module per record type in `records/`, `load.luau` to require those on first use, `enums.luau`,
 and `types.luau`:
 
-  jess run jpk/dreamwind/generators/nif/generate.luau jpk/dreamwind/src/nif/internal
+  jess run generators/nif/generate.luau src/nif/internal
 
 For every record and struct there are four straight-line functions: `scan` walks past its fields
 collecting the links, `read` decodes them into one table, `write` encodes a table, and `links`
