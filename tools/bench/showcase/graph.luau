@@ -1,0 +1,175 @@
+--!strict
+-- Renders the historical native-vs-DreamWind showcase results as SVG. The old harness used Python
+-- plus ImageMagick; the benchmark repository now keeps the reproducible graph step in Luau.
+local json = require '@jess/json'
+
+local resultsPath = arg[1]
+if not resultsPath then error('usage: graph.luau RESULTS.json [OUTPUT.svg]', 0) end
+local output = arg[2] or 'target/bench/showcase.svg'
+local source = assert(jess.fs.read(resultsPath), `showcase results not found: {resultsPath}`)
+local results = json.decode(source) :: any
+assert(results.kind == 'showcase', `expected showcase results, got {tostring(results.kind)}`)
+
+local Width = 1600
+local Height = 900
+local Background = '#0b0b0d'
+local Text = '#f0f0f2'
+local Dim = '#8a8f99'
+local Faint = '#555a63'
+local Axis = '#1d1f24'
+local Native = '#6a707c'
+local Jess = '#b36bff'
+local Sans = "'Fira Sans', Cantarell, 'Adwaita Sans', sans-serif"
+local Mono = "'Fira Code', 'Fira Mono', monospace"
+local Top = 230
+local Bottom = 810
+local Bar = 50
+local Gap = 12
+
+local Panels = {
+  { title = 'WALL TIME', key = 'wall', left = 320, span = 350, ratio = 832, word = 'faster' },
+  { title = 'PEAK MEMORY', key = 'rss', left = 992, span = 336, ratio = 1515, word = 'less' },
+}
+
+local function escape(value: string): string
+  return (value:gsub('&', '&amp;'):gsub('<', '&lt;'):gsub('>', '&gt;'):gsub('"', '&quot;'))
+end
+
+local function text(
+  horizontal: number,
+  vertical: number,
+  content: string,
+  size: number,
+  fill: string,
+  family: string?,
+  anchor: string?,
+  weight: number?
+): string
+  return string.format(
+    '<text x="%.1f" y="%.1f" font-family="%s" font-size="%d" font-weight="%d" fill="%s" text-anchor="%s">%s</text>',
+    horizontal,
+    vertical,
+    family or Mono,
+    size,
+    weight or 400,
+    fill,
+    anchor or 'start',
+    escape(content)
+  )
+end
+
+local function seconds(value: number): string
+  return if value < 10 then string.format('%.2f s', value) else string.format('%.1f s', value)
+end
+
+local function size(value: number): string
+  local mebibytes = value / 1048576
+  return if mebibytes < 1024
+    then string.format('%.0f MiB', mebibytes)
+    else string.format('%.2f GiB', mebibytes / 1024)
+end
+
+local function formatValue(key: string, value: number): string
+  return if key == 'wall' then seconds(value) else size(value)
+end
+
+local workloads: { any } = {}
+for _, workload in results.workloads do
+  local implementations = workload.implementations
+  if type(implementations) == 'table' and implementations.native then table.insert(workloads, workload) end
+end
+assert(#workloads > 0, 'showcase results contain no native comparisons')
+
+local row = (Bottom - Top) / #workloads
+local parts = {
+  string.format('<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">', Width, Height, Width, Height),
+  `<rect width="{Width}" height="{Height}" fill="{Background}"/>`,
+  `<text x="80" y="118" font-family="{Sans}" font-size="84" font-weight="600" fill="{Text}">DreamWind<tspan fill="{Jess}">_</tspan></text>`,
+}
+
+for index, legend in {
+  { label = 'native', color = Native },
+  { label = 'dreamwind · luau', color = Jess },
+} do
+  local horizontal = 1135 + (index - 1) * 205
+  table.insert(parts, `<rect x="{horizontal}" y="88" width="22" height="22" fill="{legend.color}"/>`)
+  table.insert(parts, text(horizontal + 30, 106, legend.label, 20, Dim))
+end
+
+for _, panel in Panels do
+  table.insert(parts, text(panel.left, 188, panel.title, 20, Dim, nil, nil, 700))
+  table.insert(parts, string.format(
+    '<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" stroke-width="2"/>',
+    panel.left,
+    Top - 14,
+    panel.left,
+    Bottom,
+    Axis
+  ))
+
+  local largest = 0
+  for _, workload in workloads do
+    for _, implementation in { 'native', 'jess' } do
+      local measured = workload.implementations[implementation].summary[panel.key]
+      largest = math.max(largest, measured.max)
+    end
+  end
+
+  for index, workload in workloads do
+    local middle = Top + row * (index - 0.5)
+    for _, implementation in {
+      { offset = -1, name = 'native', color = Native, label = Dim },
+      { offset = 1, name = 'jess', color = Jess, label = Text },
+    } do
+      local measured = workload.implementations[implementation.name].summary[panel.key]
+      local vertical = if implementation.offset < 0 then middle - Bar - Gap / 2 else middle + Gap / 2
+      local scale = panel.span / largest
+      local finish = panel.left + measured.median * scale
+      local low = panel.left + measured.min * scale
+      local high = panel.left + measured.max * scale
+      table.insert(parts, string.format(
+        '<rect x="%d" y="%.1f" width="%.1f" height="%d" fill="%s"/>',
+        panel.left,
+        vertical,
+        math.max(finish - panel.left, 2),
+        Bar,
+        implementation.color
+      ))
+      table.insert(parts, string.format(
+        '<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="1.5"/>',
+        low,
+        vertical + Bar / 2,
+        high,
+        vertical + Bar / 2,
+        Dim
+      ))
+      table.insert(parts, text(
+        math.max(finish, high) + 8,
+        vertical + Bar / 2 + 7,
+        formatValue(panel.key, measured.median),
+        19,
+        implementation.label
+      ))
+    end
+
+    local native = workload.implementations.native.summary[panel.key].median
+    local dreamwind = workload.implementations.jess.summary[panel.key].median
+    table.insert(parts, text(panel.ratio, middle - 4, string.format('%.1f×', native / dreamwind), 26, Jess, Sans, 'middle', 600))
+    table.insert(parts, text(panel.ratio, middle + 26, panel.word, 26, Jess, Sans, 'middle', 600))
+  end
+end
+
+for index, workload in workloads do
+  local lines: { string } = {}
+  for line in string.gmatch(workload.title, '[^\n]+') do table.insert(lines, line) end
+  local middle = Top + row * (index - 0.5)
+  for number, line in lines do
+    local vertical = middle + 9 + (number - 1 - (#lines - 1) / 2) * 30
+    table.insert(parts, text(300, vertical, line, 25, Text, Sans, 'end', 600))
+  end
+end
+
+table.insert(parts, text(1520, 868, `median of {results.runs} · whiskers min–max`, 17, Faint, nil, 'end'))
+table.insert(parts, '</svg>')
+jess.fs.write(output, table.concat(parts, '\n') .. '\n')
+print(output)

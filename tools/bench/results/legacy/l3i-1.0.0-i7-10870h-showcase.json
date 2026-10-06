@@ -1,0 +1,1117 @@
+{
+ "schema": 1,
+ "kind": "showcase",
+ "started": "2026-09-30T07:01:48+00:00",
+ "jess": {
+  "commit": "97a4da8e30ea7a06b372cef8429bf5a2a153e05c",
+  "dirty": false,
+  "binary": "target/release/jess",
+  "binary_sha256": "ece1688c3bcbd02eafa492db59089db4664aab1d4ff13d9ffe6784cd8509724d",
+  "profile": "release",
+  "runtime": "l3i 1.0.0",
+  "luau": "Luau 0.740"
+ },
+ "machine": {
+  "os": "Bazzite",
+  "kernel": "7.2.4-ogc3.1.fc44.x86_64",
+  "cpu": "Intel(R) Core(TM) i7-10870H CPU @ 2.20GHz",
+  "threads": 16,
+  "memory_bytes": 16522035200,
+  "governor": "performance"
+ },
+ "load_start": [
+  1.48974609375,
+  1.9716796875,
+  2.90576171875
+ ],
+ "busiest_at_start": [
+  "46.3% opencode",
+  "29.9% vivaldi",
+  "6.3% kwin_wayland",
+  "6.0% vivaldi",
+  "4.0% claude"
+ ],
+ "runs": 5,
+ "warmup": 1,
+ "load_order": {
+  "config": "OpenMW default",
+  "config_sha256": "d5762132d0a2c58edeb7038c8df6f7c0f2f2fef4b2a803e8b1413564815dc927",
+  "content_files": 69,
+  "plugins": 52,
+  "plugin_bytes": 451592864,
+  "data_dirs": 118
+ },
+ "natives": {
+  "mergedlands": {
+   "binary": "merged_lands",
+   "sha256": "377bd356dfa300a8513f1857059a29dd8110577e82821c0cdfd7c8ae349f1c29"
+  },
+  "tes3merge": {
+   "binary": "tes3merge",
+   "sha256": "a6d553b2ab6ccfa00fbb5de2eff63d101534b79eeea9436c4cec7bdc3409915d"
+  },
+  "s3lightfixes-sun": {
+   "binary": "s3lightfixes",
+   "sha256": "68a55de73113157227bf6194dcd22c9ab4fdc3a361b47e373f552356a082f9ce"
+  },
+  "s3lightfixes": {
+   "binary": "s3lightfixes",
+   "sha256": "68a55de73113157227bf6194dcd22c9ab4fdc3a361b47e373f552356a082f9ce"
+  }
+ },
+ "workloads": [
+  {
+   "name": "tes3merge",
+   "title": "TES3Merge",
+   "load_start": [
+    1.48974609375,
+    1.9716796875,
+    2.90576171875
+   ],
+   "implementations": {
+    "jess": {
+     "title": "jess",
+     "version": null,
+     "command": [
+      "{tool}",
+      "run",
+      "--openmw-cfg",
+      "{dir}"
+     ],
+     "samples": [
+      {
+       "wall": 0.4962250510006925,
+       "cpu": 1.2271869999999998,
+       "user": 0.512088,
+       "system": 0.7150989999999999,
+       "rss": 682229760
+      },
+      {
+       "wall": 0.4945872970001801,
+       "cpu": 1.1943190000000001,
+       "user": 0.542007,
+       "system": 0.652312,
+       "rss": 682594304
+      },
+      {
+       "wall": 0.4723050399998101,
+       "cpu": 1.2208549999999998,
+       "user": 0.538773,
+       "system": 0.682082,
+       "rss": 679170048
+      },
+      {
+       "wall": 0.5265528300005826,
+       "cpu": 1.2301099999999998,
+       "user": 0.534681,
+       "system": 0.695429,
+       "rss": 681046016
+      },
+      {
+       "wall": 0.46989982899958704,
+       "cpu": 1.2518129999999998,
+       "user": 0.517774,
+       "system": 0.734039,
+       "rss": 685023232
+      }
+     ],
+     "summary": {
+      "wall": {
+       "median": 0.4945872970001801,
+       "min": 0.46989982899958704,
+       "max": 0.5265528300005826
+      },
+      "cpu": {
+       "median": 1.2271869999999998,
+       "min": 1.1943190000000001,
+       "max": 1.2518129999999998
+      },
+      "rss": {
+       "median": 682229760,
+       "min": 679170048,
+       "max": 685023232
+      }
+     },
+     "outputs": {
+      "data-local/Merged Objects.esp": {
+       "bytes": 17617,
+       "sha256": "2d0721ab3ac7607ec06d55387dda4afb29159ee6d0859c39f736c7d2f3269d9d",
+       "normalized_sha256": "3bdff2899a3fd2d2beebd15d8e280f0ac90b89d0acf5b1ccd81607c71e697c94",
+       "records": {
+        "MGEF": 7,
+        "CONT": 1,
+        "CREA": 18,
+        "BOOK": 8,
+        "CELL": 4
+       }
+      }
+     }
+    },
+    "native": {
+     "title": "TES3Merge",
+     "version": "0.12.0.0",
+     "command": [
+      "{tool}"
+     ],
+     "samples": [
+      {
+       "wall": 10.393647461,
+       "cpu": 29.03764,
+       "user": 26.550475,
+       "system": 2.487165,
+       "rss": 983154688
+      },
+      {
+       "wall": 10.831771128000582,
+       "cpu": 29.66741,
+       "user": 26.98064,
+       "system": 2.68677,
+       "rss": 966934528
+      },
+      {
+       "wall": 10.955355801000223,
+       "cpu": 31.125839000000003,
+       "user": 28.454395,
+       "system": 2.671444,
+       "rss": 966590464
+      },
+      {
+       "wall": 10.466047910999805,
+       "cpu": 29.907961,
+       "user": 27.364384,
+       "system": 2.543577,
+       "rss": 965693440
+      },
+      {
+       "wall": 10.429168886999832,
+       "cpu": 29.826214,
+       "user": 27.310633,
+       "system": 2.515581,
+       "rss": 977711104
+      }
+     ],
+     "summary": {
+      "wall": {
+       "median": 10.466047910999805,
+       "min": 10.393647461,
+       "max": 10.955355801000223
+      },
+      "cpu": {
+       "median": 29.826214,
+       "min": 29.03764,
+       "max": 31.125839000000003
+      },
+      "rss": {
+       "median": 966934528,
+       "min": 965693440,
+       "max": 983154688
+      }
+     },
+     "outputs": {
+      "data-local/Merged Objects.esp": {
+       "bytes": 21491,
+       "sha256": "db39215abea46ee738c8053e75b455768164b33cd1bc183d3a050f971260f773",
+       "normalized_sha256": "f062e39bebb616406e06e8c85a2c03ab011090275835b65943ab86ae15b16c91",
+       "records": {
+        "MGEF": 10,
+        "CONT": 1,
+        "CREA": 22,
+        "BOOK": 8,
+        "CELL": 4
+       }
+      }
+     }
+    }
+   },
+   "equivalence": {
+    "data-local/Merged Objects.esp": {
+     "status": "known-differences",
+     "details": {
+      "reasons": [
+       "native TES3Merge merges the garbage in AIDT padding: it writes four creature records that change nothing, and copies the padding into the ones both write",
+       "native TES3Merge writes MGEF subrecords in TES3Lib's property order, sounds after the description, not the order of the Construction Set, OpenMW, and every source plugin; the reordered bytes differ from the original, so it writes three magic effects that change nothing",
+       "native TES3Merge keeps a cell's NAM0, the count of the temporary references after it, when it comes before the first reference, and then leaves every reference out; the port writes no count for references it doesn't write, and OpenMW's engine never reads it"
+      ],
+      "normalized": [
+       "aidt-padding",
+       "mgef-subrecord-order",
+       "cell-nam0"
+      ],
+      "only_native": [
+       [
+        "MGEF",
+        "64"
+       ],
+       [
+        "MGEF",
+        "123"
+       ],
+       [
+        "MGEF",
+        "127"
+       ],
+       [
+        "CREA",
+        "dagoth endus"
+       ],
+       [
+        "CREA",
+        "centurion_fire_dead"
+       ],
+       [
+        "CREA",
+        "golden saint_staada"
+       ],
+       [
+        "CREA",
+        "atronach_frost_summon"
+       ]
+      ]
+     }
+    }
+   },
+   "facts": {
+    "tes3merge.masters": 9,
+    "tes3merge.files": 52,
+    "tes3merge.merged.CONT": 1,
+    "tes3merge.merged.CELL": 4,
+    "tes3merge.merged.BOOK": 8,
+    "tes3merge.merged.CREA": 18,
+    "tes3merge.merged.MGEF": 7,
+    "tes3merge.candidates": 526
+   }
+  },
+  {
+   "name": "s3lightfixes",
+   "title": "S3LightFixes",
+   "load_start": [
+    3.17333984375,
+    2.3828125,
+    2.98046875
+   ],
+   "implementations": {
+    "jess": {
+     "title": "jess",
+     "version": null,
+     "command": [
+      "{tool}",
+      "run",
+      "--openmw-cfg",
+      "{dir}"
+     ],
+     "samples": [
+      {
+       "wall": 0.3556992350004293,
+       "cpu": 1.209251,
+       "user": 0.42407799999999995,
+       "system": 0.785173,
+       "rss": 633479168
+      },
+      {
+       "wall": 0.35515397599920107,
+       "cpu": 1.175795,
+       "user": 0.401787,
+       "system": 0.7740079999999999,
+       "rss": 636063744
+      },
+      {
+       "wall": 0.3530371919987374,
+       "cpu": 1.158702,
+       "user": 0.43354899999999996,
+       "system": 0.7251529999999999,
+       "rss": 634195968
+      },
+      {
+       "wall": 0.3613077849986439,
+       "cpu": 1.182252,
+       "user": 0.417438,
+       "system": 0.764814,
+       "rss": 632569856
+      },
+      {
+       "wall": 0.3532211420006206,
+       "cpu": 1.153962,
+       "user": 0.45316799999999996,
+       "system": 0.7007939999999999,
+       "rss": 633298944
+      }
+     ],
+     "summary": {
+      "wall": {
+       "median": 0.35515397599920107,
+       "min": 0.3530371919987374,
+       "max": 0.3613077849986439
+      },
+      "cpu": {
+       "median": 1.175795,
+       "min": 1.153962,
+       "max": 1.209251
+      },
+      "rss": {
+       "median": 633479168,
+       "min": 632569856,
+       "max": 636063744
+      }
+     },
+     "outputs": {
+      "data-local/S3LightFixes.omwaddon": {
+       "bytes": 367395,
+       "sha256": "badec3d862a868238174be704f6bcf347423b7320bd4bd638cfe2821b1fb9065",
+       "normalized_sha256": "badec3d862a868238174be704f6bcf347423b7320bd4bd638cfe2821b1fb9065",
+       "records": {
+        "LIGH": 2743
+       }
+      },
+      "lightconfig.toml": {
+       "bytes": 848,
+       "sha256": "7593274f4e2b45055835106cf36f51a9fd1b1ac4fed2c7d240b25a612c7e1aeb"
+      },
+      "lightconfig.log": {
+       "bytes": 505934,
+       "sha256": "a1e60cf03e9dca1cba9c2b24e05b1f355fb44f43f4effe41b5658efadcf8a6db"
+      }
+     }
+    },
+    "native": {
+     "title": "S3LightFixes",
+     "version": "0.4.59",
+     "command": [
+      "{tool}",
+      "--openmw-cfg",
+      "{dir}",
+      "--no-notifications"
+     ],
+     "samples": [
+      {
+       "wall": 0.6444072399990546,
+       "cpu": 2.4508010000000002,
+       "user": 1.483057,
+       "system": 0.9677439999999999,
+       "rss": 1533583360
+      },
+      {
+       "wall": 0.6440242099997704,
+       "cpu": 2.495024,
+       "user": 1.543893,
+       "system": 0.951131,
+       "rss": 1541083136
+      },
+      {
+       "wall": 0.6416501570001856,
+       "cpu": 2.535464,
+       "user": 1.553738,
+       "system": 0.981726,
+       "rss": 1542012928
+      },
+      {
+       "wall": 0.6510614420003549,
+       "cpu": 2.51355,
+       "user": 1.54217,
+       "system": 0.9713799999999999,
+       "rss": 1539956736
+      },
+      {
+       "wall": 0.6498508889999357,
+       "cpu": 2.4966429999999997,
+       "user": 1.533648,
+       "system": 0.9629949999999999,
+       "rss": 1541550080
+      }
+     ],
+     "summary": {
+      "wall": {
+       "median": 0.6444072399990546,
+       "min": 0.6416501570001856,
+       "max": 0.6510614420003549
+      },
+      "cpu": {
+       "median": 2.4966429999999997,
+       "min": 2.4508010000000002,
+       "max": 2.535464
+      },
+      "rss": {
+       "median": 1541083136,
+       "min": 1533583360,
+       "max": 1542012928
+      }
+     },
+     "outputs": {
+      "data-local/S3LightFixes.omwaddon": {
+       "bytes": 367395,
+       "sha256": "badec3d862a868238174be704f6bcf347423b7320bd4bd638cfe2821b1fb9065",
+       "normalized_sha256": "badec3d862a868238174be704f6bcf347423b7320bd4bd638cfe2821b1fb9065",
+       "records": {
+        "LIGH": 2743
+       }
+      },
+      "lightconfig.toml": {
+       "bytes": 848,
+       "sha256": "7593274f4e2b45055835106cf36f51a9fd1b1ac4fed2c7d240b25a612c7e1aeb"
+      },
+      "lightconfig.log": {
+       "bytes": 505934,
+       "sha256": "a1e60cf03e9dca1cba9c2b24e05b1f355fb44f43f4effe41b5658efadcf8a6db"
+      }
+     }
+    }
+   },
+   "equivalence": {
+    "data-local/S3LightFixes.omwaddon": {
+     "status": "identical"
+    },
+    "lightconfig.toml": {
+     "status": "identical"
+    },
+    "lightconfig.log": {
+     "status": "identical"
+    }
+   },
+   "facts": {
+    "s3lightfixes.masters": 10,
+    "s3lightfixes.logs": 2743,
+    "s3lightfixes.cells": 0,
+    "s3lightfixes.lights": 2743,
+    "s3lightfixes.objects": 2743
+   }
+  },
+  {
+   "name": "s3lightfixes-sun",
+   "title": "S3LightFixes\ninterior sun off",
+   "load_start": [
+    2.9990234375,
+    2.359375,
+    2.9697265625
+   ],
+   "implementations": {
+    "jess": {
+     "title": "jess",
+     "version": null,
+     "command": [
+      "{tool}",
+      "run",
+      "--openmw-cfg",
+      "{dir}"
+     ],
+     "samples": [
+      {
+       "wall": 0.3834883319996152,
+       "cpu": 0.9313319999999999,
+       "user": 0.354248,
+       "system": 0.5770839999999999,
+       "rss": 544735232
+      },
+      {
+       "wall": 0.3610066460005328,
+       "cpu": 0.89242,
+       "user": 0.32752,
+       "system": 0.5649,
+       "rss": 540061696
+      },
+      {
+       "wall": 0.3825207709996903,
+       "cpu": 0.921333,
+       "user": 0.384691,
+       "system": 0.536642,
+       "rss": 541372416
+      },
+      {
+       "wall": 0.4015808359999937,
+       "cpu": 0.929708,
+       "user": 0.37895399999999996,
+       "system": 0.550754,
+       "rss": 541413376
+      },
+      {
+       "wall": 0.4038000810014637,
+       "cpu": 0.9568429999999999,
+       "user": 0.377839,
+       "system": 0.579004,
+       "rss": 540438528
+      }
+     ],
+     "summary": {
+      "wall": {
+       "median": 0.3834883319996152,
+       "min": 0.3610066460005328,
+       "max": 0.4038000810014637
+      },
+      "cpu": {
+       "median": 0.929708,
+       "min": 0.89242,
+       "max": 0.9568429999999999
+      },
+      "rss": {
+       "median": 541372416,
+       "min": 540061696,
+       "max": 544735232
+      }
+     },
+     "outputs": {
+      "data-local/S3LightFixes.omwaddon": {
+       "bytes": 895258,
+       "sha256": "c1f7c5ace460d4205ff5875a3f99ece864a3486c24e2fc55262ee24560c23ced",
+       "normalized_sha256": "c1f7c5ace460d4205ff5875a3f99ece864a3486c24e2fc55262ee24560c23ced",
+       "records": {
+        "LIGH": 2743,
+        "CELL": 5587
+       }
+      },
+      "lightconfig.log": {
+       "bytes": 1038872,
+       "sha256": "941b47216e923d9df290e34dc81e05ee632a50efb42c8b61a44a9267280311aa"
+      }
+     }
+    },
+    "native": {
+     "title": "S3LightFixes",
+     "version": "0.4.59",
+     "command": [
+      "{tool}",
+      "--openmw-cfg",
+      "{dir}",
+      "--no-notifications"
+     ],
+     "samples": [
+      {
+       "wall": 0.7347743409991381,
+       "cpu": 2.5828049999999996,
+       "user": 1.5677919999999999,
+       "system": 1.015013,
+       "rss": 1543213056
+      },
+      {
+       "wall": 0.7364127939999889,
+       "cpu": 2.571208,
+       "user": 1.5504289999999998,
+       "system": 1.020779,
+       "rss": 1541722112
+      },
+      {
+       "wall": 0.7465556539991667,
+       "cpu": 2.63201,
+       "user": 1.556362,
+       "system": 1.075648,
+       "rss": 1540100096
+      },
+      {
+       "wall": 0.7503723649988387,
+       "cpu": 2.709272,
+       "user": 1.5766149999999999,
+       "system": 1.132657,
+       "rss": 1542295552
+      },
+      {
+       "wall": 0.7291766549988097,
+       "cpu": 2.5811859999999998,
+       "user": 1.538362,
+       "system": 1.042824,
+       "rss": 1539223552
+      }
+     ],
+     "summary": {
+      "wall": {
+       "median": 0.7364127939999889,
+       "min": 0.7291766549988097,
+       "max": 0.7503723649988387
+      },
+      "cpu": {
+       "median": 2.5828049999999996,
+       "min": 2.571208,
+       "max": 2.709272
+      },
+      "rss": {
+       "median": 1541722112,
+       "min": 1539223552,
+       "max": 1543213056
+      }
+     },
+     "outputs": {
+      "data-local/S3LightFixes.omwaddon": {
+       "bytes": 895258,
+       "sha256": "c1f7c5ace460d4205ff5875a3f99ece864a3486c24e2fc55262ee24560c23ced",
+       "normalized_sha256": "c1f7c5ace460d4205ff5875a3f99ece864a3486c24e2fc55262ee24560c23ced",
+       "records": {
+        "LIGH": 2743,
+        "CELL": 5587
+       }
+      },
+      "lightconfig.log": {
+       "bytes": 1038872,
+       "sha256": "941b47216e923d9df290e34dc81e05ee632a50efb42c8b61a44a9267280311aa"
+      }
+     }
+    }
+   },
+   "equivalence": {
+    "data-local/S3LightFixes.omwaddon": {
+     "status": "identical"
+    },
+    "lightconfig.log": {
+     "status": "identical"
+    }
+   },
+   "facts": {
+    "s3lightfixes.masters": 16,
+    "s3lightfixes.logs": 8211,
+    "s3lightfixes.cells": 5587,
+    "s3lightfixes.lights": 2743,
+    "s3lightfixes.objects": 8330
+   }
+  },
+  {
+   "name": "mergedlands",
+   "title": "Merged Lands",
+   "load_start": [
+    2.8388671875,
+    2.33642578125,
+    2.958984375
+   ],
+   "implementations": {
+    "jess": {
+     "title": "jess",
+     "version": null,
+     "command": [
+      "{tool}",
+      "run",
+      "--openmw-cfg",
+      "{dir}"
+     ],
+     "samples": [
+      {
+       "wall": 2.6616308039992873,
+       "cpu": 3.177609,
+       "user": 2.4400209999999998,
+       "system": 0.737588,
+       "rss": 813199360
+      },
+      {
+       "wall": 2.660172029000023,
+       "cpu": 3.1700289999999995,
+       "user": 2.524739,
+       "system": 0.6452899999999999,
+       "rss": 810692608
+      },
+      {
+       "wall": 2.7287591170006635,
+       "cpu": 3.231673,
+       "user": 2.5637369999999997,
+       "system": 0.667936,
+       "rss": 808902656
+      },
+      {
+       "wall": 2.7169990799993684,
+       "cpu": 3.2281079999999998,
+       "user": 2.537617,
+       "system": 0.690491,
+       "rss": 812326912
+      },
+      {
+       "wall": 2.6616615789989737,
+       "cpu": 3.190483,
+       "user": 2.525242,
+       "system": 0.665241,
+       "rss": 811757568
+      }
+     ],
+     "summary": {
+      "wall": {
+       "median": 2.6616615789989737,
+       "min": 2.660172029000023,
+       "max": 2.7287591170006635
+      },
+      "cpu": {
+       "median": 3.190483,
+       "min": 3.1700289999999995,
+       "max": 3.231673
+      },
+      "rss": {
+       "median": 811757568,
+       "min": 808902656,
+       "max": 813199360
+      }
+     },
+     "outputs": {
+      "data-local/Merged Lands.omwaddon": {
+       "bytes": 64172093,
+       "sha256": "6c2d8f783480af77464bcc8df523ad15dec6333b8b8793fdb8daa475b73911cd",
+       "normalized_sha256": "c800c62e69821bf18364e6b362ac0eaa9f2fdf4042cec03890919ef2e7e3087b",
+       "records": {
+        "LTEX": 259,
+        "LAND": 2144
+       }
+      }
+     }
+    },
+    "native": {
+     "title": "Merged Lands",
+     "version": "0.2.0",
+     "command": [
+      "{tool}",
+      "--openmw-cfg",
+      "{dir}",
+      "--config-dir",
+      "{dir}",
+      "--merged-lands-dir",
+      "{dir}"
+     ],
+     "samples": [
+      {
+       "wall": 10.290990699000758,
+       "cpu": 10.546996,
+       "user": 6.387475,
+       "system": 4.159521,
+       "rss": 5830680576
+      },
+      {
+       "wall": 9.803259086000253,
+       "cpu": 10.071935,
+       "user": 6.051594,
+       "system": 4.020341,
+       "rss": 5836165120
+      },
+      {
+       "wall": 9.900663828999313,
+       "cpu": 10.201581,
+       "user": 6.20522,
+       "system": 3.996361,
+       "rss": 5856206848
+      },
+      {
+       "wall": 9.945615122000163,
+       "cpu": 10.251619,
+       "user": 6.15925,
+       "system": 4.092369,
+       "rss": 5835911168
+      },
+      {
+       "wall": 9.946054149999327,
+       "cpu": 10.192547999999999,
+       "user": 6.140483,
+       "system": 4.052065,
+       "rss": 5835796480
+      }
+     ],
+     "summary": {
+      "wall": {
+       "median": 9.945615122000163,
+       "min": 9.803259086000253,
+       "max": 10.290990699000758
+      },
+      "cpu": {
+       "median": 10.201581,
+       "min": 10.071935,
+       "max": 10.546996
+      },
+      "rss": {
+       "median": 5835911168,
+       "min": 5830680576,
+       "max": 5856206848
+      }
+     },
+     "outputs": {
+      "data-local/Merged Lands.omwaddon": {
+       "bytes": 64172093,
+       "sha256": "80adbad7c000bdd0b33ac2118620b4f6d0acaeb970913120b39d81b3749c67f3",
+       "normalized_sha256": "c800c62e69821bf18364e6b362ac0eaa9f2fdf4042cec03890919ef2e7e3087b",
+       "records": {
+        "LTEX": 259,
+        "LAND": 2144
+       }
+      }
+     }
+    }
+   },
+   "equivalence": {
+    "data-local/Merged Lands.omwaddon": {
+     "status": "identical-except-timestamp"
+    }
+   },
+   "facts": {
+    "mergedlands.lands": 15571,
+    "mergedlands.seams": 2314,
+    "mergedlands.merged": 12648,
+    "mergedlands.masters": 10,
+    "mergedlands.plugins": 51,
+    "mergedlands.textures": 259
+   }
+  },
+  {
+   "name": "doctor",
+   "title": "Doctor",
+   "load_start": [
+    1.822265625,
+    2.13232421875,
+    2.830078125
+   ],
+   "implementations": {
+    "jess": {
+     "title": "jess",
+     "version": null,
+     "command": [
+      "{tool}",
+      "run",
+      "--openmw-cfg",
+      "{dir}"
+     ],
+     "samples": [
+      {
+       "wall": 1.3098949270006415,
+       "cpu": 9.233342,
+       "user": 6.169241,
+       "system": 3.064101,
+       "rss": 1081245696
+      },
+      {
+       "wall": 1.2855106799997884,
+       "cpu": 9.157647,
+       "user": 6.192897,
+       "system": 2.96475,
+       "rss": 1079078912
+      },
+      {
+       "wall": 1.22376157600047,
+       "cpu": 8.883491,
+       "user": 5.973933,
+       "system": 2.909558,
+       "rss": 1089511424
+      },
+      {
+       "wall": 1.1864053799999965,
+       "cpu": 8.904468,
+       "user": 5.9314789999999995,
+       "system": 2.972989,
+       "rss": 1093201920
+      },
+      {
+       "wall": 1.1736572409990913,
+       "cpu": 8.870913999999999,
+       "user": 5.888908,
+       "system": 2.982006,
+       "rss": 1074122752
+      }
+     ],
+     "summary": {
+      "wall": {
+       "median": 1.22376157600047,
+       "min": 1.1736572409990913,
+       "max": 1.3098949270006415
+      },
+      "cpu": {
+       "median": 8.904468,
+       "min": 8.870913999999999,
+       "max": 9.233342
+      },
+      "rss": {
+       "median": 1081245696,
+       "min": 1074122752,
+       "max": 1093201920
+      }
+     },
+     "outputs": {
+      "jess-doctor.yaml": {
+       "bytes": 602776,
+       "sha256": "7aeb11a94aa27ce8242bd2a81218689046f195018c954c66d5d1d303e4da2e6f"
+      }
+     }
+    }
+   },
+   "equivalence": {},
+   "facts": {
+    "doctor.summary.warnings": 40,
+    "doctor.summary.info": 385,
+    "doctor.summary.errors": 0,
+    "doctor.checks": 6,
+    "doctor.contentFiles": 69,
+    "doctor.plugins": 52,
+    "doctor.findings": 425
+   }
+  },
+  {
+   "name": "doctor-assets",
+   "title": "Doctor, assets and meshes",
+   "load_start": [
+    4.751953125,
+    2.75341796875,
+    3.02490234375
+   ],
+   "implementations": {
+    "jess": {
+     "title": "jess",
+     "version": null,
+     "command": [
+      "{tool}",
+      "run",
+      "--openmw-cfg",
+      "{dir}"
+     ],
+     "samples": [
+      {
+       "wall": 1.1128413530004764,
+       "cpu": 7.840977,
+       "user": 5.052903,
+       "system": 2.788074,
+       "rss": 781266944
+      },
+      {
+       "wall": 1.071078832999774,
+       "cpu": 8.267852,
+       "user": 5.3887979999999995,
+       "system": 2.879054,
+       "rss": 754487296
+      },
+      {
+       "wall": 1.109971575999225,
+       "cpu": 8.197928000000001,
+       "user": 5.278352,
+       "system": 2.919576,
+       "rss": 825896960
+      },
+      {
+       "wall": 1.1562471769993863,
+       "cpu": 8.296050000000001,
+       "user": 5.347291,
+       "system": 2.948759,
+       "rss": 817016832
+      },
+      {
+       "wall": 1.1154690309995203,
+       "cpu": 8.232174,
+       "user": 5.371674,
+       "system": 2.8605,
+       "rss": 811515904
+      }
+     ],
+     "summary": {
+      "wall": {
+       "median": 1.1128413530004764,
+       "min": 1.071078832999774,
+       "max": 1.1562471769993863
+      },
+      "cpu": {
+       "median": 8.232174,
+       "min": 7.840977,
+       "max": 8.296050000000001
+      },
+      "rss": {
+       "median": 811515904,
+       "min": 754487296,
+       "max": 825896960
+      }
+     },
+     "outputs": {
+      "jess-doctor.yaml": {
+       "bytes": 254871,
+       "sha256": "c9ee26af564ff3ee7a96a1bce40bf3fbe55693f61e0ff2b603b3021bf97bfd60"
+      }
+     }
+    }
+   },
+   "equivalence": {},
+   "facts": {
+    "doctor.summary.warnings": 18,
+    "doctor.summary.info": 376,
+    "doctor.summary.errors": 0,
+    "doctor.checks": 2,
+    "doctor.contentFiles": 69,
+    "doctor.plugins": 52,
+    "doctor.findings": 394
+   }
+  },
+  {
+   "name": "doctor-rest",
+   "title": "Doctor, without assets and meshes",
+   "load_start": [
+    4.53125,
+    2.74072265625,
+    3.01904296875
+   ],
+   "implementations": {
+    "jess": {
+     "title": "jess",
+     "version": null,
+     "command": [
+      "{tool}",
+      "run",
+      "--openmw-cfg",
+      "{dir}"
+     ],
+     "samples": [
+      {
+       "wall": 0.459957367998868,
+       "cpu": 1.808706,
+       "user": 0.864517,
+       "system": 0.944189,
+       "rss": 999464960
+      },
+      {
+       "wall": 0.4708636449995538,
+       "cpu": 1.884217,
+       "user": 0.859181,
+       "system": 1.025036,
+       "rss": 997498880
+      },
+      {
+       "wall": 0.47247731700008444,
+       "cpu": 1.798169,
+       "user": 0.8090579999999999,
+       "system": 0.989111,
+       "rss": 994242560
+      },
+      {
+       "wall": 0.4594644389999303,
+       "cpu": 1.864907,
+       "user": 0.830364,
+       "system": 1.034543,
+       "rss": 998457344
+      },
+      {
+       "wall": 0.4672734070009028,
+       "cpu": 1.8933389999999999,
+       "user": 0.8996299999999999,
+       "system": 0.993709,
+       "rss": 1005125632
+      }
+     ],
+     "summary": {
+      "wall": {
+       "median": 0.4672734070009028,
+       "min": 0.4594644389999303,
+       "max": 0.47247731700008444
+      },
+      "cpu": {
+       "median": 1.864907,
+       "min": 1.798169,
+       "max": 1.8933389999999999
+      },
+      "rss": {
+       "median": 998457344,
+       "min": 994242560,
+       "max": 1005125632
+      }
+     },
+     "outputs": {
+      "jess-doctor.yaml": {
+       "bytes": 348127,
+       "sha256": "ecb07110a8b7ac198290ae016065ef73ba0847f4195fee1f443a10e235192dc7"
+      }
+     }
+    }
+   },
+   "equivalence": {},
+   "facts": {
+    "doctor.summary.warnings": 22,
+    "doctor.summary.info": 9,
+    "doctor.summary.errors": 0,
+    "doctor.checks": 4,
+    "doctor.contentFiles": 69,
+    "doctor.plugins": 52,
+    "doctor.findings": 31
+   }
+  }
+ ],
+ "load_end": [
+  5.28955078125,
+  2.927734375,
+  3.078125
+ ]
+}

@@ -1,0 +1,363 @@
+--!strict
+--!native
+-- DreamWind-owned format benchmarks. Run from this repository with DreamWind activated:
+-- `jess run --package . tools/bench/bench.luau canaries`.
+local json = require '@jess/json'
+local bytes = require '@dream/bytes'
+
+export type Canary = {
+  name: string,
+  path: string,
+  run: (scale: number, root: string) -> number,
+}
+
+type Summary = {
+  median: number,
+  min: number,
+  max: number,
+}
+
+type Workload = {
+  name: string,
+  script_sha256: string,
+  samples: { number },
+  summary: Summary,
+}
+
+type Results = {
+  schema: number,
+  kind: string,
+  started: number,
+  jess: { version: string },
+  machine: { cpu: string },
+  runs: number,
+  warmup: number,
+  scale: number,
+  workloads: { Workload },
+}
+
+local Canaries: { Canary } = {
+  require './canaries/open' :: Canary,
+  require './canaries/find' :: Canary,
+  require './canaries/scan' :: Canary,
+  require './canaries/decode' :: Canary,
+  require './canaries/save' :: Canary,
+}
+
+local function fail(message: string): never error(`dreamwind bench: {message}`, 0) end
+
+local function positiveNumber(value: string?, option: string): number
+  local number = value and tonumber(value)
+  if not number or number <= 0 then fail(`{option} needs a positive number`) end
+
+  return number :: number
+end
+
+local function nonNegativeInteger(value: string?, option: string): number
+  local number = value and tonumber(value)
+  if not number or number < 0 or number % 1 ~= 0 then
+    fail(`{option} needs a non-negative integer`)
+  end
+
+  return number :: number
+end
+
+local function scriptRoot(): string
+  local bench = jess.fs.parent(arg[0])
+  local tools = bench and jess.fs.parent(bench)
+  local root = tools and jess.fs.parent(tools)
+  if root and root ~= '' then return root end
+
+  return jess.fs.cwd()
+end
+
+local Root = scriptRoot()
+
+local function cpuName(): string
+  local info = jess.fs.read '/proc/cpuinfo'
+  if not info then return 'unknown' end
+
+  return string.match(info, 'model name%s*:%s*([^\n]+)') or 'unknown'
+end
+
+local function median(values: { number }): number
+  local sorted = table.clone(values)
+  table.sort(sorted)
+  local middle = (#sorted + 1) // 2
+  if #sorted % 2 == 1 then return sorted[middle] end
+
+  return (sorted[middle] + sorted[middle + 1]) / 2
+end
+
+local function summarize(samples: { number }): Summary
+  assert(#samples > 0, 'dreamwind bench: no samples to summarize')
+  local low, high = samples[1], samples[1]
+  for index = 2, #samples do
+    low = math.min(low, samples[index])
+    high = math.max(high, samples[index])
+  end
+
+  return { median = median(samples), min = low, max = high }
+end
+
+local Escape = {
+  ['"'] = '\\"',
+  ['\\'] = '\\\\',
+  ['\b'] = '\\b',
+  ['\f'] = '\\f',
+  ['\n'] = '\\n',
+  ['\r'] = '\\r',
+  ['\t'] = '\\t',
+}
+
+local function jsonString(value: string): string
+  local escaped = string.gsub(value, '[%z\1-\31\\"]', function(character: string): string
+    local known = Escape[character]
+    if known then return known end
+
+    return string.format('\\u%04x', string.byte(character))
+  end)
+  return `"{escaped}"`
+end
+
+local encode: (unknown) -> string
+
+local function arrayLength(value: { [unknown]: unknown }): number?
+  local count = 0
+  local highest = 0
+  for key in value do
+    if type(key) ~= 'number' or key < 1 or key % 1 ~= 0 then return nil end
+
+    count += 1
+    highest = math.max(highest, key)
+  end
+
+  if count ~= highest then return nil end
+  return highest
+end
+
+local function encodeTable(value: { [unknown]: unknown }): string
+  local length = arrayLength(value)
+  if length then
+    local parts = table.create(length)
+    for index = 1, length do parts[index] = encode(value[index]) end
+    return `[${table.concat(parts, ',')}]`
+  end
+
+  local keys: { string } = {}
+  for key in value do
+    if type(key) ~= 'string' then fail('result tables need string keys or dense array indexes') end
+    table.insert(keys, key)
+  end
+  table.sort(keys)
+
+  local parts = table.create(#keys)
+  for index, key in keys do parts[index] = `{jsonString(key)}:{encode(value[key])}` end
+  return `{${table.concat(parts, ',')}}`
+end
+
+encode = function(value: unknown): string
+  local kind = type(value)
+  if kind == 'string' then return jsonString(value :: string) end
+  if kind == 'number' then
+    local number = value :: number
+    if number ~= number or number == math.huge or number == -math.huge then
+      fail('cannot write a non-finite benchmark result')
+    end
+
+    return tostring(number)
+  end
+  if kind == 'boolean' then return tostring(value) end
+  if kind == 'table' then return encodeTable(value :: { [unknown]: unknown }) end
+  if value == nil then return 'null' end
+
+  fail(`cannot encode benchmark result value of type {kind}`)
+end
+
+local function findCanary(name: string): Canary?
+  for _, canary in Canaries do
+    if canary.name == name then return canary end
+  end
+
+  return nil
+end
+
+local function readResults(path: string): any
+  local source = jess.fs.read(path)
+  if not source then fail(`results file '{path}' does not exist`) end
+
+  local result = json.decode(source)
+  if type(result) ~= 'table' then fail(`results file '{path}' is not an object`) end
+  return result
+end
+
+local function workloadMedian(workload: any): number?
+  if type(workload) ~= 'table' then return nil end
+  if type(workload.summary) == 'table' and type(workload.summary.median) == 'number' then
+    return workload.summary.median
+  end
+
+  return nil
+end
+
+local function workloadsByName(results: any): { [string]: any }
+  local indexed: { [string]: any } = {}
+  if type(results.workloads) ~= 'table' then return indexed end
+
+  for _, workload in results.workloads do
+    if type(workload) == 'table' and type(workload.name) == 'string' then
+      indexed[workload.name] = workload
+    end
+  end
+  return indexed
+end
+
+local function compare(baselinePath: string, candidatePath: string): number
+  local baseline = readResults(baselinePath)
+  local candidate = readResults(candidatePath)
+  local before = workloadsByName(baseline)
+
+  print(string.format('%-12s %10s %10s %8s', 'workload', 'baseline', 'candidate', 'ratio'))
+  for _, workload in candidate.workloads or {} do
+    local name = if type(workload) == 'table' then workload.name else nil
+    local old = name and before[name]
+    local oldMedian = old and workloadMedian(old)
+    local newMedian = workloadMedian(workload)
+    if not name or not oldMedian or not newMedian then continue end
+
+    print(string.format('%-12s %8.4f s %8.4f s %7.2fx', name, oldMedian, newMedian, newMedian / oldMedian))
+  end
+
+  return 0
+end
+
+local function check(baselinePath: string, candidate: Results, tolerance: number)
+  local baseline = readResults(baselinePath)
+  if type(baseline.scale) == 'number' and baseline.scale ~= candidate.scale then
+    print(`dreamwind bench: warning: baseline scale {baseline.scale}, candidate scale {candidate.scale}`)
+  end
+  if type(baseline.machine) == 'table' and type(baseline.machine.cpu) == 'string'
+    and baseline.machine.cpu ~= candidate.machine.cpu then
+    print(`dreamwind bench: warning: baseline CPU '{baseline.machine.cpu}', candidate CPU '{candidate.machine.cpu}'`)
+  end
+
+  local before = workloadsByName(baseline)
+  local slower: { string } = {}
+  for _, workload in candidate.workloads do
+    local old = before[workload.name]
+    local oldMedian = old and workloadMedian(old)
+    if oldMedian and workload.summary.median > oldMedian * tolerance then
+      table.insert(slower, string.format('%s %.2fx', workload.name, workload.summary.median / oldMedian))
+    end
+  end
+
+  if #slower > 0 then
+    fail(`canaries slower than baseline by more than {tolerance}x: {table.concat(slower, ', ')}`)
+  end
+end
+
+local function runCanaries(startAt: number): number
+  local runs = 5
+  local warmup = 1
+  local scale = 1
+  local output = jess.fs.join(Root, 'target', 'bench', 'results', 'dreamwind-canaries.json')
+  local baseline: string? = nil
+  local tolerance = 1.5
+  local selected: { [string]: boolean } = {}
+
+  local index = startAt
+  while index <= #arg do
+    local option = arg[index]
+    if option == '--runs' then
+      runs = nonNegativeInteger(arg[index + 1], '--runs')
+      if runs == 0 then fail('--runs must be at least 1') end
+      index += 2
+    elseif option == '--warmup' then
+      warmup = nonNegativeInteger(arg[index + 1], '--warmup')
+      index += 2
+    elseif option == '--scale' then
+      scale = positiveNumber(arg[index + 1], '--scale')
+      index += 2
+    elseif option == '--output' then
+      output = arg[index + 1] or fail('--output needs a path')
+      index += 2
+    elseif option == '--check' then
+      baseline = arg[index + 1] or fail('--check needs a results path')
+      index += 2
+    elseif option == '--tolerance' then
+      tolerance = positiveNumber(arg[index + 1], '--tolerance')
+      index += 2
+    elseif option == '--only' then
+      local name = arg[index + 1] or fail('--only needs a canary name')
+      if not findCanary(name) then fail(`unknown canary '{name}'`) end
+      selected[name] = true
+      index += 2
+    else
+      fail(`unknown option '{option}'`)
+    end
+  end
+
+  local results: Results = {
+    schema = 2,
+    kind = 'dreamwind-canaries',
+    started = os.time(),
+    jess = { version = jess.version },
+    machine = { cpu = cpuName() },
+    runs = runs,
+    warmup = warmup,
+    scale = scale,
+    workloads = {},
+  }
+
+  for _, canary in Canaries do
+    if next(selected) and not selected[canary.name] then continue end
+
+    print(`dreamwind bench: {canary.name}`)
+    for _ = 1, warmup do canary.run(scale, Root) end
+
+    local samples: { number } = {}
+    for run = 1, runs do
+      samples[run] = canary.run(scale, Root)
+    end
+
+    local summary = summarize(samples)
+    local source = assert(jess.fs.read(jess.fs.join(Root, canary.path)), `missing {canary.path}`)
+    table.insert(results.workloads, {
+      name = canary.name,
+      script_sha256 = bytes.sha256(source),
+      samples = samples,
+      summary = summary,
+    })
+    print(string.format('  %.4f s median (%.4f–%.4f)', summary.median, summary.min, summary.max))
+  end
+
+  jess.fs.write(output, encode(results) .. '\n')
+  print(`results: {output}`)
+  if baseline then check(baseline, results, tolerance) end
+  return 0
+end
+
+local function usage(): number
+  print [[usage:
+  jess run --package . tools/bench/bench.luau canaries [--runs N] [--warmup N] [--scale N]
+      [--only NAME]... [--output FILE] [--check BASELINE] [--tolerance RATIO]
+  jess run --package . tools/bench/bench.luau compare BASELINE CANDIDATE
+  jess run --package . tools/bench/bench.luau list]]
+  return 0
+end
+
+local command = arg[1] or 'canaries'
+if string.sub(command, 1, 2) == '--' then return runCanaries(1) end
+if command == 'canaries' or command == 'run' then return runCanaries(2) end
+if command == 'compare' then
+  local baseline = arg[2] or fail('compare needs a baseline results file')
+  local candidate = arg[3] or fail('compare needs a candidate results file')
+  return compare(baseline, candidate)
+end
+if command == 'list' then
+  for _, canary in Canaries do print(canary.name) end
+  return 0
+end
+if command == 'help' or command == '--help' or command == '-h' then return usage() end
+
+fail(`unknown command '{command}'`)

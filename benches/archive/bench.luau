@@ -1,7 +1,7 @@
 --!strict
 -- The archive port, timed from Luau: open and index, lookups by path and by hash, listing, reads
 -- (stored, zlib, LZ4 blocks and frames, DDS headers rebuilt), extraction, and building. Run by
--- `cargo bench -p jess-lua --bench archive_experiment`.
+-- `jess run --package . benches/archive/bench.luau <scratch> [filter] [real archive]...`.
 local port = require '@dreamwind/archive'
 local host = require('@dream/vfs').host
 
@@ -371,6 +371,12 @@ for _, path in realArchives do
   end
 
   readWorkloads(string.match(path, '[^/]*$') :: string, nil, path, list, 2000)
+end
+
+print(string.format('%-34s %-30s %12s', 'group', 'workload', 'seconds'))
+for _, row in rows do
+  local note = if row.note then `  ({row.note})` else ''
+  print(string.format('%-34s %-30s %10.6f s%s', row.group, row.name, row.port, note))
 end
 
 return rows

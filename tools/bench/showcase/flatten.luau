@@ -1,0 +1,40 @@
+--!strict
+-- Flattens one explicit OpenMW configuration chain for real-data DreamWind benchmarks. DreamWind
+-- intentionally has no process-wide/default OpenMW configuration, so the input path is required.
+local dreamwindOpenmw = require '@dreamwind/openmw'
+
+local output: string?, config: string? = ...
+if not output or not config or config == '' then
+  error('usage: flatten.luau <output folder> <openmw.cfg> [content to leave out]...', 0)
+end
+
+local openmw = dreamwindOpenmw.new(config)
+local excluded: { [string]: boolean } = {}
+for index = 3, select('#', ...) do
+  excluded[string.lower(select(index, ...))] = true
+end
+
+-- openmw.cfg quotes a path in double quotes, escaping `&` and `"` with `&`.
+local function quoted(path: string): string return `"{path:gsub('&', '&&'):gsub('"', '&"')}"` end
+
+local lines: { string } = {}
+local content: { string } = {}
+if openmw.encoding then table.insert(lines, `encoding={openmw.encoding}`) end
+
+for _, folder in openmw.dataDirs do
+  table.insert(lines, `data={quoted(folder)}`)
+end
+
+for _, archive in openmw.fallbackArchives do
+  table.insert(lines, `fallback-archive={archive}`)
+end
+
+for _, file in openmw:content() do
+  if excluded[string.lower(file.name)] then continue end
+
+  table.insert(lines, `content={file.name}`)
+  table.insert(content, `{file.name}\t{file.path or ''}`)
+end
+
+jess.fs.write(jess.fs.join(output, 'openmw.cfg.in'), table.concat(lines, '\n') .. '\n')
+jess.fs.write(jess.fs.join(output, 'content.tsv'), table.concat(content, '\n') .. '\n')
