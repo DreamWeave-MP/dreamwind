@@ -166,6 +166,14 @@ suite.describe('the packages', function()
     exposes(require '@load-order', { 'open', 'masters', 'outputDirectory', 'activate' })
   end)
 
+  suite.it('nif-assets exports @nif-assets', function()
+    exposes(require '@nif-assets', { 'new', 'sources', 'check', 'info', 'fix' })
+  end)
+
+  suite.it('plugin-assets exports @plugin-assets', function()
+    exposes(require '@plugin-assets', { 'check' }, { recordTypes = 'table' })
+  end)
+
   suite.it('s3lightfixes exports @s3lightfixes and its command line', function()
     expect(type(require '@s3lightfixes')).toBe 'function'
     exposes(require '@s3lightfixes/cli', { 'run', 'parse', 'configuration' }, { Exit = 'table' })
