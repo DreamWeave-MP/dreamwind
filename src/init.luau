@@ -6,16 +6,12 @@
 
   run(argv) -> exit status
 
-  dreamwind vfstool <arguments...>
-  dreamwind starwind <arguments...>
-  dreamwind s3lightfixes <arguments...>
-  dreamwind merged-lands <arguments...>
-  dreamwind tes3merge <arguments...>
-  dreamwind doctor <arguments...>
+  dreamwind <tool> <arguments...>
   dreamwind help
 
-The first argument names a tool. Everything after it is that tool's own command line, handed
-over unread, and the tool's exit status comes back unchanged.
+The first argument names a tool, one of the commands its packages declare (`Usage` lists them).
+Everything after it is that tool's own command line, handed over unread, and the tool's exit
+status comes back unchanged.
 
 Exit statuses: 0 for `help`, 8 when no tool or an unknown tool is named, and otherwise the
 tool's. Messages go to standard error as `dreamwind: <message>`.
@@ -28,23 +24,31 @@ local Exit = table.freeze { ok = 0, invalidInput = 8 }
 local Usage = [[
 dreamwind: DreamWind's tools under one command
 
-  dreamwind vfstool <arguments...>
-  dreamwind starwind <arguments...>
-  dreamwind s3lightfixes <arguments...>
-  dreamwind merged-lands <arguments...>
-  dreamwind tes3merge <arguments...>
-  dreamwind doctor <arguments...>
+  dreamwind <tool> <arguments...>
   dreamwind help
 
 Everything after a tool's name is that tool's own command line, and its exit status is the
 command's: `dreamwind starwind help` is `starwind help`.
 
-  vfstool       OpenMW's virtual file system: a load order's files and where they come from
-  starwind      the Starwind Merged Plugin Project's Definitive build
-  s3lightfixes  S3LightFixes: a load order's lights and ambient values adjusted in one plugin
-  merged-lands  Merged Lands: a load order's landscape edits merged into one plugin
-  tes3merge     TES3Merge: a load order's conflicting records merged into one plugin
-  doctor        a load order's problems: masters, content, assets, meshes, dirt, and conflicts
+A load order:
+  vfstool                  OpenMW's virtual file system: its files and where they come from
+  doctor                   its problems: masters, content, assets, meshes, dirt, and conflicts
+  s3lightfixes             S3LightFixes: its lights and ambient values adjusted in one plugin
+  merged-lands             Merged Lands: its landscape edits merged into one plugin
+  tes3merge                TES3Merge: its conflicting records merged into one plugin
+  openmw-import-morrowind  a Morrowind.ini imported into an openmw.cfg
+
+Plugins and models:
+  tes3cmd                  inspect, check, and modify plugin files
+  tes3conv                 plugins to tes3conv's JSON and back
+  merge-to-master          merge_to_master: a plugin merged into its master
+  add-vanilla-refs         addVanillaRefs: Starwind.esp made to stand without its masters
+  plugin-assets            every file plugins refer to, checked the way OpenMW finds them
+  nif-assets               check, describe, dump, and fix NIF models
+  dream-archivetool        inspect, extract, and build BSA and BA2 archives
+
+Builds:
+  starwind                 the Starwind Merged Plugin Project's Definitive build
 
 Exit status: 0 for help, 8 when no tool or an unknown tool is named, otherwise the tool's.]]
 
@@ -57,6 +61,17 @@ local Tools: { [string]: (arguments: { string }) -> number } = {
   ['merged-lands'] = function(arguments) return require('@merged-lands/cli').run(arguments) end,
   tes3merge = function(arguments) return require('@tes3merge/cli').run(arguments) end,
   doctor = function(arguments) return require('@doctor/cli').run(arguments) end,
+  tes3cmd = function(arguments) return require('@tes3cmd/cli').run(arguments) end,
+  tes3conv = function(arguments) return require('@tes3conv/cli').run(arguments) end,
+  ['merge-to-master'] = function(arguments) return require('@merge-to-master/cli').run(arguments) end,
+  ['add-vanilla-refs'] = function(arguments) return require('@add-vanilla-refs/cli').run(arguments) end,
+  ['plugin-assets'] = function(arguments) return require('@plugin-assets/cli').run(arguments) end,
+  ['nif-assets'] = function(arguments) return require('@nif-assets/cli').run(arguments) end,
+  ['dream-archivetool'] = function(arguments) return require('@dream-archivetool/cli').run(arguments) end,
+
+  ['openmw-import-morrowind'] = function(arguments)
+    return require('@openmw-import-morrowind/cli').run(arguments)
+  end,
 }
 
 local function out(text: string) process.write('stdout', `{text}\n`) end

@@ -194,6 +194,38 @@ suite.describe('the packages', function()
   end)
 end)
 
+suite.describe('the command lines over libraries', function()
+  -- Each package's commands module (a request in, a result out) and the command line over it.
+  local lines = {
+    tes3cmd = { require '@tes3cmd/commands', require '@tes3cmd/cli' },
+    tes3conv = { require '@tes3conv/commands', require '@tes3conv/cli' },
+    ['merge-to-master'] = { require '@merge-to-master/commands', require '@merge-to-master/cli' },
+    ['add-vanilla-refs'] = { require '@add-vanilla-refs/commands', require '@add-vanilla-refs/cli' },
+    ['plugin-assets'] = { require '@plugin-assets/commands', require '@plugin-assets/cli' },
+    ['nif-assets'] = { require '@nif-assets/commands', require '@nif-assets/cli' },
+    ['dream-archivetool'] = { require '@dream-archivetool/commands', require '@dream-archivetool/cli' },
+
+    ['openmw-import-morrowind'] = {
+      require '@openmw-import-morrowind/commands',
+      require '@openmw-import-morrowind/cli',
+    },
+  }
+
+  suite.it('are each a commands module and a command line that parses, renders, and runs', function()
+    for name, modules in lines do
+      expect({ name, type(modules[1]) }).toEqual { name, 'table' }
+      exposes(modules[2], { 'parse', 'render', 'status', 'run' }, { Exit = 'table' })
+    end
+  end)
+
+  suite.it('are each handed the rest of the command line, and their status returned', function()
+    for name in lines do
+      expect({ name, dreamwind.run { name, '--help' } }).toEqual { name, 0 }
+      expect({ name, dreamwind.run { name, '--frobnicate' } }).toEqual { name, 8 }
+    end
+  end)
+end)
+
 suite.describe('the dispatcher', function()
   suite.it('is a table with run alone', function()
     exposes(dreamwind, { 'run' })

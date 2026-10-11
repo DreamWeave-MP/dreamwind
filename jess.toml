@@ -44,15 +44,29 @@ tests = ["tests/run.luau", "tests/style.luau"]
 
 [[layer]]
 id = "dreamwind.core"
-requires = ["vfstool.core", "starwind.core", "s3lightfixes.core", "merged-lands.core", "tes3merge.core", "doctor.core"]
+requires = [
+  "vfstool.core",
+  "starwind.core",
+  "s3lightfixes.core",
+  "merged-lands.core",
+  "tes3merge.core",
+  "doctor.core",
+  "tes3cmd.core",
+  "tes3conv.core",
+  "merge-to-master.core",
+  "add-vanilla-refs.core",
+  "plugin-assets.core",
+  "nif-assets.core",
+  "dream-archivetool.core",
+  "openmw-import-morrowind.core",
+]
 exports = ["@dreamwind"]
 
 # The command line itself: `src/main.luau` hands its arguments to `@dreamwind`. It can do what the
 # tools it dispatches to can, so its capabilities are the union of what their own targets declare,
-# each in its own manifest: `vfstool` (filesystem.read, filesystem.write, process.environment,
-# process.spawn), `starwind` (filesystem.read, filesystem.write), and `s3lightfixes`,
-# `merged-lands`, `tes3merge`, and `doctor` (filesystem.read, filesystem.write,
-# process.environment each).
+# each in its own manifest. `vfstool` declares all four below; `s3lightfixes`, `merged-lands`,
+# `tes3merge`, and `doctor` declare filesystem.read, filesystem.write, and process.environment;
+# `plugin-assets` filesystem.read alone; and the rest filesystem.read and filesystem.write.
 [targets.dreamwind]
 kind = "command"
 command = "dreamwind"
