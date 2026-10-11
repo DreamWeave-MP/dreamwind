@@ -31,7 +31,6 @@ tests = [
 "@dreamwind/saves" = "src/saves/init.luau"
 "@dreamwind/tes3" = "src/tes3/init.luau"
 "@dreamwind/tes3cmd" = "src/tes3cmd/init.luau"
-"@dreamwind/tools/tes3conv" = "src/tools/tes3conv/init.luau"
 "@dreamwind/vfstool" = "src/tools/vfstool/init.luau"
 "@dreamwind/nif" = "src/nif/init.luau"
 "@dreamwind/nif/check" = "src/nif/internal/check.luau"
@@ -70,10 +69,6 @@ exports = ["@dreamwind/tes3cmd"]
 id = "dream.saves"
 requires = ["dream.tes3"]
 exports = ["@dreamwind/saves"]
-
-[[layer]]
-id = "dream.morrowind-tools"
-exports = ["@dreamwind/tools/tes3conv"]
 
 [[layer]]
 id = "dream.bethesda-archives"
