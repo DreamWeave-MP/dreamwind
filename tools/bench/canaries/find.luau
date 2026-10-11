@@ -4,7 +4,7 @@
 local tes3 = require '@dreamwind/tes3'
 
 local function run(scale: number, root: string): number
-  local source = assert(jess.fs.readBuffer(jess.fs.join(root, 'tests', 'tes3', 'assets', 'all_types.esp')))
+  local source = assert(jess.fs.readBuffer(jess.fs.join(root, 'tools', 'bench', 'assets', 'all_types.esp')))
   local plugin = tes3.open(source)
   assert(tes3.records.find(plugin, 'LIGH', 'test_light') ~= nil)
   local rounds = math.max(1, math.floor(10000 * scale))
