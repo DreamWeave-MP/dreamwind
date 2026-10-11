@@ -33,6 +33,7 @@ tests = ["tests/run.luau"]
 "org.dreamweave.s3lightfixes" = "0.1"
 "org.dreamweave.merged-lands" = "0.1"
 "org.dreamweave.tes3merge" = "0.1"
+"org.dreamweave.doctor" = "0.1"
 
 [modules]
 "@dreamwind" = "src/init.luau"
@@ -43,14 +44,15 @@ tests = ["tests/run.luau"]
 
 [[layer]]
 id = "dreamwind.core"
-requires = ["vfstool.core", "starwind.core", "s3lightfixes.core", "merged-lands.core", "tes3merge.core"]
+requires = ["vfstool.core", "starwind.core", "s3lightfixes.core", "merged-lands.core", "tes3merge.core", "doctor.core"]
 exports = ["@dreamwind"]
 
 # The command line itself: `src/main.luau` hands its arguments to `@dreamwind`. It can do what the
 # tools it dispatches to can, so its capabilities are the union of what their own targets declare,
 # each in its own manifest: `vfstool` (filesystem.read, filesystem.write, process.environment,
 # process.spawn), `starwind` (filesystem.read, filesystem.write), and `s3lightfixes`,
-# `merged-lands`, and `tes3merge` (filesystem.read, filesystem.write, process.environment each).
+# `merged-lands`, `tes3merge`, and `doctor` (filesystem.read, filesystem.write,
+# process.environment each).
 [targets.dreamwind]
 kind = "command"
 command = "dreamwind"

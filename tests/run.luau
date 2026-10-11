@@ -188,6 +188,11 @@ suite.describe('the packages', function()
     expect(type(require '@tes3merge')).toBe 'function'
     exposes(require '@tes3merge/cli', { 'run', 'parse' }, { Exit = 'table', version = 'string' })
   end)
+
+  suite.it('doctor exports @doctor and its command line', function()
+    expect(type(require '@doctor')).toBe 'function'
+    exposes(require '@doctor/cli', { 'run', 'parse' }, { Exit = 'table' })
+  end)
 end)
 
 suite.describe('the dispatcher', function()
@@ -239,6 +244,14 @@ suite.describe('the dispatcher', function()
     -- TES3Merge's own refusals: a command this port doesn't have, and a flag nothing has.
     expect(dreamwind.run { 'tes3merge', 'multipatch' }).toBe(8)
     expect(dreamwind.run { 'tes3merge', '--frobnicate' }).toBe(8)
+  end)
+
+  suite.it('hands doctor the rest of the command line, and returns its status', function()
+    expect(dreamwind.run { 'doctor', '--help' }).toBe(0)
+
+    -- The doctor's own refusals: a flag without its value, and a flag nothing has.
+    expect(dreamwind.run { 'doctor', '--checks' }).toBe(8)
+    expect(dreamwind.run { 'doctor', '--frobnicate' }).toBe(8)
   end)
 
   suite.it('hands vfstool the rest of the command line, and returns its status', function()
