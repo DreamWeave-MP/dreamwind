@@ -8,7 +8,6 @@ include = ["src"]
 tests = [
     "tests/archive/run.luau",
     "tests/archive/tool.luau",
-    "tests/openmw-import-morrowind/run.luau",
     "tests/vfs/run.luau",
     "tests/tes3/run.luau",
 ]
@@ -22,7 +21,6 @@ tests = [
 "@dreamwind/archive/tool" = "src/archive/tool.luau"
 "@dreamwind/vfs" = "src/vfs/init.luau"
 "@dreamwind/openmw-config" = "src/openmw-config/init.luau"
-"@dreamwind/openmw-import-morrowind" = "src/openmw-import-morrowind/init.luau"
 "@dreamwind/tes3" = "src/tes3/init.luau"
 "@dreamwind/nif" = "src/nif/init.luau"
 "@dreamwind/nif/check" = "src/nif/internal/check.luau"
@@ -34,10 +32,6 @@ tests = [
 
 # Every module here is inert API: it does nothing until something requires it, and runs with the
 # authority of whatever calls it. No layer has entrypoints yet, so none requires a capability.
-
-[[layer]]
-id = "dream.openmw-import"
-exports = ["@dreamwind/openmw-import-morrowind"]
 
 [[layer]]
 id = "dream.openmw-config"
