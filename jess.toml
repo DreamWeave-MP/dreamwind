@@ -9,7 +9,6 @@ tests = [
     "tests/archive/run.luau",
     "tests/archive/tool.luau",
     "tests/openmw-import-morrowind/run.luau",
-    "tests/openmw-config/run.luau",
     "tests/vfs/run.luau",
     "tests/tes3/run.luau",
 ]
@@ -23,7 +22,6 @@ tests = [
 "@dreamwind/archive/tool" = "src/archive/tool.luau"
 "@dreamwind/vfs" = "src/vfs/init.luau"
 "@dreamwind/openmw-config" = "src/openmw-config/init.luau"
-"@dreamwind/openmw" = "src/openmw/init.luau"
 "@dreamwind/openmw-import-morrowind" = "src/openmw-import-morrowind/init.luau"
 "@dreamwind/tes3" = "src/tes3/init.luau"
 "@dreamwind/nif" = "src/nif/init.luau"
@@ -44,11 +42,6 @@ exports = ["@dreamwind/openmw-import-morrowind"]
 [[layer]]
 id = "dream.openmw-config"
 exports = ["@dreamwind/openmw-config"]
-
-[[layer]]
-id = "dream.openmw"
-requires = ["dream.openmw-config", "dream.vfs"]
-exports = ["@dreamwind/openmw"]
 
 [[layer]]
 id = "dream.tes3"
