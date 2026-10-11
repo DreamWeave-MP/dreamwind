@@ -1,7 +1,8 @@
 --!strict
 --!native
--- DreamWind-owned format benchmarks. Run from this repository with DreamWind activated:
--- `jess run --package . tools/bench/bench.luau canaries`.
+-- DreamWind-owned format benchmarks. Run from this repository with DreamWind and the packages it
+-- depends on activated: `jess run --package . --package <dependency>... tools/bench/bench.luau
+-- canaries`.
 local json = require '@jess/json'
 local bytes = require '@dream/bytes'
 
@@ -338,7 +339,7 @@ local function runCanaries(startAt: number): number
 end
 
 local function usage(): number
-  print [[usage:
+  print [[usage, with one --package for each package DreamWind depends on after `--package .`:
   jess run --package . tools/bench/bench.luau canaries [--runs N] [--warmup N] [--scale N]
       [--only NAME]... [--output FILE] [--check BASELINE] [--tolerance RATIO]
   jess run --package . tools/bench/bench.luau compare BASELINE CANDIDATE

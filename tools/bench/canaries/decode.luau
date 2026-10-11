@@ -1,7 +1,7 @@
 --!strict
 --!native
 -- Decode every supported record in the representative all-types plugin.
-local tes3 = require '@dreamwind/tes3'
+local tes3 = require '@tes3'
 
 local function run(scale: number, root: string): number
   local source = assert(jess.fs.readBuffer(jess.fs.join(root, 'tools', 'bench', 'assets', 'all_types.esp')))

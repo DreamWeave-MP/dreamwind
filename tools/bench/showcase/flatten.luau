@@ -1,7 +1,7 @@
 --!strict
 -- Flattens one explicit OpenMW configuration chain for real-data DreamWind benchmarks. DreamWind
 -- intentionally has no process-wide/default OpenMW configuration, so the input path is required.
-local dreamwindOpenmw = require '@dreamwind/openmw'
+local dreamwindOpenmw = require '@openmw'
 
 local output: string?, config: string? = ...
 if not output or not config or config == '' then
