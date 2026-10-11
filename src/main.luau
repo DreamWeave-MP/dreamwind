@@ -1,0 +1,8 @@
+--!strict
+--!native
+-- SPDX-License-Identifier: MIT OR Apache-2.0
+-- The `dreamwind` command target: its arguments go to the dispatcher, whose exit status is the
+-- command's.
+local dreamwind = require '@dreamwind'
+
+return dreamwind.run { ... }

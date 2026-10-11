@@ -4,6 +4,7 @@ manifest_version = 1
 id = "org.dreamweave.dreamwind"
 version = "0.2.0"
 jess_api = "1"
+default_target = "dreamwind"
 include = ["src"]
 tests = []
 
@@ -38,3 +39,13 @@ tests = []
 id = "dreamwind.core"
 requires = ["vfstool.core", "starwind.core"]
 exports = ["@dreamwind"]
+
+# The command line itself: `src/main.luau` hands its arguments to `@dreamwind`. It can do what the
+# tools it dispatches to can, so its capabilities are the union of what their own targets declare:
+# `vfstool` in jpk/vfstool/jess.toml (filesystem.read, filesystem.write, process.environment,
+# process.spawn) and `starwind` in jpk/starwind/jess.toml (filesystem.read, filesystem.write).
+[targets.dreamwind]
+kind = "command"
+command = "dreamwind"
+entry = "src/main.luau"
+capabilities = ["filesystem.read", "filesystem.write", "process.environment", "process.spawn"]
