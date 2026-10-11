@@ -1,9 +1,0 @@
-{"op":"info","value":{"cell":"Balmora","currentHealth":30,"dependencies":["Morrowind.esm"],"description":"Quicksave","format":"morrowind","inGameTime":{"day":3,"gameHour":9.25,"month":1,"year":427},"maximumHealth":50,"player":{"classId":"Battlemage","level":7,"name":"Nerevar"},"screenshotBytes":65536}}
-{"op":"screenshot","value":["4b090c36fa5404c20d557d48c89a2ede","tga"]}
-{"op":"values","value":[{"cell":"Balmora","currentHealth":30,"dependencies":["Morrowind.esm"],"description":"Quicksave","format":"morrowind","inGameTime":{"day":3,"gameHour":9.25,"month":1,"year":427},"maximumHealth":50,"player":{"classId":"Battlemage","level":7,"name":"Nerevar"},"record":0,"screenshotBytes":65536,"type":"SaveHeader"},{"id":"Day","record":1,"type":"GlobalVariable","value":{"data":3,"type":"Short"}},{"id":"Month","record":2,"type":"GlobalVariable","value":{"data":1,"type":"Short"}},{"id":"Year","record":3,"type":"GlobalVariable","value":{"data":427,"type":"Short"}},{"aiData":{"alarm":0,"fight":0,"flee":0,"hello":0},"bloodType":0,"class":"Battlemage","data":{"disposition":0,"gold":0,"level":7,"rank":0,"reputation":0},"hair":"b_n_dark elf_m_hair_01","head":"b_n_dark elf_m_head_01","id":"player","name":"Nerevar","npcFlags":"IS_BASE | AUTO_CALCULATE","race":"Dark Elf","record":4,"type":"Npc"}]}
-{"op":"validate","value":{"checks":["structure","saveMetadata","saveFormat","cellState"],"diagnostics":[{"message":"not a readable OpenMW save: OpenMW save format 0 stores metadata in an older layout; load and resave in OpenMW first at offset 0","offset":0}]}}
-{"op":"lua data","value":[]}
-{"error":"save check isn't supported for Morrowind saves","op":"check"}
-{"error":"save check isn't supported for Morrowind saves","op":"check no config"}
-{"error":"save strip isn't supported for Morrowind saves","op":"strip Morrowind.esm dryRun"}
-{"error":"save strip isn't supported for Morrowind saves","op":"strip Morrowind.esm inMemory limit 20"}
