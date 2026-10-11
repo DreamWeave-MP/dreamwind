@@ -13,7 +13,6 @@ tests = [
     "tests/vfs/run.luau",
     "tests/vfs/vfstool.luau",
     "tests/tes3/run.luau",
-    "tests/tes3cmd/run.luau",
 ]
 
 [modules]
@@ -28,7 +27,6 @@ tests = [
 "@dreamwind/openmw" = "src/openmw/init.luau"
 "@dreamwind/openmw-import-morrowind" = "src/openmw-import-morrowind/init.luau"
 "@dreamwind/tes3" = "src/tes3/init.luau"
-"@dreamwind/tes3cmd" = "src/tes3cmd/init.luau"
 "@dreamwind/vfstool" = "src/tools/vfstool/init.luau"
 "@dreamwind/nif" = "src/nif/init.luau"
 "@dreamwind/nif/check" = "src/nif/internal/check.luau"
@@ -57,11 +55,6 @@ exports = ["@dreamwind/openmw"]
 [[layer]]
 id = "dream.tes3"
 exports = ["@dreamwind/tes3"]
-
-[[layer]]
-id = "dream.tes3cmd"
-requires = ["dream.tes3"]
-exports = ["@dreamwind/tes3cmd"]
 
 [[layer]]
 id = "dream.bethesda-archives"
