@@ -170,6 +170,11 @@ suite.describe('the packages', function()
     expect(type(require '@s3lightfixes')).toBe 'function'
     exposes(require '@s3lightfixes/cli', { 'run', 'parse', 'configuration' }, { Exit = 'table' })
   end)
+
+  suite.it('merged-lands exports @merged-lands and its command line', function()
+    expect(type(require '@merged-lands')).toBe 'function'
+    exposes(require '@merged-lands/cli', { 'run', 'parse', 'configuration' }, { Exit = 'table' })
+  end)
 end)
 
 suite.describe('the dispatcher', function()
@@ -205,6 +210,14 @@ suite.describe('the dispatcher', function()
     -- S3LightFixes' own refusals: a flag this port doesn't have, and one nothing has.
     expect(dreamwind.run { 's3lightfixes', '--generate-manpage' }).toBe(8)
     expect(dreamwind.run { 's3lightfixes', '--frobnicate' }).toBe(8)
+  end)
+
+  suite.it('hands merged-lands the rest of the command line, and returns its status', function()
+    expect(dreamwind.run { 'merged-lands', '--help' }).toBe(0)
+
+    -- Merged Lands' own refusals: a flag this port doesn't have, and one nothing has.
+    expect(dreamwind.run { 'merged-lands', '--vanilla' }).toBe(8)
+    expect(dreamwind.run { 'merged-lands', '--frobnicate' }).toBe(8)
   end)
 
   suite.it('hands vfstool the rest of the command line, and returns its status', function()
