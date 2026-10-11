@@ -17,8 +17,7 @@ end
 -- openmw.cfg quotes a path in double quotes, escaping `&` and `"` with `&`.
 local function quoted(path: string): string return `"{path:gsub('&', '&&'):gsub('"', '&"')}"` end
 
-local lines: { string } = {}
-local content: { string } = {}
+local lines: { string }, content: { string } = {}, {}
 if openmw.encoding then table.insert(lines, `encoding={openmw.encoding}`) end
 
 for _, folder in openmw.dataDirs do
