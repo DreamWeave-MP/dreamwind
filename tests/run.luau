@@ -175,6 +175,11 @@ suite.describe('the packages', function()
     expect(type(require '@merged-lands')).toBe 'function'
     exposes(require '@merged-lands/cli', { 'run', 'parse', 'configuration' }, { Exit = 'table' })
   end)
+
+  suite.it('tes3merge exports @tes3merge and its command line', function()
+    expect(type(require '@tes3merge')).toBe 'function'
+    exposes(require '@tes3merge/cli', { 'run', 'parse' }, { Exit = 'table', version = 'string' })
+  end)
 end)
 
 suite.describe('the dispatcher', function()
@@ -218,6 +223,14 @@ suite.describe('the dispatcher', function()
     -- Merged Lands' own refusals: a flag this port doesn't have, and one nothing has.
     expect(dreamwind.run { 'merged-lands', '--vanilla' }).toBe(8)
     expect(dreamwind.run { 'merged-lands', '--frobnicate' }).toBe(8)
+  end)
+
+  suite.it('hands tes3merge the rest of the command line, and returns its status', function()
+    expect(dreamwind.run { 'tes3merge', '--help' }).toBe(0)
+
+    -- TES3Merge's own refusals: a command this port doesn't have, and a flag nothing has.
+    expect(dreamwind.run { 'tes3merge', 'multipatch' }).toBe(8)
+    expect(dreamwind.run { 'tes3merge', '--frobnicate' }).toBe(8)
   end)
 
   suite.it('hands vfstool the rest of the command line, and returns its status', function()
