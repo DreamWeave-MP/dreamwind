@@ -1,8 +1,9 @@
 --!strict
 --!native
--- DreamWind-owned format benchmarks. Run from this repository with DreamWind and the packages it
--- depends on activated: `jess run --package . --package <dependency>... tools/bench/bench.luau
--- canaries`.
+-- DreamWind-owned format benchmarks. Run from this repository on a release build, with DreamWind
+-- activated over the folder its packages are checked out in: `jess run --capability
+-- filesystem.read --capability filesystem.write --package . --package-path ..
+-- tools/bench/bench.luau canaries`.
 local json = require '@jess/json'
 local bytes = require '@dream/bytes'
 
@@ -258,6 +259,12 @@ local function check(baselinePath: string, candidate: Results, tolerance: number
 end
 
 local function runCanaries(startAt: number): number
+  -- A build without the verified toolchain runs Luau slower than a release does, so a number
+  -- from one says nothing about what ships.
+  if not jess.bench.verified then
+    fail('this jess was built without the verified toolchain: measure on a release build')
+  end
+
   local runs = 5
   local warmup = 1
   local scale = 1
@@ -339,11 +346,15 @@ local function runCanaries(startAt: number): number
 end
 
 local function usage(): number
-  print [[usage, with one --package for each package DreamWind depends on after `--package .`:
-  jess run --package . tools/bench/bench.luau canaries [--runs N] [--warmup N] [--scale N]
+  print [[usage:
+  jess run GRANTS PACKAGES tools/bench/bench.luau canaries [--runs N] [--warmup N] [--scale N]
       [--only NAME]... [--output FILE] [--check BASELINE] [--tolerance RATIO]
-  jess run --package . tools/bench/bench.luau compare BASELINE CANDIDATE
-  jess run --package . tools/bench/bench.luau list]]
+  jess run GRANTS PACKAGES tools/bench/bench.luau compare BASELINE CANDIDATE
+  jess run GRANTS PACKAGES tools/bench/bench.luau list
+
+GRANTS is --capability filesystem.read --capability filesystem.write: the inputs and baselines
+are read, and the results are written. PACKAGES is --package . --package-path FOLDER, FOLDER
+holding the packages DreamWind depends on. canaries measures, so it needs a release build.]]
   return 0
 end
 
