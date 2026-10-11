@@ -165,6 +165,11 @@ suite.describe('the packages', function()
   suite.it('load-order exports @load-order', function()
     exposes(require '@load-order', { 'open', 'masters', 'outputDirectory', 'activate' })
   end)
+
+  suite.it('s3lightfixes exports @s3lightfixes and its command line', function()
+    expect(type(require '@s3lightfixes')).toBe 'function'
+    exposes(require '@s3lightfixes/cli', { 'run', 'parse', 'configuration' }, { Exit = 'table' })
+  end)
 end)
 
 suite.describe('the dispatcher', function()
@@ -192,6 +197,14 @@ suite.describe('the dispatcher', function()
     -- Starwind's own refusals: no command, and a help that was given an argument.
     expect(dreamwind.run { 'starwind' }).toBe(8)
     expect(dreamwind.run { 'starwind', 'help', 'build' }).toBe(8)
+  end)
+
+  suite.it('hands s3lightfixes the rest of the command line, and returns its status', function()
+    expect(dreamwind.run { 's3lightfixes', '--help' }).toBe(0)
+
+    -- S3LightFixes' own refusals: a flag this port doesn't have, and one nothing has.
+    expect(dreamwind.run { 's3lightfixes', '--generate-manpage' }).toBe(8)
+    expect(dreamwind.run { 's3lightfixes', '--frobnicate' }).toBe(8)
   end)
 
   suite.it('hands vfstool the rest of the command line, and returns its status', function()

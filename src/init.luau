@@ -8,6 +8,7 @@
 
   dreamwind vfstool <arguments...>
   dreamwind starwind <arguments...>
+  dreamwind s3lightfixes <arguments...>
   dreamwind help
 
 The first argument names a tool. Everything after it is that tool's own command line, handed
@@ -26,13 +27,15 @@ dreamwind: DreamWind's tools under one command
 
   dreamwind vfstool <arguments...>
   dreamwind starwind <arguments...>
+  dreamwind s3lightfixes <arguments...>
   dreamwind help
 
 Everything after a tool's name is that tool's own command line, and its exit status is the
 command's: `dreamwind starwind help` is `starwind help`.
 
-  vfstool   OpenMW's virtual file system: what a load order's files are and where they come from
-  starwind  the Starwind Merged Plugin Project's Definitive build
+  vfstool       OpenMW's virtual file system: a load order's files and where they come from
+  starwind      the Starwind Merged Plugin Project's Definitive build
+  s3lightfixes  S3LightFixes: a load order's lights and ambient values adjusted in one plugin
 
 Exit status: 0 for help, 8 when no tool or an unknown tool is named, otherwise the tool's.]]
 
@@ -41,6 +44,7 @@ Exit status: 0 for help, 8 when no tool or an unknown tool is named, otherwise t
 local Tools: { [string]: (arguments: { string }) -> number } = {
   vfstool = function(arguments) return require('@vfstool').run(arguments) end,
   starwind = function(arguments) return require('@starwind/cli').run(arguments) end,
+  s3lightfixes = function(arguments) return require('@s3lightfixes/cli').run(arguments) end,
 }
 
 local function out(text: string) process.write('stdout', `{text}\n`) end

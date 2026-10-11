@@ -28,23 +28,25 @@ tests = ["tests/run.luau"]
 "org.dreamweave.add-vanilla-refs" = "0.1"
 "org.dreamweave.starwind" = "0.1"
 "org.dreamweave.load-order" = "0.1"
+"org.dreamweave.s3lightfixes" = "0.1"
 
 [modules]
 "@dreamwind" = "src/init.luau"
 
 # The module is inert API: it does nothing until something requires it, and runs with the
 # authority of whatever calls it. It requires a tool only when that tool is named, and the layer
-# requires the two that have a command line.
+# requires each one it can name.
 
 [[layer]]
 id = "dreamwind.core"
-requires = ["vfstool.core", "starwind.core"]
+requires = ["vfstool.core", "starwind.core", "s3lightfixes.core"]
 exports = ["@dreamwind"]
 
 # The command line itself: `src/main.luau` hands its arguments to `@dreamwind`. It can do what the
-# tools it dispatches to can, so its capabilities are the union of what their own targets declare:
-# `vfstool` in jpk/vfstool/jess.toml (filesystem.read, filesystem.write, process.environment,
-# process.spawn) and `starwind` in jpk/starwind/jess.toml (filesystem.read, filesystem.write).
+# tools it dispatches to can, so its capabilities are the union of what their own targets declare,
+# each in its own manifest: `vfstool` (filesystem.read, filesystem.write, process.environment,
+# process.spawn), `starwind` (filesystem.read, filesystem.write), and `s3lightfixes`
+# (filesystem.read, filesystem.write, process.environment).
 [targets.dreamwind]
 kind = "command"
 command = "dreamwind"
