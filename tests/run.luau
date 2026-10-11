@@ -204,6 +204,7 @@ suite.describe('the command lines over libraries', function()
     ['plugin-assets'] = { require '@plugin-assets/commands', require '@plugin-assets/cli' },
     ['nif-assets'] = { require '@nif-assets/commands', require '@nif-assets/cli' },
     ['dream-archivetool'] = { require '@dream-archivetool/commands', require '@dream-archivetool/cli' },
+    ['tes3-saves'] = { require '@tes3-saves/commands', require '@tes3-saves/cli' },
 
     ['openmw-import-morrowind'] = {
       require '@openmw-import-morrowind/commands',

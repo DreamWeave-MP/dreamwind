@@ -47,6 +47,9 @@ Plugins and models:
   nif-assets               check, describe, dump, and fix NIF models
   dream-archivetool        inspect, extract, and build BSA and BA2 archives
 
+Saves:
+  tes3-saves               inspect, check, and strip OpenMW and Morrowind saves
+
 Builds:
   starwind                 the Starwind Merged Plugin Project's Definitive build
 
@@ -68,6 +71,7 @@ local Tools: { [string]: (arguments: { string }) -> number } = {
   ['plugin-assets'] = function(arguments) return require('@plugin-assets/cli').run(arguments) end,
   ['nif-assets'] = function(arguments) return require('@nif-assets/cli').run(arguments) end,
   ['dream-archivetool'] = function(arguments) return require('@dream-archivetool/cli').run(arguments) end,
+  ['tes3-saves'] = function(arguments) return require('@tes3-saves/cli').run(arguments) end,
 
   ['openmw-import-morrowind'] = function(arguments)
     return require('@openmw-import-morrowind/cli').run(arguments)

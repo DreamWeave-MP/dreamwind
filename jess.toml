@@ -59,13 +59,15 @@ requires = [
   "nif-assets.core",
   "dream-archivetool.core",
   "openmw-import-morrowind.core",
+  "tes3-saves.core",
 ]
 exports = ["@dreamwind"]
 
 # The command line itself: `src/main.luau` hands its arguments to `@dreamwind`. It can do what the
 # tools it dispatches to can, so its capabilities are the union of what their own targets declare,
 # each in its own manifest. `vfstool` declares all four below; `s3lightfixes`, `merged-lands`,
-# `tes3merge`, and `doctor` declare filesystem.read, filesystem.write, and process.environment;
+# `tes3merge`, `doctor`, and `tes3-saves` declare filesystem.read, filesystem.write, and
+# process.environment;
 # `plugin-assets` filesystem.read alone; and the rest filesystem.read and filesystem.write.
 [targets.dreamwind]
 kind = "command"
