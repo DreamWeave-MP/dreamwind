@@ -141,7 +141,7 @@ local function encodeTable(value: { [unknown]: unknown }): string
   if length then
     local parts = table.create(length)
     for index = 1, length do parts[index] = encode(value[index]) end
-    return `[${table.concat(parts, ',')}]`
+    return `[{table.concat(parts, ',')}]`
   end
 
   local keys: { string } = {}
@@ -153,7 +153,7 @@ local function encodeTable(value: { [unknown]: unknown }): string
 
   local parts = table.create(#keys)
   for index, key in keys do parts[index] = `{jsonString(key)}:{encode(value[key])}` end
-  return `{${table.concat(parts, ',')}}`
+  return `\{{table.concat(parts, ',')}\}`
 end
 
 encode = function(value: unknown): string
