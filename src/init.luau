@@ -36,6 +36,13 @@ command's: `dreamwind starwind help` is `starwind help`.
 
 Exit status: 0 for help, 8 when no tool or an unknown tool is named, otherwise the tool's.]]
 
+-- A tool's command line, by the name it is called under. Each is required where it is named, so
+-- naming one loads nothing of the others.
+local Tools: { [string]: (arguments: { string }) -> number } = {
+  vfstool = function(arguments) return require('@vfstool').run(arguments) end,
+  starwind = function(arguments) return require('@starwind/cli').run(arguments) end,
+}
+
 local function out(text: string) process.write('stdout', `{text}\n`) end
 
 local function err(text: string) process.write('stderr', `{text}\n`) end
@@ -55,15 +62,12 @@ local function run(argv: { string }): number
     return Exit.ok
   end
 
+  local command = Tools[tool]
+
+  if not command then return usage(`unknown tool '{tool}'`) end
+
   -- A list of the tool's own: vfstool takes the one it is given apart as it reads it.
-  local arguments = table.move(argv, 2, #argv, 1, {})
-
-  -- Each tool is required where it is named, so naming one loads nothing of the other.
-  if tool == 'vfstool' then return require('@vfstool').run(arguments) end
-
-  if tool == 'starwind' then return require('@starwind/cli').run(arguments) end
-
-  return usage(`unknown tool '{tool}'`)
+  return command(table.move(argv, 2, #argv, 1, {}))
 end
 
 return table.freeze { run = run }
