@@ -6,7 +6,7 @@ version = "0.2.0"
 jess_api = "1"
 default_target = "dreamwind"
 include = ["src"]
-tests = []
+tests = ["tests/run.luau"]
 
 # DreamWind is the packages below under one name. Their modules are theirs to require, each under
 # its own scope; nothing is exported under `@dreamwind/` any more.
