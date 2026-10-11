@@ -5,14 +5,4 @@ id = "org.dreamweave.dreamwind"
 version = "0.1.1"
 jess_api = "1"
 include = ["src"]
-tests = ["tests/tes3/run.luau"]
-
-[modules]
-"@dreamwind/tes3" = "src/tes3/init.luau"
-
-# Every module here is inert API: it does nothing until something requires it, and runs with the
-# authority of whatever calls it. No layer has entrypoints yet, so none requires a capability.
-
-[[layer]]
-id = "dream.tes3"
-exports = ["@dreamwind/tes3"]
+tests = []
