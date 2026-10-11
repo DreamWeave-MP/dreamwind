@@ -9,13 +9,6 @@ tests = ["tests/tes3/run.luau"]
 
 [modules]
 "@dreamwind/tes3" = "src/tes3/init.luau"
-"@dreamwind/nif" = "src/nif/init.luau"
-"@dreamwind/nif/check" = "src/nif/internal/check.luau"
-"@dreamwind/nif/fix" = "src/nif/internal/fix.luau"
-"@dreamwind/nif/gamebryo" = "src/nif/internal/gamebryo/reader.luau"
-"@dreamwind/nif/header" = "src/nif/internal/header.luau"
-"@dreamwind/nif/info" = "src/nif/internal/info.luau"
-"@dreamwind/nif/scene" = "src/nif/internal/scene.luau"
 
 # Every module here is inert API: it does nothing until something requires it, and runs with the
 # authority of whatever calls it. No layer has entrypoints yet, so none requires a capability.
@@ -23,15 +16,3 @@ tests = ["tests/tes3/run.luau"]
 [[layer]]
 id = "dream.tes3"
 exports = ["@dreamwind/tes3"]
-
-[[layer]]
-id = "dream.nif"
-exports = [
-    "@dreamwind/nif",
-    "@dreamwind/nif/check",
-    "@dreamwind/nif/fix",
-    "@dreamwind/nif/gamebryo",
-    "@dreamwind/nif/header",
-    "@dreamwind/nif/info",
-    "@dreamwind/nif/scene",
-]
