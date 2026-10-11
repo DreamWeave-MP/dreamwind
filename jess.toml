@@ -8,11 +8,6 @@ include = ["src"]
 tests = ["tests/tes3/run.luau"]
 
 [modules]
-"@dreamwind/archive" = "src/archive/init.luau"
-"@dreamwind/archive/ba2" = "src/archive/ba2.luau"
-"@dreamwind/archive/bsa" = "src/archive/bsa/init.luau"
-"@dreamwind/archive/bsa/tes3" = "src/archive/bsa/tes3.luau"
-"@dreamwind/archive/bsa/tes4" = "src/archive/bsa/tes4.luau"
 "@dreamwind/tes3" = "src/tes3/init.luau"
 "@dreamwind/nif" = "src/nif/init.luau"
 "@dreamwind/nif/check" = "src/nif/internal/check.luau"
@@ -28,16 +23,6 @@ tests = ["tests/tes3/run.luau"]
 [[layer]]
 id = "dream.tes3"
 exports = ["@dreamwind/tes3"]
-
-[[layer]]
-id = "dream.bethesda-archives"
-exports = [
-    "@dreamwind/archive",
-    "@dreamwind/archive/ba2",
-    "@dreamwind/archive/bsa",
-    "@dreamwind/archive/bsa/tes3",
-    "@dreamwind/archive/bsa/tes4",
-]
 
 [[layer]]
 id = "dream.nif"
