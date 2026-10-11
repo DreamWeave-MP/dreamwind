@@ -12,7 +12,6 @@ tests = [
     "tests/openmw-config/run.luau",
     "tests/vfs/run.luau",
     "tests/vfs/vfstool.luau",
-    "tests/starwind/run.luau",
     "tests/tes3/run.luau",
     "tests/tes3cmd/run.luau",
     "tests/saves/run.luau",
@@ -36,7 +35,6 @@ tests = [
 "@dreamwind/tools/merge-to-master" = "src/tools/merge-to-master/init.luau"
 "@dreamwind/tools/add-vanilla-refs" = "src/tools/add-vanilla-refs/init.luau"
 "@dreamwind/vfstool" = "src/tools/vfstool/init.luau"
-"@dreamwind/starwind" = "src/starwind/init.luau"
 "@dreamwind/nif" = "src/nif/init.luau"
 "@dreamwind/nif/check" = "src/nif/internal/check.luau"
 "@dreamwind/nif/fix" = "src/nif/internal/fix.luau"
@@ -98,11 +96,6 @@ exports = [
 id = "dream.vfs"
 requires = ["dream.bethesda-archives"]
 exports = ["@dreamwind/vfs", "@dreamwind/vfstool"]
-
-[[layer]]
-id = "dream.starwind"
-requires = ["dream.morrowind-tools"]
-exports = ["@dreamwind/starwind"]
 
 [[layer]]
 id = "dream.nif"
