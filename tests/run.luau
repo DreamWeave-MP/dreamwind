@@ -1,10 +1,11 @@
 --!strict
 --!native
--- DreamWind's own cases. First, that it and its sixteen packages resolve into one plan: every
--- module each of them exports (the lists are their manifests') can be required and is the table
--- its package says it is. What a module does is its own package's suite's to prove. Second, that
--- `@dreamwind` hands a command line to the tool it names and returns that tool's exit status. The
--- tools' messages go to the suite's own standard error, and their output to its standard output.
+-- DreamWind's own cases. First, that it and the packages it depends on resolve into one plan:
+-- every module each of them exports (the lists are their manifests') can be required and is the
+-- table its package says it is. What a module does is its own package's suite's to prove. Second,
+-- that `@dreamwind` hands a command line to the tool it names and returns that tool's exit status.
+-- The tools' messages go to the suite's own standard error, and their output to its standard
+-- output.
 local dreamwind = require '@dreamwind'
 local fs = require '@dream/fs'
 local test = require '@jess/test'
@@ -159,6 +160,10 @@ suite.describe('the packages', function()
   suite.it('starwind exports @starwind and its command line', function()
     exposes(require '@starwind', { 'build' }, { pipeline = 'table' })
     exposes(require '@starwind/cli', { 'run', 'parse' }, { Exit = 'table' })
+  end)
+
+  suite.it('load-order exports @load-order', function()
+    exposes(require '@load-order', { 'open', 'masters', 'outputDirectory', 'activate' })
   end)
 end)
 
