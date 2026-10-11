@@ -13,7 +13,6 @@ tests = ["tests/tes3/run.luau"]
 "@dreamwind/archive/bsa" = "src/archive/bsa/init.luau"
 "@dreamwind/archive/bsa/tes3" = "src/archive/bsa/tes3.luau"
 "@dreamwind/archive/bsa/tes4" = "src/archive/bsa/tes4.luau"
-"@dreamwind/archive/tool" = "src/archive/tool.luau"
 "@dreamwind/tes3" = "src/tes3/init.luau"
 "@dreamwind/nif" = "src/nif/init.luau"
 "@dreamwind/nif/check" = "src/nif/internal/check.luau"
@@ -38,7 +37,6 @@ exports = [
     "@dreamwind/archive/bsa",
     "@dreamwind/archive/bsa/tes3",
     "@dreamwind/archive/bsa/tes4",
-    "@dreamwind/archive/tool",
 ]
 
 [[layer]]
