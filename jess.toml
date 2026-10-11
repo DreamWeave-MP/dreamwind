@@ -29,20 +29,15 @@ tests = [
 "@dreamwind/openmw-config" = "src/openmw-config/init.luau"
 "@dreamwind/openmw" = "src/openmw/init.luau"
 "@dreamwind/openmw-import-morrowind" = "src/openmw-import-morrowind/init.luau"
-"@dreamwind/tools/doctor" = "src/tools/doctor/init.luau"
 "@dreamwind/saves" = "src/saves/init.luau"
 "@dreamwind/tes3" = "src/tes3/init.luau"
 "@dreamwind/tes3cmd" = "src/tes3cmd/init.luau"
-"@dreamwind/tools/merged-lands" = "src/tools/merged-lands/init.luau"
-"@dreamwind/tools/s3lightfixes" = "src/tools/s3lightfixes/init.luau"
-"@dreamwind/tools/tes3merge" = "src/tools/tes3merge/init.luau"
 "@dreamwind/tools/tes3conv" = "src/tools/tes3conv/init.luau"
 "@dreamwind/tools/merge-to-master" = "src/tools/merge-to-master/init.luau"
 "@dreamwind/tools/add-vanilla-refs" = "src/tools/add-vanilla-refs/init.luau"
 "@dreamwind/vfstool" = "src/tools/vfstool/init.luau"
 "@dreamwind/starwind" = "src/starwind/init.luau"
 "@dreamwind/nif" = "src/nif/init.luau"
-"@dreamwind/nif/assets" = "src/nif/internal/assets.luau"
 "@dreamwind/nif/check" = "src/nif/internal/check.luau"
 "@dreamwind/nif/fix" = "src/nif/internal/fix.luau"
 "@dreamwind/nif/gamebryo" = "src/nif/internal/gamebryo/reader.luau"
@@ -83,10 +78,6 @@ exports = ["@dreamwind/saves"]
 [[layer]]
 id = "dream.morrowind-tools"
 exports = [
-    "@dreamwind/tools/doctor",
-    "@dreamwind/tools/merged-lands",
-    "@dreamwind/tools/s3lightfixes",
-    "@dreamwind/tools/tes3merge",
     "@dreamwind/tools/tes3conv",
     "@dreamwind/tools/merge-to-master",
     "@dreamwind/tools/add-vanilla-refs",
@@ -117,7 +108,6 @@ exports = ["@dreamwind/starwind"]
 id = "dream.nif"
 exports = [
     "@dreamwind/nif",
-    "@dreamwind/nif/assets",
     "@dreamwind/nif/check",
     "@dreamwind/nif/fix",
     "@dreamwind/nif/gamebryo",
