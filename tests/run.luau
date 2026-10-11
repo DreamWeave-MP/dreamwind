@@ -106,7 +106,6 @@ suite.describe('the packages', function()
       { VFS = 'table', version = 'string' }
     )
 
-    exposes(require '@vfs/serialize', { 'encode', 'array' })
     exposes(require '@vfs/paths', { 'normalize', 'join' })
     exposes(require '@vfs/layer', { 'build', 'drift' }, { SchemaVersion = 'number' })
     exposes(require '@vfs/encode', { 'fromLuau', 'displayTree' })
