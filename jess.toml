@@ -20,7 +20,6 @@ tests = [
 "@dreamwind/archive/bsa/tes4" = "src/archive/bsa/tes4.luau"
 "@dreamwind/archive/tool" = "src/archive/tool.luau"
 "@dreamwind/vfs" = "src/vfs/init.luau"
-"@dreamwind/openmw-config" = "src/openmw-config/init.luau"
 "@dreamwind/tes3" = "src/tes3/init.luau"
 "@dreamwind/nif" = "src/nif/init.luau"
 "@dreamwind/nif/check" = "src/nif/internal/check.luau"
@@ -32,10 +31,6 @@ tests = [
 
 # Every module here is inert API: it does nothing until something requires it, and runs with the
 # authority of whatever calls it. No layer has entrypoints yet, so none requires a capability.
-
-[[layer]]
-id = "dream.openmw-config"
-exports = ["@dreamwind/openmw-config"]
 
 [[layer]]
 id = "dream.tes3"
