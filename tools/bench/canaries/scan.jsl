@@ -24,6 +24,6 @@ end
 
 return table.freeze {
   name = 'scan',
-  path = 'tools/bench/canaries/scan.luau',
+  path = 'tools/bench/canaries/scan.jsl',
   run = run,
 }

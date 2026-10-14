@@ -22,6 +22,6 @@ end
 
 return table.freeze {
   name = 'find',
-  path = 'tools/bench/canaries/find.luau',
+  path = 'tools/bench/canaries/find.jsl',
   run = run,
 }

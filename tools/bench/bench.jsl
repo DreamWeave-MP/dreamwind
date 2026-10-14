@@ -3,7 +3,7 @@
 -- DreamWind-owned format benchmarks. Run from this repository on a release build, with DreamWind
 -- activated over the folder its packages are checked out in: `jess run --capability
 -- filesystem.read --capability filesystem.write --package . --package-path ..
--- tools/bench/bench.luau canaries`.
+-- tools/bench/bench.jsl canaries`.
 local json = require '@jess/json'
 local bytes = require '@dream/bytes'
 
@@ -351,10 +351,10 @@ end
 
 local function usage(): number
   print [[usage:
-  jess run GRANTS PACKAGES tools/bench/bench.luau canaries [--runs N] [--warmup N] [--scale N]
+  jess run GRANTS PACKAGES tools/bench/bench.jsl canaries [--runs N] [--warmup N] [--scale N]
       [--only NAME]... [--output FILE] [--check BASELINE] [--tolerance RATIO]
-  jess run GRANTS PACKAGES tools/bench/bench.luau compare BASELINE CANDIDATE
-  jess run GRANTS PACKAGES tools/bench/bench.luau list
+  jess run GRANTS PACKAGES tools/bench/bench.jsl compare BASELINE CANDIDATE
+  jess run GRANTS PACKAGES tools/bench/bench.jsl list
 
 GRANTS is --capability filesystem.read --capability filesystem.write: the inputs and baselines
 are read, and the results are written. PACKAGES is --package . --package-path FOLDER, FOLDER

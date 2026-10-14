@@ -4,7 +4,7 @@
 local json = require '@jess/json'
 
 local resultsPath = arg[1]
-if not resultsPath then error('usage: graph.luau RESULTS.json [OUTPUT.svg]', 0) end
+if not resultsPath then error('usage: graph.jsl RESULTS.json [OUTPUT.svg]', 0) end
 local output = arg[2] or 'target/bench/showcase.svg'
 local source = assert(jess.fs.read(resultsPath), `showcase results not found: {resultsPath}`)
 local results = json.decode(source) :: any

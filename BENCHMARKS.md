@@ -5,7 +5,7 @@ build of Jess at `b12612f` on l3i 2.0.2.
 
 ```sh
 jess run --capability filesystem.read --capability filesystem.write --package . \
-  --package-path <folder of packages> tools/bench/bench.luau canaries --runs 9
+  --package-path <folder of packages> tools/bench/bench.jsl canaries --runs 9
 ```
 
 DreamWind's own Luau is the dispatcher over its packages, and has no loop worth a change. What it

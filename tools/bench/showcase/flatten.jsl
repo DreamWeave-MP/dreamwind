@@ -5,7 +5,7 @@ local dreamwindOpenmw = require '@openmw'
 
 local output: string?, config: string? = ...
 if not output or not config or config == '' then
-  error('usage: flatten.luau <output folder> <openmw.cfg> [content to leave out]...', 0)
+  error('usage: flatten.jsl <output folder> <openmw.cfg> [content to leave out]...', 0)
 end
 
 local openmw = dreamwindOpenmw.new(config)
