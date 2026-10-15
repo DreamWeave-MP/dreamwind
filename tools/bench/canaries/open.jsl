@@ -1,10 +1,12 @@
 --!strict
 --!native
 -- Parse the representative all-types TES3 plugin repeatedly. File IO is outside the timed loop.
+local fs = require '@dream/fs'
 local tes3 = require '@tes3'
 
 local function run(scale: number, root: string): number
-  local source = assert(jess.fs.readBuffer(jess.fs.join(root, 'tools', 'bench', 'assets', 'all_types.esp')))
+  local source, problem = fs.readFile(fs.join(root, 'tools', 'bench', 'assets', 'all_types.esp'))
+  if not source then error(problem, 0) end
   local rounds = math.max(1, math.floor(200 * scale))
   local started = os.clock()
   local records = 0

@@ -4,6 +4,7 @@
 -- activated over the folder its packages are checked out in: `jess run --capability
 -- filesystem.read --capability filesystem.write --package . --package-path ..
 -- tools/bench/bench.jsl canaries`.
+local fs = require '@dream/fs'
 local json = require '@jess/json'
 local bytes = require '@dream/bytes'
 
@@ -65,18 +66,21 @@ local function nonNegativeInteger(value: string?, option: string): number
 end
 
 local function scriptRoot(): string
-  local bench = jess.fs.parent(arg[0])
-  local tools = bench and jess.fs.parent(bench)
-  local root = tools and jess.fs.parent(tools)
+  local bench = fs.parent(arg[0])
+  local tools = bench and fs.parent(bench)
+  local root = tools and fs.parent(tools)
   if root and root ~= '' then return root end
 
-  return jess.fs.cwd()
+  local current, problem = fs.cwd()
+  if not current then error(problem, 0) end
+
+  return current
 end
 
 local Root = scriptRoot()
 
 local function cpuName(): string
-  local info = jess.fs.read '/proc/cpuinfo'
+  local info = fs.readFileString '/proc/cpuinfo'
   if not info then return 'unknown' end
 
   return string.match(info, 'model name%s*:%s*([^\n]+)') or 'unknown'
@@ -187,7 +191,7 @@ local function findCanary(name: string): Canary?
 end
 
 local function readResults(path: string): any
-  local source = jess.fs.read(path)
+  local source = fs.readFileString(path)
   if not source then fail(`results file '{path}' does not exist`) end
 
   local result = json.decode(source)
@@ -272,7 +276,7 @@ local function runCanaries(startAt: number): number
   local runs = 5
   local warmup = 1
   local scale = 1
-  local output = jess.fs.join(Root, 'target', 'bench', 'results', 'dreamwind-canaries.json')
+  local output = fs.join(Root, 'target', 'bench', 'results', 'dreamwind-canaries.json')
   local baseline: string? = nil
   local tolerance = 1.5
   local selected: { [string]: boolean } = {}
@@ -333,7 +337,7 @@ local function runCanaries(startAt: number): number
     end
 
     local summary = summarize(samples)
-    local source = assert(jess.fs.read(jess.fs.join(Root, canary.path)), `missing {canary.path}`)
+    local source = (fs.readFileString(fs.join(Root, canary.path)) or error(`missing {canary.path}`, 0))
     table.insert(results.workloads, {
       name = canary.name,
       script_sha256 = bytes.sha256(source),
@@ -343,7 +347,8 @@ local function runCanaries(startAt: number): number
     print(string.format('  %.4f s median (%.4f–%.4f)', summary.median, summary.min, summary.max))
   end
 
-  jess.fs.write(output, encode(results) .. '\n')
+  local done, problem = fs.writeFile(output, encode(results) .. '\n', { atomic = true, createParents = true })
+  if not done then error(problem, 0) end
   print(`results: {output}`)
   if baseline then check(baseline, results, tolerance) end
   return 0

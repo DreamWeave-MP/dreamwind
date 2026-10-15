@@ -37,11 +37,15 @@ end
 --- A folder of this suite's own under the harness's `scratchRoot`, emptied.
 local function fresh(name: string): string
   local root = assert(rawget(_G, 'scratchRoot') :: string?, 'the case needs a scratchRoot')
-  local path = jess.fs.join(root, name)
+  local path = fs.join(root, name)
 
-  if fs.exists(path) then assert(fs.remove(path, { recursive = true })) end
+  if fs.exists(path) then
+    local done, problem = fs.remove(path, { recursive = true })
+    if not done then error(problem, 0) end
+  end
 
-  assert(fs.mkdir(path, { recursive = true }))
+  local done, problem = fs.mkdir(path, { recursive = true })
+  if not done then error(problem, 0) end
   return path
 end
 
@@ -288,16 +292,19 @@ suite.describe('the dispatcher', function()
 
   suite.it('hands vfstool the rest of the command line, and returns its status', function()
     local root = fresh 'dreamwind-vfstool'
-    local data = jess.fs.join(root, 'Data Files')
-    assert(fs.mkdir(data))
-    assert(fs.writeFile(jess.fs.join(data, 'Morrowind.esm'), ''))
-    assert(fs.writeFile(jess.fs.join(root, 'openmw.cfg'), `data="{data}"\n`))
+    local data = fs.join(root, 'Data Files')
+    local done, problem = fs.mkdir(data)
+    if not done then error(problem, 0) end
+    local done, problem = fs.writeFile(fs.join(data, 'Morrowind.esm'), '')
+    if not done then error(problem, 0) end
+    local done, problem = fs.writeFile(fs.join(root, 'openmw.cfg'), `data="{data}"\n`)
+    if not done then error(problem, 0) end
 
     -- vfstool's own statuses: 0 for a file it found, 1 for one the VFS doesn't have, 7 for a
     -- configuration that isn't there, and 8 for a command line it can't use.
     expect(dreamwind.run { 'vfstool', 'find-file', '-s', '--config', root, 'Morrowind.esm' }).toBe(0)
     expect(dreamwind.run { 'vfstool', 'find-file', '-s', '--config', root, 'Tribunal.esm' }).toBe(1)
-    local elsewhere = jess.fs.join(root, 'elsewhere')
+    local elsewhere = fs.join(root, 'elsewhere')
     expect(dreamwind.run { 'vfstool', 'find-file', '--config', elsewhere, 'Morrowind.esm' }).toBe(7)
     expect(dreamwind.run { 'vfstool' }).toBe(8)
     expect(dreamwind.run { 'vfstool', 'not-a-command' }).toBe(8)

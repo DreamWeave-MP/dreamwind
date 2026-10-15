@@ -1,12 +1,13 @@
 --!strict
 -- Renders the historical native-vs-DreamWind showcase results as SVG. The old harness used Python
 -- plus ImageMagick; the benchmark repository now keeps the reproducible graph step in Luau.
+local fs = require '@dream/fs'
 local json = require '@jess/json'
 
 local resultsPath = arg[1]
 if not resultsPath then error('usage: graph.jsl RESULTS.json [OUTPUT.svg]', 0) end
 local output = arg[2] or 'target/bench/showcase.svg'
-local source = assert(jess.fs.read(resultsPath), `showcase results not found: {resultsPath}`)
+local source = (fs.readFileString(resultsPath) or error(`showcase results not found: {resultsPath}`, 0))
 local results = json.decode(source) :: any
 assert(results.kind == 'showcase', `expected showcase results, got {tostring(results.kind)}`)
 
@@ -171,5 +172,6 @@ end
 
 table.insert(parts, text(1520, 868, `median of {results.runs} · whiskers min–max`, 17, Faint, nil, 'end'))
 table.insert(parts, '</svg>')
-jess.fs.write(output, table.concat(parts, '\n') .. '\n')
+local done, problem = fs.writeFile(output, table.concat(parts, '\n') .. '\n', { atomic = true, createParents = true })
+if not done then error(problem, 0) end
 print(output)
