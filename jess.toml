@@ -5,7 +5,7 @@ id = "org.dreamweave.dreamwind"
 version = "0.2.0"
 jess_api = "1"
 default_target = "dreamwind"
-include = ["src"]
+include = ["src", "tests"]
 tests = ["tests/run.jsl", "tests/style.jsl"]
 
 # DreamWind is the packages below under one name. Their modules are theirs to require, each under
@@ -73,4 +73,4 @@ exports = ["@dreamwind"]
 kind = "command"
 command = "dreamwind"
 entry = "src/main.jsl"
-capabilities = ["filesystem.read", "filesystem.write", "process.environment", "process.spawn"]
+capabilities = ["filesystem.read", "filesystem.write", "process.environment", "process.spawn", "process.stdio"]
