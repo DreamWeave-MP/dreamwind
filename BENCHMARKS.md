@@ -31,3 +31,13 @@ opening and saving moved little there (1.07x for an open, no change for an untou
 results under `tools/bench/results/legacy` are for an
 older set of canaries (buffer, land, math, method and the rest), with different scripts, so they
 are not a baseline for these.
+
+## Which modules are native, and why
+
+None. DreamWind's own Luau is the dispatcher over its packages, as above, and has no bench of its
+own to earn a directive: what it runs fast, it runs in the packages it calls, which mark their
+own hot paths. Measured 2026-10-15 with `jess 0.1.0`, the verified release build of jess
+`07c38cb` on l3i 2.0.3, on the i7-10870H: a fresh `jess run --package jpk/dreamwind --package-path
+jpk` of a script that only requires `@dreamwind` cost 0.0545 s with both modules marked and
+0.0543 s with neither, the two alternating, the median of five each after one warm-up, the
+one-minute load 1.25 at the start.
