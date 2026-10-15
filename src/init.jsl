@@ -1,5 +1,4 @@
 --!strict
---!native
 -- SPDX-License-Identifier: MIT OR Apache-2.0
 --[[
 @dreamwind: DreamWind's command line, one command over the tools its packages bring.
