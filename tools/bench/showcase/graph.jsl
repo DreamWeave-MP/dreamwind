@@ -4,10 +4,19 @@
 local fs = require '@dream/fs'
 local json = require '@jess/json'
 
+--- The text of the file at `path`, raising the read's own message when there is none.
+local function readText(path: string): string
+  local text, problem = fs.readFileString(path)
+  if not text then error(problem, 0) end
+
+  return text
+end
+
+
 local resultsPath = arg[1]
 if not resultsPath then error('usage: graph.jsl RESULTS.json [OUTPUT.svg]', 0) end
 local output = arg[2] or 'target/bench/showcase.svg'
-local source = (fs.readFileString(resultsPath) or error(`showcase results not found: {resultsPath}`, 0))
+local source = (readText(resultsPath) or error(`showcase results not found: {resultsPath}`, 0))
 local results = json.decode(source) :: any
 assert(results.kind == 'showcase', `expected showcase results, got {tostring(results.kind)}`)
 

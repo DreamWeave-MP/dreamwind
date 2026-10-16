@@ -8,6 +8,15 @@ local fs = require '@dream/fs'
 local json = require '@jess/json'
 local bytes = require '@dream/bytes'
 
+--- The text of the file at `path`, raising the read's own message when there is none.
+local function readText(path: string): string
+  local text, problem = fs.readFileString(path)
+  if not text then error(problem, 0) end
+
+  return text
+end
+
+
 export type Canary = {
   name: string,
   path: string,
@@ -339,7 +348,7 @@ local function runCanaries(startAt: number): number
     end
 
     local summary = summarize(samples)
-    local source = (fs.readFileString(fs.join(Root, canary.path)) or error(`missing {canary.path}`, 0))
+    local source = (readText(fs.join(Root, canary.path)) or error(`missing {canary.path}`, 0))
     table.insert(results.workloads, {
       name = canary.name,
       script_sha256 = bytes.sha256(source),
