@@ -228,11 +228,13 @@ local function compare(baselinePath: string, candidatePath: string): number
 
   print(string.format('%-12s %10s %10s %8s', 'workload', 'baseline', 'candidate', 'ratio'))
   for _, workload in candidate.workloads or {} do
-    local name = if type(workload) == 'table' then workload.name else nil
+    local name: string? = if type(workload) == 'table' and type(workload.name) == 'string' then workload.name else nil
     local old = name and before[name]
-    local oldMedian = if old then workloadMedian(old) else nil
-    local newMedian = workloadMedian(workload)
-    if not name or not oldMedian or not newMedian then continue end
+    local oldMedian: number? = if old then workloadMedian(old) else nil
+    local newMedian: number? = workloadMedian(workload)
+    if not name then continue end
+    if not oldMedian then continue end
+    if not newMedian then continue end
 
     print(string.format('%-12s %8.4f s %8.4f s %7.2fx', name, oldMedian, newMedian, newMedian / oldMedian))
   end
