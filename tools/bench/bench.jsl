@@ -152,7 +152,7 @@ local function encodeTable(value: { [unknown]: unknown }): string
 
   local keys: { string } = {}
   for key in value do
-    if type(key) ~= 'string' then fail('result tables need string keys or dense array indexes') end
+    if type(key) ~= 'string' then return fail('result tables need string keys or dense array indexes') end
     table.insert(keys, key)
   end
   table.sort(keys)
@@ -179,7 +179,7 @@ encode = function(value: unknown): string
   if kind == 'table' then return encodeTable(value :: { [unknown]: unknown }) end
   if value == nil then return 'null' end
 
-  fail(`cannot encode benchmark result value of type {kind}`)
+  return fail(`cannot encode benchmark result value of type {kind}`)
 end
 
 local function findCanary(name: string): Canary?
@@ -192,7 +192,7 @@ end
 
 local function readResults(path: string): any
   local source = fs.readFileString(path)
-  if not source then fail(`results file '{path}' does not exist`) end
+  if not source then return fail(`results file '{path}' does not exist`) end
 
   local result = json.decode(source)
   if type(result) ~= 'table' then fail(`results file '{path}' is not an object`) end
@@ -230,7 +230,7 @@ local function compare(baselinePath: string, candidatePath: string): number
   for _, workload in candidate.workloads or {} do
     local name = if type(workload) == 'table' then workload.name else nil
     local old = name and before[name]
-    local oldMedian = old and workloadMedian(old)
+    local oldMedian = if old then workloadMedian(old) else nil
     local newMedian = workloadMedian(workload)
     if not name or not oldMedian or not newMedian then continue end
 
@@ -255,7 +255,7 @@ local function check(baselinePath: string, candidate: Results, tolerance: number
   local slower: { string } = {}
   for _, workload in candidate.workloads do
     local old = before[workload.name]
-    local oldMedian = old and workloadMedian(old)
+    local oldMedian = if old then workloadMedian(old) else nil
     if oldMedian and workload.summary.median > oldMedian * tolerance then
       table.insert(slower, string.format('%s %.2fx', workload.name, workload.summary.median / oldMedian))
     end

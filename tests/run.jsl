@@ -200,7 +200,7 @@ end)
 
 suite.describe('the command lines over libraries', function()
   -- Each package's commands module (a request in, a result out) and the command line over it.
-  local lines = {
+  local lines: { [string]: { unknown } } = {
     tes3cmd = { require '@tes3cmd/commands', require '@tes3cmd/cli' },
     tes3conv = { require '@tes3conv/commands', require '@tes3conv/cli' },
     ['merge-to-master'] = { require '@merge-to-master/commands', require '@merge-to-master/cli' },
@@ -234,7 +234,7 @@ end)
 suite.describe('the dispatcher', function()
   suite.it('is a table with run alone', function()
     exposes(dreamwind, { 'run' })
-    expect(next(dreamwind, 'run')).toBeNil()
+    expect((next(dreamwind :: { [string]: unknown }, 'run'))).toBeNil()
   end)
 
   suite.it('returns 0 for help under each of its spellings', function()
