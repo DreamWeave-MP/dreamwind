@@ -1,6 +1,41 @@
 --!strict
--- Prints scalar report fields from DreamWind tool state, one `fact name value` line each. This is
--- kept with DreamWind because the state belongs to DreamWind's load-order tools, not Jess.
+--[[
+Runs one of the load-order tools through its module, the way its command line does, and prints
+what it reports about the load order: one `fact <state key>.<field> <value>` line per field of
+the report it leaves in `state`. A list prints its length; a table of fields prints each of
+them. The harness keeps the counts.
+
+  jess run --capability filesystem.read --capability filesystem.write \
+    --capability process.environment --package ../<package> --package-path .. \
+    tools/bench/showcase/facts.jsl <module> <state key> <openmw.cfg> [options as JSON]
+
+The module is one of @tes3merge, @s3lightfixes, @merged-lands, and @doctor, and the state key
+the one it reads its options from (`mergedlands` for Merged Lands). The options are the
+workload's, as the harness would set them in `state`. Run from this checkout; the packages are
+its siblings.
+]]
+
+local json = require '@jess/json'
+local openmwInstall = require '@openmw-install'
+
+type Tool = (state: { [string]: unknown }, context: openmwInstall.Context) -> ()
+
+-- Only the branch taken loads a module, so one package's tool can run without the others.
+local Tools: { [string]: () -> Tool } = {
+  ['@tes3merge'] = function(): Tool return require '@tes3merge' :: Tool end,
+  ['@s3lightfixes'] = function(): Tool return require '@s3lightfixes' :: Tool end,
+  ['@merged-lands'] = function(): Tool return require '@merged-lands' :: Tool end,
+  ['@doctor'] = function(): Tool return require '@doctor' :: Tool end,
+}
+
+local moduleName: string?, stateKey: string?, config: string?, optionsText: string? = ...
+if not moduleName or not stateKey or not config then
+  error('usage: jess run facts.jsl <module> <state key> <openmw.cfg> [options as JSON]', 0)
+end
+
+local load = Tools[moduleName]
+if not load then error(`facts: no tool for '{moduleName}'`, 0) end
+
 local function printFact(name: string, value: unknown)
   if type(value) ~= 'table' then
     print(`fact {name} {value}`)
@@ -15,19 +50,20 @@ local function printFact(name: string, value: unknown)
 
   for field, inner in fields do
     if type(inner) == 'table' then continue end
+
     print(`fact {name}.{field} {inner}`)
   end
 end
 
-return function(state: { [string]: unknown })
-  for script, options in state do
-    if type(options) ~= 'table' then continue end
+local options: { [string]: unknown } = if optionsText and optionsText ~= ''
+  then json.decode(optionsText) :: { [string]: unknown }
+  else {}
+local state: { [string]: unknown } = { [stateKey] = options }
+load()(state, openmwInstall.new(config))
 
-    local report = (options :: { report: unknown? }).report
-    if type(report) ~= 'table' then continue end
+local report = options.report
+if type(report) ~= 'table' then error(`facts: {moduleName} left no report in state.{stateKey}`, 0) end
 
-    for field, value in report :: { [string]: unknown } do
-      printFact(`{script}.{field}`, value)
-    end
-  end
+for field, value in report :: { [string]: unknown } do
+  printFact(`{stateKey}.{field}`, value)
 end

@@ -1,0 +1,466 @@
+--!strict
+--[[
+Output equivalence for tools/bench/showcase.jsl: whether the file a port wrote says what the
+native tool's does. Every file gets one of four verdicts.
+
+  identical                  byte for byte.
+  identical-except-timestamp byte for byte once the time of the run in the plugin header's
+                             description is blanked (TES3Merge's ISO 8601 time, Merged Lands'
+                             `Generated at <seconds> UTC.`). Nothing else is normalized.
+  known-differences          after the byte rules the workload declares, the records the native
+                             tool alone writes are exactly the ones it lists, and everything else
+                             matches byte for byte, record order and masters included.
+  mismatch                   anything else, with the records and subrecords that differ.
+
+A TES3 record is a 4-byte tag, its body's size, eight bytes of header data and flags, and the
+body: subrecords of a 4-byte tag, a size, and the bytes. Records are keyed by tag and identity:
+the NAME or INAM, the INDX or INTV, and for an exterior cell its grid.
+
+The rules, each named by the workload that needs it:
+
+  aidt-padding          zeroes the three bytes of AIDT the Construction Set never cleared, in
+                        creatures and NPCs.
+  mgef-subrecord-order  puts a magic effect's subrecords in the Construction Set's order, which
+                        OpenMW's `MagicEffect::save` writes too.
+  cell-nam0             drops NAM0, the count of the temporary references after it, from a cell
+                        that has no references.
+
+The rules and the native-only records are ported from the Python harness this replaces, exactly:
+a new difference is a mismatch to report, not a rule to add.
+]]
+
+local bytes = require '@dream/bytes'
+
+export type Key = { tag: string, identity: string }
+
+--- A difference from the native tool's output that is understood, and why. `normalize` names
+--- byte rules applied to both files before comparing records; `nativeOnly` lists records only
+--- the native tool writes. Anything else that differs is a mismatch.
+export type Known = { reason: string, normalize: { string }?, nativeOnly: { Key }? }
+
+export type Problems = {
+  header: string?,
+  only_native: { { string } }?,
+  only_jess: { { string } }?,
+  differing: { string }?,
+  order: string?,
+  duplicates: string?,
+}
+
+export type KnownDetails = { reasons: { string }, normalized: { string }, only_native: { { string } } }
+
+export type Verdict = { status: string, details: (string | Problems | KnownDetails)? }
+
+export type Description = {
+  bytes: number,
+  sha256: string,
+  normalized_sha256: string?,
+  records: { [string]: number }?,
+}
+
+type Subrecord = { tag: string, start: number, size: number }
+type Record = { key: Key, raw: buffer }
+
+-- The TES3 record's HEDR: the 16-byte record header, HEDR's own 8, version, flags, and author
+-- come before the 256-byte description; the record count follows it.
+local DescriptionStart, DescriptionLength = 16 + 8 + 4 + 4 + 32, 256
+local RecordCountStart = DescriptionStart + DescriptionLength
+
+local function isPlugin(data: buffer): boolean
+  return buffer.len(data) >= 20
+    and buffer.readstring(data, 0, 4) == 'TES3'
+    and buffer.readstring(data, 16, 4) == 'HEDR'
+end
+
+local function slice(data: buffer, offset: number, length: number): buffer
+  local copy = buffer.create(length)
+  buffer.copy(copy, 0, data, offset, length)
+  return copy
+end
+
+local function concat(parts: { buffer }): buffer
+  local total = 0
+  for _, part in parts do
+    total += buffer.len(part)
+  end
+
+  local joined = buffer.create(total)
+  local position = 0
+  for _, part in parts do
+    buffer.copy(joined, position, part)
+    position += buffer.len(part)
+  end
+
+  return joined
+end
+
+local function hashes(match: string): string return string.rep('#', #match) end
+
+--- The plugin with the timestamp in its header's description blanked, and nothing else.
+local function maskTimestamp(data: buffer): buffer
+  local masked = slice(data, 0, buffer.len(data))
+  if buffer.len(masked) < RecordCountStart then return masked end
+
+  local description = buffer.readstring(masked, DescriptionStart, DescriptionLength)
+  description = string.gsub(description, '%d%d%d%d%-%d%d%-%d%dT%d%d:%d%d:%d%dZ', hashes)
+  description = string.gsub(
+    description,
+    'Generated at %d+ UTC',
+    function(match: string): string
+      return `Generated at {hashes(string.match(match, '%d+') or '')} UTC`
+    end
+  )
+  buffer.writestring(masked, DescriptionStart, description)
+  return masked
+end
+
+--- The subrecords in `length` bytes of `data` from `base`; each `start` is where its bytes are.
+local function subrecords(data: buffer, base: number, length: number): { Subrecord }
+  local list: { Subrecord } = {}
+  local position, stop = base, base + length
+  while position + 8 <= stop do
+    local tag, size = buffer.readstring(data, position, 4), buffer.readu32(data, position + 4)
+    size = math.min(size, stop - position - 8)
+    table.insert(list, { tag = tag, start = position + 8, size = size })
+    position += 8 + size
+  end
+
+  return list
+end
+
+--- A record's type and what identifies it: its NAME, INDX, or INTV (with the grid for a CELL).
+local function recordKey(tag: string, body: buffer): Key
+  local identity = ''
+  for _, subrecord in subrecords(body, 0, buffer.len(body)) do
+    local subtag = subrecord.tag
+    if (subtag == 'NAME' or subtag == 'INAM') and identity == '' then
+      identity = bytes.readCString(body, subrecord.start, subrecord.size)
+      if tag ~= 'CELL' then break end
+    elseif (subtag == 'INDX' or subtag == 'INTV') and identity == '' then
+      if subrecord.size == 4 then
+        identity = tostring(buffer.readi32(body, subrecord.start))
+      else
+        local first = buffer.readi32(body, subrecord.start)
+        local second = buffer.readi32(body, subrecord.start + 4)
+        identity = `({first}, {second})`
+      end
+
+      break
+    elseif subtag == 'DATA' and tag == 'CELL' and subrecord.size == 12 then
+      local flags = buffer.readu32(body, subrecord.start)
+      if bit32.band(flags, 1) == 0 then
+        local column = buffer.readi32(body, subrecord.start + 4)
+        local row = buffer.readi32(body, subrecord.start + 8)
+        identity ..= ` ({column}, {row})`
+      end
+
+      break
+    end
+  end
+
+  return { tag = tag, identity = identity }
+end
+
+local function keyText(key: Key): string return `{key.tag}\0{key.identity}` end
+
+local function chunksOf(body: buffer): { { tag: string, data: buffer } }
+  local chunks = {}
+  for _, subrecord in subrecords(body, 0, buffer.len(body)) do
+    table.insert(chunks, {
+      tag = subrecord.tag,
+      data = slice(body, subrecord.start - 8, subrecord.size + 8),
+    })
+  end
+
+  return chunks
+end
+
+-- AIDT: hello (2), fight, flee, alarm, three bytes the Construction Set never cleared, services (4).
+local function normalizeAidtPadding(tag: string, body: buffer): buffer
+  if tag ~= 'CREA' and tag ~= 'NPC_' then return body end
+
+  for _, subrecord in subrecords(body, 0, buffer.len(body)) do
+    if subrecord.tag == 'AIDT' and subrecord.size == 12 then
+      buffer.fill(body, subrecord.start + 5, 0, 3)
+    end
+  end
+
+  return body
+end
+
+-- The Construction Set's MGEF subrecord order, which OpenMW's `MagicEffect::save` writes too.
+local MgefOrder: { [string]: number } = {
+  INDX = 1,
+  MEDT = 2,
+  ITEX = 3,
+  PTEX = 4,
+  BSND = 5,
+  CSND = 6,
+  HSND = 7,
+  ASND = 8,
+  CVFX = 9,
+  BVFX = 10,
+  HVFX = 11,
+  AVFX = 12,
+  DESC = 13,
+}
+
+local function normalizeMgefSubrecordOrder(tag: string, body: buffer): buffer
+  if tag ~= 'MGEF' then return body end
+
+  local chunks = chunksOf(body)
+  local unknownRank = 14
+  local ranked: { { rank: number, index: number, data: buffer } } = {}
+  for index, chunk in chunks do
+    ranked[index] = { rank = MgefOrder[chunk.tag] or unknownRank, index = index, data = chunk.data }
+  end
+
+  -- table.sort isn't stable; the original position breaks ties, as Python's sort did.
+  table.sort(ranked, function(left: { rank: number, index: number, data: buffer }, right: { rank: number, index: number, data: buffer }): boolean
+    if left.rank ~= right.rank then return left.rank < right.rank end
+
+    return left.index < right.index
+  end)
+  return concat([for chunk in ranked => chunk.data])
+end
+
+-- NAM0 counts the temporary references after it: in a CELL without references it counts nothing.
+local function normalizeCellNam0(tag: string, body: buffer): buffer
+  if tag ~= 'CELL' then return body end
+
+  local chunks = chunksOf(body)
+  for _, chunk in chunks do
+    if chunk.tag == 'FRMR' or chunk.tag == 'MVRF' then return body end
+  end
+
+  return concat([for chunk in chunks if chunk.tag ~= 'NAM0' => chunk.data])
+end
+
+local Normalizers: { [string]: (tag: string, body: buffer) -> buffer } = {
+  ['aidt-padding'] = normalizeAidtPadding,
+  ['mgef-subrecord-order'] = normalizeMgefSubrecordOrder,
+  ['cell-nam0'] = normalizeCellNam0,
+}
+
+--- The header record (timestamp and record count masked) and every other record by key, after
+--- the rules named in `normalize`.
+local function pluginRecords(data: buffer, normalize: { string }): (buffer, { Record })
+  local records: { Record } = {}
+  local header = buffer.create(0)
+  local position, length = 0, buffer.len(data)
+  while position + 16 <= length do
+    local tag, size = buffer.readstring(data, position, 4), buffer.readu32(data, position + 4)
+    size = math.min(size, length - position - 16)
+    local raw = slice(data, position, 16 + size)
+    position += 16 + size
+    if tag == 'TES3' then
+      header = maskTimestamp(raw)
+      if buffer.len(header) >= RecordCountStart + 4 then buffer.writeu32(header, RecordCountStart, 0) end
+
+      continue
+    end
+
+    local body = slice(raw, 16, size)
+    for _, rule in normalize do
+      local normalizer = Normalizers[rule]
+      if not normalizer then error(`equivalence: no rule '{rule}'`, 0) end
+
+      body = normalizer(tag, body)
+    end
+
+    -- A rule that drops a subrecord changes the size the record header gives.
+    local record = buffer.create(16 + buffer.len(body))
+    buffer.copy(record, 0, raw, 0, 16)
+    buffer.writeu32(record, 4, buffer.len(body))
+    buffer.copy(record, 16, body)
+    table.insert(records, { key = recordKey(tag, body), raw = record })
+  end
+
+  return header, records
+end
+
+--- What two copies of a record differ in: their header flags, which subrecords they have, or
+--- which of the same subrecords differ.
+local function differingSubrecords(left: buffer, right: buffer): { string }
+  if buffer.readstring(left, 8, 8) ~= buffer.readstring(right, 8, 8) then return { 'record flags' } end
+
+  local lefts = subrecords(left, 16, buffer.len(left) - 16)
+  local rights = subrecords(right, 16, buffer.len(right) - 16)
+  local leftTags = table.concat([for subrecord in lefts => subrecord.tag], ' ')
+  local rightTags = table.concat([for subrecord in rights => subrecord.tag], ' ')
+  if leftTags ~= rightTags then return { `subrecords {leftTags} against {rightTags}` } end
+
+  local differing: { string } = {}
+  for index, subrecord in lefts do
+    local other = rights[index]
+    local same = subrecord.size == other.size
+      and bytes.compare(left, subrecord.start, right, other.start, subrecord.size) == 0
+    if not same then table.insert(differing, subrecord.tag) end
+  end
+
+  return differing
+end
+
+local function firstDifference(left: buffer, right: buffer): string
+  local leftLength, rightLength = buffer.len(left), buffer.len(right)
+  local shorter = math.min(leftLength, rightLength)
+  local offset = shorter
+  for index = 0, shorter - 1 do
+    if buffer.readu8(left, index) ~= buffer.readu8(right, index) then
+      offset = index
+      break
+    end
+  end
+
+  local line = bytes.count(slice(left, 0, offset), '\n') + 1
+  return `first difference at byte {offset} (line {line}); {leftLength} and {rightLength} bytes`
+end
+
+local function listed(key: Key): { string } return { key.tag, key.identity } end
+
+--- The verdict on two files the port and the native tool wrote.
+local function compare(jess: buffer, native: buffer, known: { Known }): Verdict
+  if bytes.equals(jess, native) then return { status = 'identical' } end
+
+  if not (isPlugin(jess) and isPlugin(native)) then
+    return { status = 'mismatch', details = firstDifference(jess, native) }
+  end
+
+  if bytes.equals(maskTimestamp(jess), maskTimestamp(native)) then
+    return { status = 'identical-except-timestamp' }
+  end
+
+  local rules: { string } = {}
+  for _, difference in known do
+    for _, rule in difference.normalize or {} do
+      table.insert(rules, rule)
+    end
+  end
+
+  local jessHeader, jessRecords = pluginRecords(jess, rules)
+  local nativeHeader, nativeRecords = pluginRecords(native, rules)
+  local jessByKey: { [string]: buffer }, nativeByKey: { [string]: buffer } = {}, {}
+  local jessUnique, nativeUnique = 0, 0
+  for _, record in jessRecords do
+    local text = keyText(record.key)
+    if not jessByKey[text] then jessUnique += 1 end
+
+    jessByKey[text] = record.raw
+  end
+
+  for _, record in nativeRecords do
+    local text = keyText(record.key)
+    if not nativeByKey[text] then nativeUnique += 1 end
+
+    nativeByKey[text] = record.raw
+  end
+
+  local onlyNative = [for record in nativeRecords if not jessByKey[keyText(record.key)] => record.key]
+  local onlyJess = [for record in jessRecords if not nativeByKey[keyText(record.key)] => record.key]
+  local differing: { string }, commonJess: { string } = {}, {}
+  for _, record in jessRecords do
+    local text = keyText(record.key)
+    local other = nativeByKey[text]
+    if not other then continue end
+
+    table.insert(commonJess, text)
+    if bytes.equals(record.raw, other) then continue end
+
+    local what = table.concat(differingSubrecords(record.raw, other), ', ')
+    table.insert(differing, `{record.key.tag} {record.key.identity}: {what}`)
+  end
+
+  local commonNative = [for record in nativeRecords if jessByKey[keyText(record.key)] => keyText(record.key)]
+
+  local expected: { [string]: boolean } = {}
+  for _, difference in known do
+    for _, key in difference.nativeOnly or {} do
+      expected[keyText(key)] = true
+    end
+  end
+
+  local found: { [string]: boolean } = {}
+  for _, key in onlyNative do
+    found[keyText(key)] = true
+  end
+
+  local sameNativeOnly = true
+  for text in expected do
+    if not found[text] then sameNativeOnly = false end
+  end
+
+  for text in found do
+    if not expected[text] then sameNativeOnly = false end
+  end
+
+  local problems: Problems = {}
+  local troubled = false
+  if not bytes.equals(jessHeader, nativeHeader) then
+    problems.header = 'differs beyond its timestamp and record count'
+    troubled = true
+  end
+
+  if not sameNativeOnly then
+    problems.only_native = [for key in onlyNative => listed(key)]
+    troubled = true
+  end
+
+  if #onlyJess > 0 then
+    problems.only_jess = [for key in onlyJess => listed(key)]
+    troubled = true
+  end
+
+  if #differing > 0 then
+    problems.differing = differing
+    troubled = true
+  end
+
+  if table.concat(commonJess, '\n') ~= table.concat(commonNative, '\n') then
+    problems.order = 'the records both write are in a different order'
+    troubled = true
+  end
+
+  if jessUnique ~= #jessRecords or nativeUnique ~= #nativeRecords then
+    problems.duplicates = 'a record appears twice in one of them'
+    troubled = true
+  end
+
+  if troubled then return { status = 'mismatch', details = problems } end
+
+  if #known == 0 then
+    return { status = 'mismatch', details = "only the header's record count differs" }
+  end
+
+  return {
+    status = 'known-differences',
+    details = {
+      reasons = [for difference in known => difference.reason],
+      normalized = rules,
+      only_native = [for key in onlyNative => listed(key)],
+    },
+  }
+end
+
+--- A file's size and digests, and for a plugin the digest with its timestamp blanked and how
+--- many records of each type it holds.
+local function describe(data: buffer): Description
+  local described: Description = { bytes = buffer.len(data), sha256 = bytes.sha256(data) }
+  if not isPlugin(data) then return described end
+
+  described.normalized_sha256 = bytes.sha256(maskTimestamp(data))
+  local counts: { [string]: number } = {}
+  local _, records = pluginRecords(data, {})
+  for _, record in records do
+    counts[record.key.tag] = (counts[record.key.tag] or 0) + 1
+  end
+
+  described.records = counts
+  return described
+end
+
+return table.freeze {
+  compare = compare,
+  describe = describe,
+  isPlugin = isPlugin,
+  maskTimestamp = maskTimestamp,
+}

@@ -1,42 +1,78 @@
 --!strict
--- Flattens one explicit OpenMW configuration chain for real-data DreamWind benchmarks. DreamWind
--- intentionally has no process-wide/default OpenMW configuration, so the input path is required.
-local dreamwindOpenmw = require '@openmw-install'
+--[[
+Flattens an OpenMW config chain into one standalone config for the benchmark.
+
+  jess run --capability filesystem.read --capability filesystem.write \
+    --package ../openmw-install --package-path .. \
+    tools/bench/showcase/flatten.jsl <output folder> <openmw.cfg> [content name to leave out]...
+
+Writes `openmw.cfg.in`: `encoding=`, every data folder (data-local included, as OpenMW searches
+it) and fallback archive with absolute paths, and the content list without the names given (the
+tools' own outputs). The harness adds `data-local=` per run. It also writes `content.tsv`, each
+content file's name and resolved path, for the load order's facts. Nothing in the source chain
+is written.
+
+A content file is listed as its file is spelled on disk. OpenMW finds `Patch For Purists.esm`
+when the file is `Patch for Purists.esm`, and so do the ports, but a native tool that resolves
+names case-sensitively on Linux (Merged Lands 0.2.0 does) can't; the same file under the one
+spelling keeps both sides reading the same load order. Each respelling is printed as
+`respelled <config name> -> <file name>`, for the harness to record.
+]]
+
 local fs = require '@dream/fs'
+local openmwInstall = require '@openmw-install'
 
 local output: string?, config: string? = ...
-if not output or not config or config == '' then
-  error('usage: flatten.jsl <output folder> <openmw.cfg> [content to leave out]...', 0)
+if not output or not config then
+  error('usage: jess run flatten.jsl <output folder> <openmw.cfg> [content to leave out]...', 0)
 end
 
-local openmw = dreamwindOpenmw.new(config)
+local context = openmwInstall.new(config)
+
 local excluded: { [string]: boolean } = {}
 for index = 3, select('#', ...) do
   excluded[string.lower(select(index, ...))] = true
 end
 
 -- openmw.cfg quotes a path in double quotes, escaping `&` and `"` with `&`.
-local function quoted(path: string): string return `"{path:gsub('&', '&&'):gsub('"', '&"')}"` end
+local function quoted(path: string): string
+  local escaped = string.gsub(path, '[&"]', '&%0')
+  return `"{escaped}"`
+end
 
 local lines: { string }, content: { string } = {}, {}
-if openmw.encoding then table.insert(lines, `encoding={openmw.encoding}`) end
+if context.encoding then table.insert(lines, `encoding={context.encoding}`) end
 
-for _, folder in openmw.dataDirs do
+-- The context lists the engine's resources/vfs first when the chain names `resources`; the
+-- tools don't read it, and the old harness didn't write it.
+local resources = context:configuration():path 'resources'
+local engineVfs = resources and fs.join(resources, 'vfs')
+for _, folder in context.dataDirs do
+  if folder == engineVfs then continue end
+
   table.insert(lines, `data={quoted(folder)}`)
 end
 
-for _, archive in openmw.fallbackArchives do
+for _, archive in context.fallbackArchives do
   table.insert(lines, `fallback-archive={archive}`)
 end
 
-for _, file in openmw:content() do
+for _, file in context:content() do
   if excluded[string.lower(file.name)] then continue end
 
-  table.insert(lines, `content={file.name}`)
-  table.insert(content, `{file.name}\t{file.path or ''}`)
+  local name = file.name
+  local onDisk = file.path and fs.fileName(file.path)
+  if onDisk and onDisk ~= name then
+    print(`respelled {name} -> {onDisk}`)
+    name = onDisk
+  end
+
+  table.insert(lines, `content={name}`)
+  table.insert(content, `{name}\t{file.path or ''}`)
 end
 
-local done, problem = fs.writeFile(fs.join(output, 'openmw.cfg.in'), table.concat(lines, '\n') .. '\n', { atomic = true, createParents = true })
-if not done then error(problem, 0) end
-local done, problem = fs.writeFile(fs.join(output, 'content.tsv'), table.concat(content, '\n') .. '\n', { atomic = true, createParents = true })
-if not done then error(problem, 0) end
+local written, problem = fs.writeFile(fs.join(output, 'openmw.cfg.in'), table.concat(lines, '\n') .. '\n', { atomic = true, createParents = true })
+if not written then error(problem, 0) end
+
+local listed, listProblem = fs.writeFile(fs.join(output, 'content.tsv'), table.concat(content, '\n') .. '\n', { atomic = true, createParents = true })
+if not listed then error(listProblem, 0) end
