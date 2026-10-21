@@ -1,0 +1,21 @@
+# DreamWind as a DreamWeave project: a Jess package. `jess` names the Package Source it
+# publishes, the jess.toml at the repository root, and each release tag `dreamwind-<version>` is one
+# version of the package, packed by the Mod Template from that tag; every push packs a
+# development build.
+id = "aca6a4b0-f8b2-44a9-9cc4-55ef3c9d83f8"
+slug = "dreamwind"
+type = "tool"
+status = "active"
+
+[[maintainers]]
+name = "DreamWeave"
+url = "https://github.com/DreamWeave-MP"
+
+[package]
+format = "jpk"
+jess = "org.dreamweave.dreamwind"
+
+[[releases]]
+version = "0.2.0"
+date = 2026-10-21
+summary = "First release published as a DreamWeave project."
