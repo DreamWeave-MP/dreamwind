@@ -41,3 +41,35 @@ own hot paths. Measured 2026-10-15 with `jess 0.1.0`, the verified release build
 jpk` of a script that only requires `@dreamwind` cost 0.0545 s with both modules marked and
 0.0543 s with neither, the two alternating, the median of five each after one warm-up, the
 one-minute load 1.25 at the start.
+
+## Against the native tools
+
+The whole-program comparison lives here too, in `tools/bench/showcase.jsl`: each load-order tool
+run from its package on jess, next to the native program it ports, over the real load order, and
+whether both wrote the same files. The workloads are TES3Merge, S3LightFixes (with and without
+the interior sun), Merged Lands, and the doctor in three configurations; `jess run
+tools/bench/showcase.jsl list` names them. Each side runs in a fresh folder holding a flattened
+copy of the config, with a home of its own and every `JESS_*` and `OPENMW_*` variable removed,
+timed by GNU time, alternating, and `tools/bench/equivalence.jsl` then gives every output a
+verdict: identical, identical except the timestamp, a known difference with its reason, or a
+mismatch, which fails the run.
+
+```sh
+jess run --capability filesystem.read --capability filesystem.write \
+  --capability process.spawn --capability process.environment \
+  tools/bench/showcase.jsl run [--packages FOLDER] [--packed] [--no-native] [--runtime TEXT] ...
+```
+
+Run it from this checkout on a verified release build of jess (`jess --version` says when a build
+isn't one, and the harness refuses it). The packages default to the folder this checkout sits in,
+where its siblings are checked out; `--packed` packs each tool's activation plan into
+`target/bench/jpk` first and measures the JPKs. The native binaries are `tes3merge` and
+`s3lightfixes` on `PATH` or named with `--tes3merge` and `--s3lightfixes`, and Merged Lands built
+from source and named with `--merged-lands`; `--no-native` measures the ports alone. The binary
+names its runtime but not the runtime's release, so pass `--runtime "l3i 2.1.2"` when the results
+should say which. `tools/bench/showcase/flatten.jsl` and `facts.jsl` are the helpers it drives:
+the flattened config, and what each tool's module reports about the load order.
+
+Results land in `target/bench/results/<time>-showcase.json`; the ones kept, by l3i release and
+machine, are under `tools/bench/results/` (`-packed` for a run over JPKs). `--against RESULTS`
+compares a run's outputs with a kept file's by hash.
