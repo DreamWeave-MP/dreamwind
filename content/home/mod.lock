@@ -1,0 +1,73 @@
+{
+  "schema_version": "3",
+  "document": "lock",
+  "project": "aca6a4b0-f8b2-44a9-9cc4-55ef3c9d83f8",
+  "note": "Written by CI when a release tag is pushed: what each published release's archive contains. Do not edit.",
+  "releases": [
+    {
+      "version": "0.2.0",
+      "locked_from": "098fedc88011953ebe4974cedbbccef97c88910a",
+      "artifacts": [
+        {
+          "id": "jpk",
+          "format": "jpk",
+          "filename": "org.dreamweave.dreamwind-0.2.0.jpk",
+          "media_type": "application/vnd.jess.jpk",
+          "size": 9685,
+          "digests": {
+            "sha256": "f890529e3538431dd576f1edf7f12d833aae4a9c029cc81c0a38b4844116dbfd"
+          },
+          "jess": {
+            "package": "org.dreamweave.dreamwind",
+            "jess_api": "1",
+            "content_digest": "1b58500389cc9c42f1c4842bdd3b4f9dc012c78b8082708924464b9db394828c",
+            "dependencies": {
+              "org.dreamweave.add-vanilla-refs": "0.1",
+              "org.dreamweave.doctor": "0.1",
+              "org.dreamweave.dream-archive": "2",
+              "org.dreamweave.dream-archivetool": "0.1",
+              "org.dreamweave.dream-ini": "0.1",
+              "org.dreamweave.esm": "0.1",
+              "org.dreamweave.merge-to-master": "0.1",
+              "org.dreamweave.merged-lands": "0.1",
+              "org.dreamweave.nif": "0.1",
+              "org.dreamweave.nif-assets": "0.1",
+              "org.dreamweave.openmw-config": "4",
+              "org.dreamweave.openmw-content": "0.1",
+              "org.dreamweave.openmw-import-morrowind": "0.1",
+              "org.dreamweave.openmw-install": "0.1",
+              "org.dreamweave.plugin-assets": "0.1",
+              "org.dreamweave.s3lightfixes": "1",
+              "org.dreamweave.starwind": "0.1",
+              "org.dreamweave.tes3-saves": "0.1",
+              "org.dreamweave.tes3cmd": "0.1",
+              "org.dreamweave.tes3conv": "0.1",
+              "org.dreamweave.tes3merge": "0.1",
+              "org.dreamweave.vfs": "2",
+              "org.dreamweave.vfstool": "2"
+            }
+          }
+        }
+      ],
+      "runtimes": {},
+      "platforms": [],
+      "provides": [],
+      "relationships": [],
+      "components": [
+        {
+          "id": "main",
+          "name": "DreamWind",
+          "path": ".",
+          "required": true,
+          "default": true,
+          "requires": [],
+          "conflicts": [],
+          "suggested_with": []
+        }
+      ],
+      "groups": [],
+      "extensions": {},
+      "critical_extensions": []
+    }
+  ]
+}
