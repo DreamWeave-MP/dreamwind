@@ -50,8 +50,8 @@ local function fresh(name: string): string
 end
 
 suite.describe('the packages', function()
-  suite.it('tes3 exports @tes3', function()
-    exposes(require '@tes3', { 'open', 'new', 'decode', 'encode' }, { records = 'table' })
+  suite.it('tes3 exports @esm', function()
+    exposes(require '@esm', { 'open', 'new', 'decode', 'encode' }, { records = 'table' })
   end)
 
   suite.it('tes3cmd exports @tes3cmd', function()
@@ -125,8 +125,8 @@ suite.describe('the packages', function()
   end)
 
   suite.it(
-    'openmw exports @openmw',
-    function() exposes(require '@openmw', { 'new', 'fromConfig' }) end
+    'openmw exports @openmw-install',
+    function() exposes(require '@openmw-install', { 'new', 'fromConfig' }) end
   )
 
   suite.it('dream-ini exports @dream-ini and what the importer is built on', function()
@@ -165,8 +165,8 @@ suite.describe('the packages', function()
     exposes(require '@starwind/cli', { 'run', 'parse' }, { Exit = 'table' })
   end)
 
-  suite.it('load-order exports @load-order', function()
-    exposes(require '@load-order', { 'open', 'masters', 'outputDirectory', 'activate' })
+  suite.it('load-order exports @openmw-content', function()
+    exposes(require '@openmw-content', { 'open', 'masters', 'outputDirectory', 'activate' })
   end)
 
   suite.it('nif-assets exports @nif-assets', function()

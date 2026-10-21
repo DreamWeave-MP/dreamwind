@@ -2,7 +2,7 @@
 --!native
 -- Walk record framing and identities without decoding payloads.
 local fs = require '@dream/fs'
-local tes3 = require '@tes3'
+local tes3 = require '@esm'
 
 local function run(scale: number, root: string): number
   local source, problem = fs.readFile(fs.join(root, 'tools', 'bench', 'assets', 'all_types.esp'))
