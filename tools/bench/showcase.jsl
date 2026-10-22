@@ -390,6 +390,21 @@ local function relativeToRoot(path: string): string
   return path
 end
 
+--- A path the way a kept result records it: relative to the checkout inside it, from `~` under
+--- the home folder, so a result names nobody's home.
+local function recorded(path: string): string
+  local relative = relativeToRoot(path)
+  if relative ~= path then return relative end
+
+  local home = process.env 'HOME'
+  if not home then return path end
+
+  local prefix = absolute(home) .. '/'
+  if string.sub(path, 1, #prefix) == prefix then return `~/{string.sub(path, #prefix + 1)}` end
+
+  return path
+end
+
 --- Runs a program to completion, failing when it can't be started.
 local function run(
   program: string,
@@ -549,7 +564,7 @@ local function jessContext(binary: string, runtime: string?): JessContext
     version = version,
     commit = git { 'rev-parse', 'HEAD' },
     dirty = git { 'status', '--porcelain', '--untracked-files=no' } ~= '',
-    binary = relativeToRoot(binary),
+    binary = recorded(binary),
     binary_sha256 = sha256File(binary),
     profile = fs.fileName(fs.parent(binary) or '') or '',
     verified = true,
@@ -822,7 +837,7 @@ local function flatten(binary: string, config: string, folder: string, packages:
   end
 
   return {
-    config = config,
+    config = recorded(config),
     config_sha256 = bytes.sha256(base),
     content_files = contentFiles,
     plugins = plugins,
