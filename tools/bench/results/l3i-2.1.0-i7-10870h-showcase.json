@@ -65,7 +65,7 @@
   "3.7% kwin_wayland"
  ],
  "jess": {
-  "binary": "/var/home/s3kshun8/.cargo/bin/jess",
+  "binary": "~/.cargo/bin/jess",
   "binary_sha256": "5949cf27d92949400ef1d873dfe4c695c46f8eee9a4ceaa2d574c0c200d825cd",
   "commit": "47cca80f7f20ae1ae47d3b5ea5f5350775a9ebb5",
   "dirty": true,
@@ -82,7 +82,7 @@
   1.79
  ],
  "load_order": {
-  "config": "/var/home/s3kshun8/.config/openmw/openmw.cfg",
+  "config": "~/.config/openmw/openmw.cfg",
   "config_sha256": "1ecfacf85b56e9d29544c43507943e1b461697bb089e6259df96819b170d5d5a",
   "content_files": 69,
   "data_dirs": 118,

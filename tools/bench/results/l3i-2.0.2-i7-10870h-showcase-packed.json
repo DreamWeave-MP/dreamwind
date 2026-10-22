@@ -50,7 +50,7 @@
   "4.5% vivaldi"
  ],
  "jess": {
-  "binary": "/var/home/s3kshun8/.cargo/bin/jess",
+  "binary": "~/.cargo/bin/jess",
   "binary_sha256": "c2f63512466188223da82e403afd94ea259ba756938d5a26ccb8c7cb1de2049c",
   "commit": "e82a20fe4dc9c658178ea88e459af6ee5e45f1a2",
   "dirty": true,
@@ -67,7 +67,7 @@
   2.29
  ],
  "load_order": {
-  "config": "/var/home/s3kshun8/.config/openmw/openmw.cfg",
+  "config": "~/.config/openmw/openmw.cfg",
   "config_sha256": "1ecfacf85b56e9d29544c43507943e1b461697bb089e6259df96819b170d5d5a",
   "content_files": 69,
   "data_dirs": 118,
