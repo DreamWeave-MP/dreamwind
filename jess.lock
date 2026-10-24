@@ -121,11 +121,11 @@ dependencies = []
 
 [[package]]
 id = "org.dreamweave.nif-assets"
-version = "0.1.0"
-digest = "8c4c04d31b5d5db05b7fd3bec2ec1498b900f8155f7dacb03451b996b2b0f197"
+version = "0.1.1"
+digest = "17194598fa0cf91d9e9b051e241c6607d4b0d6994b5db662fa7a0f7b13cca359"
 source = "publisher"
 manifest = "https://dreamweave-mp.github.io/nif-assets/dreamweave/projects/9ff24c72-d67c-44d1-9af4-4c102dff10ef.json"
-artifact_sha256 = "2ab58c811539bb7e24c3fb0b7e85820f8f91b845d5656399f98c8f8c7b7da10a"
+artifact_sha256 = "9a09aa7e507a5fb480d774367c7a1e48c42fd189f881a791155761898e7ebfeb"
 dependencies = ["org.dreamweave.nif", "org.dreamweave.vfs"]
 
 [[package]]
