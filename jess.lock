@@ -166,11 +166,11 @@ dependencies = ["org.dreamweave.openmw-config", "org.dreamweave.vfs"]
 
 [[package]]
 id = "org.dreamweave.openmw-workbench"
-version = "0.7.0"
-digest = "de511283e7e9309964dbeb4184a61655f80951ca30f48a22bb60308dfd9190c8"
+version = "0.7.1"
+digest = "35b939a3430810c00f45ae03fadfeda0805ec521a976fb662fc4f3666ef6597a"
 source = "publisher"
 manifest = "https://dreamweave-mp.github.io/openmw-workbench/dreamweave/projects/f8c45ec3-cbbf-4bec-9202-859088a8c0a0.json"
-artifact_sha256 = "8c5ff0c3f1c4d2be096c0c3d307d58f29bf665b39896471c846929ad8cceb23e"
+artifact_sha256 = "68f7ce20b3b065e4295991a4c140a4bf7357fc28c45637bffd579e0e0ed9bbf9"
 dependencies = ["org.dreamweave.esm", "org.dreamweave.jessql", "org.dreamweave.nif", "org.dreamweave.tes3-saves", "org.dreamweave.vfs"]
 
 [[package]]
