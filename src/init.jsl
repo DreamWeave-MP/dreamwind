@@ -49,6 +49,10 @@ Plugins and models:
 Saves:
   tes3-saves               inspect, check, and strip OpenMW and Morrowind saves
 
+Queries and reviews:
+  sql                      SQL over a load order's content files, its VFS, a plugin, and a NIF
+  workbench                review an OpenMW Lua mod's scripts against OpenMW's Lua API
+
 Builds:
   starwind                 the Starwind Merged Plugin Project's Definitive build
 
@@ -71,6 +75,8 @@ local Tools: { [string]: (arguments: { string }) -> number } = {
   ['nif-assets'] = function(arguments) return require('@nif-assets/cli').run(arguments) end,
   ['dream-archivetool'] = function(arguments) return require('@dream-archivetool/cli').run(arguments) end,
   ['tes3-saves'] = function(arguments) return require('@tes3-saves/cli').run(arguments) end,
+  sql = function(arguments) return require('@dreamwind-sql/cli').run(arguments) end,
+  workbench = function(arguments) return require('@openmw-install/workbench/cli').run(arguments) end,
 
   ['openmw-import-morrowind'] = function(arguments)
     return require('@openmw-import-morrowind/cli').run(arguments)

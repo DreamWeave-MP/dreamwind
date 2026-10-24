@@ -19,8 +19,8 @@ tests = ["tests/run.jsl", "tests/style.jsl"]
 "org.dreamweave.dream-archive" = "2"
 "org.dreamweave.dream-archivetool" = "0.1"
 "org.dreamweave.vfs" = "2"
-"org.dreamweave.vfstool" = "2"
-"org.dreamweave.openmw-config" = "4"
+"org.dreamweave.vfstool" = "2.1"
+"org.dreamweave.openmw-config" = "4.2"
 "org.dreamweave.openmw-install" = "0.1"
 "org.dreamweave.dream-ini" = "0.1"
 "org.dreamweave.openmw-import-morrowind" = "0.1"
@@ -30,10 +30,12 @@ tests = ["tests/run.jsl", "tests/style.jsl"]
 "org.dreamweave.openmw-content" = "0.1"
 "org.dreamweave.nif-assets" = "0.1"
 "org.dreamweave.plugin-assets" = "0.1"
-"org.dreamweave.s3lightfixes" = "1"
-"org.dreamweave.merged-lands" = "0.1"
-"org.dreamweave.tes3merge" = "0.1"
-"org.dreamweave.doctor" = "0.1"
+"org.dreamweave.s3lightfixes" = "1.1"
+"org.dreamweave.merged-lands" = "0.1.1"
+"org.dreamweave.tes3merge" = "0.1.1"
+"org.dreamweave.doctor" = "0.1.1"
+"org.dreamweave.dreamwind-sql" = "0.2"
+"org.dreamweave.openmw-workbench" = "0.7"
 
 [modules]
 "@dreamwind" = "src/init.jsl"
@@ -60,6 +62,8 @@ requires = [
   "dream-archivetool.core",
   "openmw-import-morrowind.core",
   "tes3-saves.core",
+  "dream.sql.commands",
+  "openmw.workbench.commands",
 ]
 exports = ["@dreamwind"]
 
@@ -67,8 +71,9 @@ exports = ["@dreamwind"]
 # tools it dispatches to can, so its capabilities are the union of what their own targets declare,
 # each in its own manifest. `vfstool` declares all four below; `s3lightfixes`, `merged-lands`,
 # `tes3merge`, `doctor`, and `tes3-saves` declare filesystem.read, filesystem.write, and
-# process.environment;
-# `plugin-assets` filesystem.read alone; and the rest filesystem.read and filesystem.write.
+# process.environment; `dreamwind-sql` filesystem.read, process.environment, and process.stdio;
+# `openmw-workbench` filesystem.read and process.stdio; `plugin-assets` filesystem.read alone; and
+# the rest filesystem.read and filesystem.write.
 [targets.dreamwind]
 kind = "command"
 command = "dreamwind"

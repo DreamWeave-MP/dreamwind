@@ -13,12 +13,12 @@ dependencies = ["org.dreamweave.esm", "org.dreamweave.tes3conv"]
 
 [[package]]
 id = "org.dreamweave.doctor"
-version = "0.1.0"
-digest = "42344e99b039bfb5ee710b2860477b6905d4c324ef6545cd432649e5b8b4a6fd"
+version = "0.1.1"
+digest = "25dfddb616b0b2c2ac20610b47e060f8458dac2db114f39ad20417bf1743d8c8"
 source = "publisher"
 manifest = "https://dreamweave-mp.github.io/doctor/dreamweave/projects/66795eef-6cc5-41f2-b8ed-d373c78e5f42.json"
-artifact_sha256 = "662f5f33dafb788ef804a99891efd87bb3e53a0a209dedde984089f94eb2915f"
-dependencies = ["org.dreamweave.esm", "org.dreamweave.openmw-content", "org.dreamweave.openmw-install", "org.dreamweave.plugin-assets", "org.dreamweave.tes3cmd"]
+artifact_sha256 = "e0dffe7aa7b050b9854eff70d4e88ffdaa1db24b06d1e5d241b5069b6e9266f0"
+dependencies = ["org.dreamweave.esm", "org.dreamweave.openmw-config", "org.dreamweave.openmw-content", "org.dreamweave.openmw-install", "org.dreamweave.plugin-assets", "org.dreamweave.tes3cmd"]
 
 [[package]]
 id = "org.dreamweave.dream-archive"
@@ -48,12 +48,30 @@ artifact_sha256 = "35d6adeef8c9b92eed7f97d2f0470758ffe433eb61d4890e12547ec04ce9e
 dependencies = []
 
 [[package]]
+id = "org.dreamweave.dreamwind-sql"
+version = "0.2.0"
+digest = "460ecf92436d74425f5bbe3c5768b9d021cbc99cdd2aa317217e3105bb93fb0b"
+source = "publisher"
+manifest = "https://dreamweave-mp.github.io/dreamwind-sql/dreamweave/projects/24902fa8-2605-49b1-b278-5eb59a0f39b8.json"
+artifact_sha256 = "af01b84ce1033e2697a75d4d5a796971538ab685a891eee416ed8d5b1561d631"
+dependencies = ["org.dreamweave.esm", "org.dreamweave.jessql", "org.dreamweave.nif", "org.dreamweave.openmw-config", "org.dreamweave.openmw-install"]
+
+[[package]]
 id = "org.dreamweave.esm"
 version = "0.1.0"
 digest = "9556ec3f108f888c6d93cab21ca3937f3b96b048dfa75693f270be6882c4c72f"
 source = "publisher"
 manifest = "https://dreamweave-mp.github.io/esm/dreamweave/projects/4a20d171-25a6-471f-8e22-6e554c9e859c.json"
 artifact_sha256 = "2d139f7a5af74d9730ee8ebc4469ba32cfe0924b5aa54db037d9ff91e6db0b3a"
+dependencies = []
+
+[[package]]
+id = "org.dreamweave.jessql"
+version = "0.1.6"
+digest = "50ad29e8e61f5f0da1351b361cfc56b75696d843b68b7d90d99f04a6aeef45fe"
+source = "publisher"
+manifest = "https://dreamweave-mp.github.io/jessql/dreamweave/projects/6b0fec20-c982-440d-87a4-15aa83a3c680.json"
+artifact_sha256 = "3a6281e312e4ae40246f19b421d10c9dec67b12e6bdc38c9facf33a0e334843e"
 dependencies = []
 
 [[package]]
@@ -76,12 +94,12 @@ dependencies = ["org.dreamweave.esm", "org.dreamweave.tes3conv"]
 
 [[package]]
 id = "org.dreamweave.merged-lands"
-version = "0.1.0"
-digest = "a8a36dc67c4069a1c4ef2b6408733d6f3db2bb916c0e4e31e25e7251b6cc2f4a"
+version = "0.1.1"
+digest = "74d7bba64e9aee7ec890d0b2cfa7d3c2118330f678fd4a05c002fe47e42c57ad"
 source = "publisher"
 manifest = "https://dreamweave-mp.github.io/merged-lands/dreamweave/projects/79933d87-68dd-4476-945a-906e5a6f4f44.json"
-artifact_sha256 = "ac5f01cc1a30daf551575076cfd05cbac375a5607e4dbe4bc5bc79bbecfc4d0e"
-dependencies = ["org.dreamweave.esm", "org.dreamweave.openmw-content", "org.dreamweave.openmw-install"]
+artifact_sha256 = "85e708eea077ea21f64a46b2d65585aeddcf85638a12439be6dd87c2a8cf9a54"
+dependencies = ["org.dreamweave.esm", "org.dreamweave.openmw-config", "org.dreamweave.openmw-content", "org.dreamweave.openmw-install"]
 
 [[package]]
 id = "org.dreamweave.mod-template"
@@ -112,11 +130,11 @@ dependencies = ["org.dreamweave.nif", "org.dreamweave.vfs"]
 
 [[package]]
 id = "org.dreamweave.openmw-config"
-version = "4.0.0"
-digest = "6dcb1c58d78004821234dfef5fc37f3c1a6de5d19cea8731ce4212322f159d20"
+version = "4.2.0"
+digest = "1a84e63664f790aee1f7f16fcb23a1f511b0458028dc3b8c78737954a197328f"
 source = "publisher"
 manifest = "https://dreamweave-mp.github.io/Openmw_Config/dreamweave/projects/3aaf4fe0-616f-41a3-b520-306eda9347b0.json"
-artifact_sha256 = "741f6da8530e3e8b280799b3836aa29163d4436c118595b97d6d063cbfe235c0"
+artifact_sha256 = "d90b667ff0791baf86de6926ee198ae31a94f5c5ea7fbdb38d5f59e7451254c4"
 dependencies = []
 
 [[package]]
@@ -147,6 +165,15 @@ artifact_sha256 = "bccf5abf697d83b5b8083346f6f8da251535d8b41dbd431d1a236b3a52c82
 dependencies = ["org.dreamweave.openmw-config", "org.dreamweave.vfs"]
 
 [[package]]
+id = "org.dreamweave.openmw-workbench"
+version = "0.7.0"
+digest = "de511283e7e9309964dbeb4184a61655f80951ca30f48a22bb60308dfd9190c8"
+source = "publisher"
+manifest = "https://dreamweave-mp.github.io/openmw-workbench/dreamweave/projects/f8c45ec3-cbbf-4bec-9202-859088a8c0a0.json"
+artifact_sha256 = "8c5ff0c3f1c4d2be096c0c3d307d58f29bf665b39896471c846929ad8cceb23e"
+dependencies = ["org.dreamweave.esm", "org.dreamweave.jessql", "org.dreamweave.nif", "org.dreamweave.tes3-saves", "org.dreamweave.vfs"]
+
+[[package]]
 id = "org.dreamweave.plugin-assets"
 version = "0.1.0"
 digest = "f48471c4d5d08a61f2f68cf8c709963aed178d719b287d31a0dc1510ee4cb56d"
@@ -157,12 +184,12 @@ dependencies = ["org.dreamweave.esm", "org.dreamweave.nif-assets", "org.dreamwea
 
 [[package]]
 id = "org.dreamweave.s3lightfixes"
-version = "1.0.0"
-digest = "f0c8c2a9b5ee74a6525883b4f38cf0098ac98d994e29e88abd2083dae75d598f"
+version = "1.1.0"
+digest = "4bdabef4b5b7888ff531d172cf54a0a873bc542d16039e2c62c0bef00696b3e9"
 source = "publisher"
 manifest = "https://dreamweave-mp.github.io/S3LightFixes/dreamweave/projects/55e873c9-1ddc-4b13-b59a-0eb790bb2565.json"
-artifact_sha256 = "daa4dfe1fc0cb5191f66b10f8a07dd6d9c6b61c1deb3488386ddecc663fd33dd"
-dependencies = ["org.dreamweave.esm", "org.dreamweave.openmw-content", "org.dreamweave.openmw-install"]
+artifact_sha256 = "a1d41dac5ffca9fb0192e64e2faaaccf6576e78a7a8862475b1668eae82461b0"
+dependencies = ["org.dreamweave.esm", "org.dreamweave.openmw-config", "org.dreamweave.openmw-content", "org.dreamweave.openmw-install"]
 
 [[package]]
 id = "org.dreamweave.site"
@@ -211,12 +238,12 @@ dependencies = ["org.dreamweave.esm"]
 
 [[package]]
 id = "org.dreamweave.tes3merge"
-version = "0.1.0"
-digest = "c829af7c0ddc3342bef4f2d7001229a487651005dba6ccd3bc07a34cfffa5fee"
+version = "0.1.1"
+digest = "01b98b9a3791aef34d52fd431a60aa759545f1a4c4b658727dd49340ad0de863"
 source = "publisher"
 manifest = "https://dreamweave-mp.github.io/TES3Merge/dreamweave/projects/13fe2321-0f57-4368-9690-50400d433c61.json"
-artifact_sha256 = "8890bccc5c09bd2519fe1ab60817bd22f57c571e27cc7046c1017ca3d6eb7358"
-dependencies = ["org.dreamweave.esm", "org.dreamweave.openmw-content", "org.dreamweave.openmw-install"]
+artifact_sha256 = "3ad3244f8f8d5e8aa23d75ef87b7ae30728dea89bd5aa3d4233e2bf7debca13e"
+dependencies = ["org.dreamweave.esm", "org.dreamweave.openmw-config", "org.dreamweave.openmw-content", "org.dreamweave.openmw-install"]
 
 [[package]]
 id = "org.dreamweave.theme"
@@ -238,9 +265,9 @@ dependencies = ["org.dreamweave.dream-archive"]
 
 [[package]]
 id = "org.dreamweave.vfstool"
-version = "2.0.0"
-digest = "76d49ff1220dbe340c28eeca9592017ec6e39ec3e42f57029cceb71169d2e95a"
+version = "2.1.0"
+digest = "eb05850223448c7d80c4723490c02a31dc3842e72ce0969019d15fd8c858ca09"
 source = "publisher"
 manifest = "https://dreamweave-mp.github.io/vfstool/dreamweave/projects/34fc442a-5060-4b77-8c64-ca5ea9861a10.json"
-artifact_sha256 = "4d8a14fffcbb1ab7dcc1c75afd3629ad28e86b75960453fb2f1286c9340f010b"
+artifact_sha256 = "314590d8841e4fbd3c6f240ca8457d7b4648e8334124399e85629c5f55e2c20b"
 dependencies = ["org.dreamweave.openmw-config", "org.dreamweave.vfs"]

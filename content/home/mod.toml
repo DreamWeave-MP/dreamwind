@@ -11,9 +11,29 @@ status = "active"
 name = "DreamWeave"
 url = "https://github.com/DreamWeave-MP"
 
+# `application` releases it as a program too: CI packs the workspace into `dreamwind.jsw`, which
+# `jess install org.dreamweave.dreamwind` installs, and a jess carrying it for each platform below,
+# which runs without jess installed. The site's workflow names it with jess_application.
 [package]
 format = "jpk"
 jess = "org.dreamweave.dreamwind"
+application = "dreamwind"
+
+[[platforms]]
+os = "windows"
+arch = "x86_64"
+
+[[platforms]]
+os = "macos"
+arch = "x86_64"
+
+[[platforms]]
+os = "macos"
+arch = "aarch64"
+
+[[platforms]]
+os = "linux"
+arch = "x86_64"
 
 [[releases]]
 version = "0.2.0"
