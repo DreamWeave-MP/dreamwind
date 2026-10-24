@@ -39,3 +39,16 @@ arch = "x86_64"
 version = "0.2.0"
 date = 2026-10-21
 summary = "First release published as a DreamWeave project."
+
+[[releases]]
+version = "0.3.0"
+date = 2026-10-23
+summary = "DreamWind ships as a program: a download for Windows, macOS and Linux that runs without jess, or `jess install org.dreamweave.dreamwind`. It gains `sql` and `workbench`, and its tools find OpenMW's own configuration."
+added = [
+    "DreamWind is released as an application: `dreamwind.jsw`, which `jess install org.dreamweave.dreamwind` installs onto your PATH, and a standalone `dreamwind` for Windows x86_64, macOS x86_64 and ARM64, and Linux x86_64.",
+    "`dreamwind sql`: SQL over a load order's content files and records, its VFS, a plugin, and a NIF, printed as a table, JSON or YAML (dreamwind-sql 0.2).",
+    "`dreamwind workbench`: a review of an OpenMW Lua mod's scripts against OpenMW's Lua API (openmw-workbench 0.7).",
+]
+changed = [
+    "vfstool, doctor, tes3merge, merged-lands and s3lightfixes read OpenMW's own openmw.cfg when neither `--config` nor OPENMW_CONFIG names one.",
+]

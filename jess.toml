@@ -2,7 +2,7 @@ manifest_version = 1
 
 [package]
 id = "org.dreamweave.dreamwind"
-version = "0.2.0"
+version = "0.3.0"
 jess_api = "1"
 default_target = "dreamwind"
 include = ["src", "tests"]
