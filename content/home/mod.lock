@@ -610,6 +610,277 @@
       "groups": [],
       "extensions": {},
       "critical_extensions": []
+    },
+    {
+      "version": "0.3.2",
+      "locked_from": "0fdee2d3e1abe4ffb34081e9952e2cd1e4cf4b98",
+      "artifacts": [
+        {
+          "id": "jpk",
+          "format": "jpk",
+          "filename": "org.dreamweave.dreamwind-0.3.2.jpk",
+          "media_type": "application/vnd.jess.jpk",
+          "size": 9898,
+          "digests": {
+            "sha256": "f3d9ed9f6d2fbd18ee5160216fbc2cdcd1b4659f642bde4349abd78175663629"
+          },
+          "jess": {
+            "package": "org.dreamweave.dreamwind",
+            "jess_api": "1",
+            "content_digest": "faa1a93dba3cec6434fb7af13fda80b6d3ccf2d4fc5b6b95f00fcdd8d6d83d9e",
+            "dependencies": {
+              "org.dreamweave.add-vanilla-refs": "0.1",
+              "org.dreamweave.doctor": "0.1.1",
+              "org.dreamweave.dream-archive": "2",
+              "org.dreamweave.dream-archivetool": "0.1",
+              "org.dreamweave.dream-ini": "0.1",
+              "org.dreamweave.dreamwind-sql": "0.2",
+              "org.dreamweave.esm": "0.1",
+              "org.dreamweave.merge-to-master": "0.1",
+              "org.dreamweave.merged-lands": "0.1.1",
+              "org.dreamweave.nif": "0.1",
+              "org.dreamweave.nif-assets": "0.1.1",
+              "org.dreamweave.openmw-config": "4.2",
+              "org.dreamweave.openmw-content": "0.1",
+              "org.dreamweave.openmw-import-morrowind": "0.1",
+              "org.dreamweave.openmw-install": "0.1",
+              "org.dreamweave.openmw-workbench": "0.7.1",
+              "org.dreamweave.plugin-assets": "0.1",
+              "org.dreamweave.s3lightfixes": "1.1",
+              "org.dreamweave.starwind": "0.1",
+              "org.dreamweave.tes3-saves": "0.1",
+              "org.dreamweave.tes3cmd": "0.1",
+              "org.dreamweave.tes3conv": "0.1",
+              "org.dreamweave.tes3merge": "0.1.1",
+              "org.dreamweave.vfs": "2",
+              "org.dreamweave.vfstool": "2.1"
+            }
+          }
+        },
+        {
+          "id": "jsw",
+          "format": "jsw",
+          "filename": "dreamwind-0.3.2.jsw",
+          "media_type": "application/vnd.jess.jsw",
+          "size": 3561665,
+          "digests": {
+            "sha256": "0c718062682ea9abe510a2466fee9e40c32b4af651a42d6b7a48bc9079e66e00"
+          },
+          "jess_workspace": {
+            "package": "org.dreamweave.dreamwind",
+            "builtin": "0.1.0",
+            "default": "org.dreamweave.dreamwind:dreamwind",
+            "targets": [
+              "org.dreamweave.dreamwind:dreamwind"
+            ],
+            "commands": {
+              "dreamwind": "org.dreamweave.dreamwind:dreamwind"
+            },
+            "packages": {
+              "org.dreamweave.add-vanilla-refs": {
+                "content_digest": "006152b77fae4504825573ede68c6520d2f8e691cd48b0cd595e99c49a0bb9a5",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.doctor": {
+                "content_digest": "25dfddb616b0b2c2ac20610b47e060f8458dac2db114f39ad20417bf1743d8c8",
+                "version": "0.1.1"
+              },
+              "org.dreamweave.dream-archive": {
+                "content_digest": "2542758bf2af0319bcecca13eb44158c43b87733d207eb02f13d647412ee9dc1",
+                "version": "2.0.0"
+              },
+              "org.dreamweave.dream-archivetool": {
+                "content_digest": "66c4f1c9b3476f4a180020df63dc4864f52df68029531abe41d2191cd52f734b",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.dream-ini": {
+                "content_digest": "100a5475b4ed0606e014c4b0bc5dea676f2168c0bbc2da4f42b5e55b7b5ec0e5",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.dreamwind": {
+                "content_digest": "faa1a93dba3cec6434fb7af13fda80b6d3ccf2d4fc5b6b95f00fcdd8d6d83d9e",
+                "version": "0.3.2"
+              },
+              "org.dreamweave.dreamwind-sql": {
+                "content_digest": "460ecf92436d74425f5bbe3c5768b9d021cbc99cdd2aa317217e3105bb93fb0b",
+                "version": "0.2.0"
+              },
+              "org.dreamweave.esm": {
+                "content_digest": "9556ec3f108f888c6d93cab21ca3937f3b96b048dfa75693f270be6882c4c72f",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.jessql": {
+                "content_digest": "50ad29e8e61f5f0da1351b361cfc56b75696d843b68b7d90d99f04a6aeef45fe",
+                "version": "0.1.6"
+              },
+              "org.dreamweave.merge-to-master": {
+                "content_digest": "bc64ecc2278868aa4cd909bfa3f66906dfda5d6b0b65cb0fa23df75e5ed7e92a",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.merged-lands": {
+                "content_digest": "74d7bba64e9aee7ec890d0b2cfa7d3c2118330f678fd4a05c002fe47e42c57ad",
+                "version": "0.1.1"
+              },
+              "org.dreamweave.nif": {
+                "content_digest": "df3a5a6ece5355be28c4ef521a528759e2568acb4a18bb7e3f486d883d1282fe",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.nif-assets": {
+                "content_digest": "17194598fa0cf91d9e9b051e241c6607d4b0d6994b5db662fa7a0f7b13cca359",
+                "version": "0.1.1"
+              },
+              "org.dreamweave.openmw-config": {
+                "content_digest": "1a84e63664f790aee1f7f16fcb23a1f511b0458028dc3b8c78737954a197328f",
+                "version": "4.2.0"
+              },
+              "org.dreamweave.openmw-content": {
+                "content_digest": "e3b97afa3214cd00d409b1878f9edeced100e5916aa260e70574bedb288bf833",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.openmw-import-morrowind": {
+                "content_digest": "fb4ce6d7dec5b466f6ddd7ac7df2d6c5bec156f3d968615d80ee30e128737fec",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.openmw-install": {
+                "content_digest": "d148659c977dc5a08240357b26ff38fb2d012a64e7e51370c0b0d699c43c6e6d",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.openmw-workbench": {
+                "content_digest": "35b939a3430810c00f45ae03fadfeda0805ec521a976fb662fc4f3666ef6597a",
+                "version": "0.7.1"
+              },
+              "org.dreamweave.plugin-assets": {
+                "content_digest": "f48471c4d5d08a61f2f68cf8c709963aed178d719b287d31a0dc1510ee4cb56d",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.s3lightfixes": {
+                "content_digest": "4bdabef4b5b7888ff531d172cf54a0a873bc542d16039e2c62c0bef00696b3e9",
+                "version": "1.1.0"
+              },
+              "org.dreamweave.starwind": {
+                "content_digest": "6d8ab00f7aa8f3d0b12ee40fb938a117a045e6766298e601db655137da92b49e",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.tes3-saves": {
+                "content_digest": "a586dc57d12b1a4bcce1b9f7274f2f657fa682c0ba8cbdcaf9b8f0a6675f1faa",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.tes3cmd": {
+                "content_digest": "89d73166d8990284feb5e84d227e88c7f563bd631af1bbfa87a948892b749697",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.tes3conv": {
+                "content_digest": "746ef70ea9a175ff91bf610caf30552a7eea9cb68264de93280500d6aba30934",
+                "version": "0.1.0"
+              },
+              "org.dreamweave.tes3merge": {
+                "content_digest": "01b98b9a3791aef34d52fd431a60aa759545f1a4c4b658727dd49340ad0de863",
+                "version": "0.1.1"
+              },
+              "org.dreamweave.vfs": {
+                "content_digest": "b501db857f2b619c32963763173330348ea57602f1e53303a487fa6025994fab",
+                "version": "2.0.0"
+              },
+              "org.dreamweave.vfstool": {
+                "content_digest": "eb05850223448c7d80c4723490c02a31dc3842e72ce0969019d15fd8c858ca09",
+                "version": "2.1.0"
+              }
+            }
+          }
+        },
+        {
+          "id": "windows-x64",
+          "format": "binary",
+          "filename": "dreamwind-Windows-X64.zip",
+          "media_type": "application/zip",
+          "size": 24455005,
+          "digests": {
+            "sha256": "9e4bdbd3ba2315a1aa8f2e1581c0e80647067521a9a54c1d135a5bd3eb14ddd0"
+          },
+          "platform": {
+            "os": "windows",
+            "arch": "x86_64"
+          }
+        },
+        {
+          "id": "macos-x64",
+          "format": "binary",
+          "filename": "dreamwind-macOS-X64.zip",
+          "media_type": "application/zip",
+          "size": 25465708,
+          "digests": {
+            "sha256": "5fb4318a03975d0a3770229d78d1fc2b07f7be4910756c7808aef8011f4b3a32"
+          },
+          "platform": {
+            "os": "macos",
+            "arch": "x86_64"
+          }
+        },
+        {
+          "id": "macos-arm64",
+          "format": "binary",
+          "filename": "dreamwind-macOS-ARM64.zip",
+          "media_type": "application/zip",
+          "size": 23422422,
+          "digests": {
+            "sha256": "fcce1ed768b7465b47c3ae3bb4176ef924c97b55a637c5e167a1f870e24183ba"
+          },
+          "platform": {
+            "os": "macos",
+            "arch": "aarch64"
+          }
+        },
+        {
+          "id": "linux-x64",
+          "format": "binary",
+          "filename": "dreamwind-Linux-X64.zip",
+          "media_type": "application/zip",
+          "size": 26119661,
+          "digests": {
+            "sha256": "741d1dee9bbea562ad1fd837b71a924a9ccecd544b6938b47a3256aa41c9d86d"
+          },
+          "platform": {
+            "os": "linux",
+            "arch": "x86_64"
+          }
+        }
+      ],
+      "runtimes": {},
+      "platforms": [
+        {
+          "os": "windows",
+          "arch": "x86_64"
+        },
+        {
+          "os": "macos",
+          "arch": "x86_64"
+        },
+        {
+          "os": "macos",
+          "arch": "aarch64"
+        },
+        {
+          "os": "linux",
+          "arch": "x86_64"
+        }
+      ],
+      "provides": [],
+      "relationships": [],
+      "components": [
+        {
+          "id": "main",
+          "name": "DreamWind",
+          "path": ".",
+          "required": true,
+          "default": true,
+          "requires": [],
+          "conflicts": [],
+          "suggested_with": []
+        }
+      ],
+      "groups": [],
+      "extensions": {},
+      "critical_extensions": []
     }
   ]
 }
