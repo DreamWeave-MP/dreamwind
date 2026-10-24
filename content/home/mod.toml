@@ -52,3 +52,11 @@ added = [
 changed = [
     "vfstool, doctor, tes3merge, merged-lands and s3lightfixes read OpenMW's own openmw.cfg when neither `--config` nor OPENMW_CONFIG names one.",
 ]
+
+[[releases]]
+version = "0.3.1"
+date = 2026-10-24
+summary = "`dreamwind workbench` no longer reports `self.ATTACK_TYPE` and nearby's enum tables as engine-internal, and each platform's download goes to its own Nexus Mods file group."
+fixed = [
+    "`dreamwind workbench` (openmw-workbench 0.7.1) treats `self.ATTACK_TYPE`, `nearby.NAVIGATOR_FLAGS`, `nearby.COLLISION_SHAPE_TYPE` and `nearby.FIND_PATH_STATUS` as the public API they are.",
+]
