@@ -60,3 +60,11 @@ summary = "`dreamwind workbench` no longer reports `self.ATTACK_TYPE` and nearby
 fixed = [
     "`dreamwind workbench` (openmw-workbench 0.7.1) treats `self.ATTACK_TYPE`, `nearby.NAVIGATOR_FLAGS`, `nearby.COLLISION_SHAPE_TYPE` and `nearby.FIND_PATH_STATUS` as the public API they are.",
 ]
+
+[[releases]]
+version = "0.3.2"
+date = 2026-10-24
+summary = "`dreamwind nif-assets check` over a whole mods folder no longer fails with `table overflow` while writing its report."
+fixed = [
+    "`dreamwind nif-assets` (nif-assets 0.1.1) writes `check`, `info` and `fix` reports a file at a time, and the program is built on jess 0.2.2, whose JSON and YAML writers no longer overflow a table on a document of millions of lines.",
+]
